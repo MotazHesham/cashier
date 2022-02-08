@@ -231,6 +231,8 @@ return [
             'updated_at_helper'       => ' ',
             'deleted_at'              => 'Deleted At',
             'deleted_at_helper'       => ' ',
+            'photo'                   => 'Photo',
+            'photo_helper'            => ' ',
         ],
     ],
     'income' => [
@@ -253,6 +255,10 @@ return [
             'updated_at_helper'      => ' ',
             'deleted_at'             => 'Deleted At',
             'deleted_at_helper'      => ' ',
+            'photo'                  => 'Photo',
+            'photo_helper'           => ' ',
+            'relationid'             => 'Relationid',
+            'relationid_helper'      => ' ',
         ],
     ],
     'expenseReport' => [

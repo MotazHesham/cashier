@@ -63,10 +63,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Expense
     Route::delete('expenses/destroy', 'ExpenseController@massDestroy')->name('expenses.massDestroy');
+    Route::post('expenses/media', 'ExpenseController@storeMedia')->name('expenses.storeMedia');
+    Route::post('expenses/ckmedia', 'ExpenseController@storeCKEditorImages')->name('expenses.storeCKEditorImages');
     Route::resource('expenses', 'ExpenseController');
 
     // Income
     Route::delete('incomes/destroy', 'IncomeController@massDestroy')->name('incomes.massDestroy');
+    Route::post('incomes/media', 'IncomeController@storeMedia')->name('incomes.storeMedia');
+    Route::post('incomes/ckmedia', 'IncomeController@storeCKEditorImages')->name('incomes.storeCKEditorImages');
     Route::resource('incomes', 'IncomeController');
 
     // Expense Report
