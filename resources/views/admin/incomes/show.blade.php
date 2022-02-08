@@ -55,6 +55,18 @@
                             {{ $income->description }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.income.fields.photo') }}
+                        </th>
+                        <td>
+                            @if($income->photo)
+                                <a href="{{ $income->photo->getUrl() }}" target="_blank" style="display: inline-block">
+                                    <img src="{{ $income->photo->getUrl('thumb') }}">
+                                </a>
+                            @endif
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">
