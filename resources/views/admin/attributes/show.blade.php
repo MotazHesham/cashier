@@ -31,6 +31,14 @@
                             {{ $attribute->attribute }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.attribute.fields.slug') }}
+                        </th>
+                        <td>
+                            {{ $attribute->slug }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

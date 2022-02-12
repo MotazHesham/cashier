@@ -11,6 +11,7 @@ class CreateAttributesTable extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('attribute');
+            $table->string('slug');
             $table->timestamps();
             $table->softDeletes();
         });

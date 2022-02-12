@@ -46,6 +46,9 @@ class AttributesController extends Controller
             $table->editColumn('attribute', function ($row) {
                 return $row->attribute ? $row->attribute : '';
             });
+            $table->editColumn('slug', function ($row) {
+                return $row->slug ? $row->slug : '';
+            });
 
             $table->rawColumns(['actions', 'placeholder']);
 

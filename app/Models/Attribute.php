@@ -22,6 +22,7 @@ class Attribute extends Model
 
     protected $fillable = [
         'attribute',
+        'slug',
         'created_at',
         'updated_at',
         'deleted_at',
