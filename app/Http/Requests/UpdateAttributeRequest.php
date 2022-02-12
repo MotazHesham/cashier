@@ -25,6 +25,9 @@ class UpdateAttributeRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'type' => [
+                'required',
+            ],
         ];
     }
 }

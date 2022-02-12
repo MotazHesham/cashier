@@ -12,6 +12,11 @@ class Attribute extends Model
     use SoftDeletes;
     use Auditable;
 
+    public const TYPE_RADIO = [
+        'single'   => 'Single',
+        'multiple' => 'Multiple',
+    ];
+
     public $table = 'attributes';
 
     protected $dates = [
@@ -23,6 +28,7 @@ class Attribute extends Model
     protected $fillable = [
         'attribute',
         'slug',
+        'type',
         'created_at',
         'updated_at',
         'deleted_at',

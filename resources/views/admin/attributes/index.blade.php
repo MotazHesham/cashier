@@ -31,6 +31,9 @@
                         {{ trans('cruds.attribute.fields.slug') }}
                     </th>
                     <th>
+                        {{ trans('cruds.attribute.fields.type') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -89,6 +92,7 @@
 { data: 'id', name: 'id' },
 { data: 'attribute', name: 'attribute' },
 { data: 'slug', name: 'slug' },
+{ data: 'type', name: 'type' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
