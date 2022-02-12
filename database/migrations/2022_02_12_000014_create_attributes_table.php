@@ -12,6 +12,7 @@ class CreateAttributesTable extends Migration
             $table->bigIncrements('id');
             $table->string('attribute');
             $table->string('slug');
+            $table->string('type');
             $table->timestamps();
             $table->softDeletes();
         });

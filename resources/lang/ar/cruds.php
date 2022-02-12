@@ -291,6 +291,8 @@ return [
             'deleted_at_helper' => ' ',
             'slug'              => 'Slug',
             'slug_helper'       => ' ',
+            'type'              => 'Type',
+            'type_helper'       => ' ',
         ],
     ],
     'order' => [

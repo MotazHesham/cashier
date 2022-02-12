@@ -25,6 +25,9 @@ class StoreAttributeRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'type' => [
+                'required',
+            ],
         ];
     }
 }

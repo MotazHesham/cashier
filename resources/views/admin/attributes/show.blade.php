@@ -39,6 +39,14 @@
                             {{ $attribute->slug }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.attribute.fields.type') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Attribute::TYPE_RADIO[$attribute->type] ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

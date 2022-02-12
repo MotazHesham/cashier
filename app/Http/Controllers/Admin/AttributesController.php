@@ -49,6 +49,9 @@ class AttributesController extends Controller
             $table->editColumn('slug', function ($row) {
                 return $row->slug ? $row->slug : '';
             });
+            $table->editColumn('type', function ($row) {
+                return $row->type ? Attribute::TYPE_RADIO[$row->type] : '';
+            });
 
             $table->rawColumns(['actions', 'placeholder']);
 
