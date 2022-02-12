@@ -21,6 +21,16 @@
                 <span class="help-block">{{ trans('cruds.attribute.fields.attribute_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="slug">{{ trans('cruds.attribute.fields.slug') }}</label>
+                <input class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}" type="text" name="slug" id="slug" value="{{ old('slug', $attribute->slug) }}" required>
+                @if($errors->has('slug'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('slug') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.attribute.fields.slug_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
