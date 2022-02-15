@@ -192,7 +192,7 @@
                             </form>
                         </div>
                     @empty
-                        <div class="alert alert-warning"> No Products For This Category Right Now.... </div>
+                        <div class="alert alert-info" style="margin: 10%"> No Products For This Category Right Now.... </div>
                     @endforelse
                 </div>
             </div>

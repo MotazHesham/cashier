@@ -100,8 +100,7 @@ class CashierModeController extends Controller
         $order = Order::create([
             'code' => $code,
             'entry_date' => date('Y-m-d',strtotime('now')),
-            'paid_up' => $request->paid_up,
-            'discount' => $discount,
+            'paid_up' => $request->paid_up, 
             'total_cost' => 0,
             'voucher_code_id' => $request->voucher_code_id,
         ]);
@@ -140,7 +139,9 @@ class CashierModeController extends Controller
             $order_total_cost += ($total_cost + $extra_price);
         }
         if($request->voucher_code_id != null && $discount != 0){
-            $order->total_cost = $order_total_cost * ($discount /100);
+            $discount = $order_total_cost * ($discount /100);
+            $order->total_cost = $order_total_cost - $discount;
+            $order->discount = $discount;
         }else{
             $order->total_cost = $order_total_cost;
         }
@@ -197,7 +198,9 @@ class CashierModeController extends Controller
             $order_total_cost += ($total_cost + $extra_price);
         }
         if($request->voucher_code_id != null && $discount != 0){
-            $order->total_cost = $order_total_cost * ($discount /100);
+            $discount = $order_total_cost * ($discount /100);
+            $order->total_cost = $order_total_cost - $discount;
+            $order->discount = $discount;
         }else{
             $order->total_cost = $order_total_cost;
         }
