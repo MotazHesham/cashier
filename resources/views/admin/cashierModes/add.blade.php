@@ -59,8 +59,8 @@
                         </div>
                     </div>
                     <div class="d-grid gap-2 mt-3 mb-2">
-                        <button class="btn btn-primary btn-block" type="submit"
-                            style="background: var(--payment-color);border-color:var(--payment-color)">
+                        <button class="btn btn-primary" type="submit"
+                            style="border-radius:10px;background: #69becf;border-color: #69becf;">
                             دفع
                         </button>
                     </div>

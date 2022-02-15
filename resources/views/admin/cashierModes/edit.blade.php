@@ -121,7 +121,7 @@
                     <div class="d-grid gap-2 mt-3 mb-2">
                         @can('order_edit')
                             <button class="btn btn-success btn-block" type="submit"
-                                style="background: var(--payment-color);border-color:var(--payment-color)">
+                            style="border-radius:10px;background:#69becf;border-color:#69becf;">
                                 تحديث
                             </button>
                         @endcan

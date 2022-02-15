@@ -74,10 +74,12 @@
                     <i class="fas fa-redo-alt"></i>
                     <span class="nav_name">Refresh</span>
                 </a>
-                <a class="btn btn-lg btn-light" href="{{ route('admin.orders.index') }}">
-                    <i class="fas fa-receipt"></i>
-                    <span class="nav_name">Orders</span>
-                </a>
+                @can('order_access')
+                    <a class="btn btn-lg btn-light" href="{{ route('admin.orders.index') }}">
+                        <i class="fas fa-receipt"></i>
+                        <span class="nav_name">Orders</span>
+                    </a>
+                @endcan
                 <a class="btn btn-lg btn-light" onclick="go_full_screen()">
                     <i class="fas fa-expand"></i>
                     <span class="nav_name">Expand</span>
@@ -188,7 +190,7 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 15px">أضف</button>
+                                <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 10px">أضف</button>
                             </form>
                         </div>
                     @empty
