@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Session;
 use Alert;
+use Carbon\Carbon;
 
 class OrdersController extends Controller
 {
@@ -104,6 +105,14 @@ class OrdersController extends Controller
 
         Session::put('counter', 0);
 
+        $isAdmin = auth()->user()->roles->contains(1);
+
+        if (!$isAdmin) {
+            if(Carbon::parse($order->created_at)->addMinutes(10)->isPast()){ 
+                Alert::success('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للتعديل برجاء التواصل مع الأدمن لتنفيذ الأمر '); 
+                return back();
+            }
+        }
         return view('admin.cashierModes.edit', compact('order', 'categories', 'vouchercodes'));
     }
 
@@ -127,6 +136,15 @@ class OrdersController extends Controller
     public function destroy(Order $order)
     {
         abort_if(Gate::denies('order_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $isAdmin = auth()->user()->roles->contains(1);
+
+        if (!$isAdmin) {
+            if(Carbon::parse($order->created_at)->addMinutes(15)->isPast()){ 
+                Alert::success('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للمسح برجاء التواصل مع الأدمن لتنفيذ الأمر '); 
+                return 1;
+            }
+        }
 
         $order->delete(); 
 

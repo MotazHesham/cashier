@@ -178,9 +178,8 @@
                                                                     type="checkbox" 
                                                                 @endif
                                                                 name="attributes[]" value="{{ $value }}"
-                                                                id="{{ $value }}">
-                                                            <label
-                                                                for="{{ $value }}">{{ $value }}</label>
+                                                                id="{{ $product->id . $value }}">
+                                                            <label for="{{  $product->id . $value }}">{{ $value }}</label>
                                                         @endforeach
                                                     </span>
                                                 </div>

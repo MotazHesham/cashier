@@ -11,7 +11,7 @@
     </td> 
     <td>
         <input style="width: 55px;text-align:center" type="number" class="form-control" min="1" step="1"
-                name="products[{{ Session::get('counter') }}][quantity]" value="{{$quantity}}" onkeyup="change_quantity(this,{{ Session::get('counter') }},{{$product_cost_with_extra}})">
+                name="products[{{ Session::get('counter') }}][quantity]" value="{{$quantity}}" required onkeyup="change_quantity(this,{{ Session::get('counter') }},{{$product_cost_with_extra}})">
     </td>
     <td id="receipt-product-cost-{{ Session::get('counter') }}" class="receipt-product-cost">
         {{ $product_cost_with_extra * $quantity }}
