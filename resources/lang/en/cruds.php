@@ -336,7 +336,7 @@ return [
             'code'               => 'Code',
             'code_helper'        => ' ',
             'discount'               => 'Discount',
-            'discount_helper'        => 'By Percentage',
+            'discount_helper'        => '',
             'start_date'         => 'Start Date',
             'start_date_helper'  => ' ',
             'end_date'           => 'End Date',

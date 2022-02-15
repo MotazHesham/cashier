@@ -336,7 +336,7 @@ return [
             'code'               => 'الكود',
             'code_helper'        => ' ',
             'discount'               => 'الخصم',
-            'discount_helper'        => 'بالنسبة المؤية',
+            'discount_helper'        => '',
             'start_date'         => 'تاريخ البداية',
             'start_date_helper'  => ' ',
             'end_date'           => 'تاريخ النهاية',
