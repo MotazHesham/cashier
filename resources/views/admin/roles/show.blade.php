@@ -36,8 +36,14 @@
                             {{ trans('cruds.role.fields.permissions') }}
                         </th>
                         <td>
-                            @foreach($role->permissions as $key => $permissions)
-                                <span class="label label-info">{{ $permissions->title }}</span>
+                            @foreach($role->permissions as $key => $permission)
+                                <span class="badge badge-info"> 
+                                    @if(app()->getLocale() == 'ar')
+                                        {{trans('global.permissions.'.$permission)}}
+                                    @else 
+                                        {{ $permission }}
+                                    @endif
+                                </span>
                             @endforeach
                         </td>
                     </tr>

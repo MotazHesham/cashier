@@ -1,3 +1,26 @@
+
+.action-buttons-view{ 
+    box-shadow: 0px 0px 7px #3399ff9e;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.action-buttons-edit{ 
+    box-shadow: 0px 0px 7px #2fc2a29e;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.action-buttons-delete{
+    box-shadow: 0px 0px 7px #d444639e;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+.action-buttons-ban{
+    box-shadow: 0px 0px 7px #f9b115;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
 .ck-editor__editable,
 textarea {
     min-height: 150px;

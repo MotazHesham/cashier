@@ -54,6 +54,11 @@ class ProductCategory extends Model implements HasMedia
         return $file;
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class,'category_id');
+    }
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

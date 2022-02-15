@@ -9,13 +9,25 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\VoucherCode;
+use App\Models\ProductCategory;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Session;
+use Alert;
 
 class OrdersController extends Controller
 {
+
+    public function print($id){
+        $order = Order::findOrFail($id);
+
+        $order->load('products.product'); 
+        
+        return view('admin.cashierModes.partials.print',compact('order'));
+    }
+
     public function index(Request $request)
     {
         abort_if(Gate::denies('order_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -34,12 +46,12 @@ class OrdersController extends Controller
                 $crudRoutePart = 'orders';
 
                 return view('partials.datatablesActions', compact(
-                'viewGate',
-                'editGate',
-                'deleteGate',
-                'crudRoutePart',
-                'row'
-            ));
+                    'viewGate',
+                    'editGate',
+                    'deleteGate',
+                    'crudRoutePart',
+                    'row'
+                ));
             });
 
             $table->editColumn('id', function ($row) {
@@ -50,17 +62,9 @@ class OrdersController extends Controller
             });
             $table->editColumn('total_cost', function ($row) {
                 return $row->total_cost ? $row->total_cost : '';
-            });
-            $table->editColumn('products', function ($row) {
-                $labels = [];
-                foreach ($row->products as $product) {
-                    $labels[] = sprintf('<span class="label label-info label-many">%s</span>', $product->name);
-                }
+            }); 
 
-                return implode(' ', $labels);
-            });
-
-            $table->rawColumns(['actions', 'placeholder', 'products']);
+            $table->rawColumns(['actions', 'placeholder']);
 
             return $table->make(true);
         }
@@ -89,15 +93,18 @@ class OrdersController extends Controller
 
     public function edit(Order $order)
     {
-        abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');  
 
-        $voucher_codes = VoucherCode::pluck('code', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $order->load('voucher_code', 'products.product', 'created_by');
 
-        $products = Product::pluck('name', 'id');
+        $now_date = date('Y-m-d',strtotime('now'));  
 
-        $order->load('voucher_code', 'products', 'created_by');
+        $categories = ProductCategory::with('products.attributeProduct')->get();
+        $vouchercodes = VoucherCode::where('start_date','<=',$now_date)->where('end_date','>=',$now_date)->get();
 
-        return view('admin.orders.edit', compact('order', 'products', 'voucher_codes'));
+        Session::put('counter', 0);
+
+        return view('admin.cashierModes.edit', compact('order', 'categories', 'vouchercodes'));
     }
 
     public function update(UpdateOrderRequest $request, Order $order)
@@ -121,9 +128,10 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $order->delete();
+        $order->delete(); 
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف الطلب بنجاح '); 
+        return 1;
     }
 
     public function massDestroy(MassDestroyOrderRequest $request)

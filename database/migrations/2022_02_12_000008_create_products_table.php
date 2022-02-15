@@ -12,6 +12,8 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->longText('description')->nullable();
+            $table->longText('attributes')->default('[]');
+            $table->longText('attributes_options')->default('[]');
             $table->decimal('price', 15, 2)->nullable();
             $table->string('status')->nullable();
             $table->timestamps();

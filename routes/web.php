@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('products/ckmedia', 'ProductController@storeCKEditorImages')->name('products.storeCKEditorImages');
     Route::post('products/parse-csv-import', 'ProductController@parseCsvImport')->name('products.parseCsvImport');
     Route::post('products/process-csv-import', 'ProductController@processCsvImport')->name('products.processCsvImport');
+    Route::any('products/attribute_combination', 'ProductController@attribute_combination')->name('products.attribute_combination');
     Route::resource('products', 'ProductController');
 
     // Audit Logs
@@ -83,16 +84,27 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Orders
     Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
+    Route::get('orders/print/{id}', 'OrdersController@print')->name('orders.print');
     Route::resource('orders', 'OrdersController');
 
     // Cashier Mode
     Route::delete('cashier-modes/destroy', 'CashierModeController@massDestroy')->name('cashier-modes.massDestroy');
-    Route::resource('cashier-modes', 'CashierModeController');
+    Route::post('cashier-modes/add_product', 'CashierModeController@add_product')->name('cashier-modes.add_product');
+    Route::get('cashier-modes', 'CashierModeController@index')->name('cashier-modes.index');
+    Route::post('cashier-modes/store', 'CashierModeController@store')->name('cashier-modes.store');
+    Route::post('cashier-modes/update', 'CashierModeController@update')->name('cashier-modes.update');
+    Route::get('cashier-modes/edit', 'CashierModeController@edit')->name('cashier-modes.edit');
 
     // Voucher Codes
     Route::delete('voucher-codes/destroy', 'VoucherCodesController@massDestroy')->name('voucher-codes.massDestroy');
     Route::resource('voucher-codes', 'VoucherCodesController');
 
+    // General Settings
+    Route::delete('general-settings/destroy', 'GeneralSettingsController@massDestroy')->name('general-settings.massDestroy');
+    Route::post('general-settings/media', 'GeneralSettingsController@storeMedia')->name('general-settings.storeMedia');
+    Route::post('general-settings/ckmedia', 'GeneralSettingsController@storeCKEditorImages')->name('general-settings.storeCKEditorImages');
+    Route::resource('general-settings', 'GeneralSettingsController');
+    
     Route::get('global-search', 'GlobalSearchController@search')->name('globalSearch');
     Route::get('messenger', 'MessengerController@index')->name('messenger.index');
     Route::get('messenger/create', 'MessengerController@createTopic')->name('messenger.createTopic');

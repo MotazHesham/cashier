@@ -11,6 +11,7 @@ use App\Models\Role;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alert;
 
 class RolesController extends Controller
 {
@@ -37,6 +38,7 @@ class RolesController extends Controller
         $role = Role::create($request->all());
         $role->permissions()->sync($request->input('permissions', []));
 
+        Alert::success('تم بنجاح', 'تم إضافة المجموعة بنجاح ');
         return redirect()->route('admin.roles.index');
     }
 
@@ -44,6 +46,11 @@ class RolesController extends Controller
     {
         abort_if(Gate::denies('role_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        if($role->title == 1){ 
+            Alert::error('لايمكن تعديل هذه المجموعة');
+            return back();
+        }
+        
         $permissions = Permission::pluck('title', 'id');
 
         $role->load('permissions');
@@ -56,6 +63,7 @@ class RolesController extends Controller
         $role->update($request->all());
         $role->permissions()->sync($request->input('permissions', []));
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات المجموعة بنجاح ');
         return redirect()->route('admin.roles.index');
     }
 
@@ -72,9 +80,15 @@ class RolesController extends Controller
     {
         abort_if(Gate::denies('role_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        if($role->title == 1){ 
+            Alert::error('لايمكن حذف هذه المجموعة');
+            return back();
+        }
+
         $role->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف المجموعة بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyRoleRequest $request)

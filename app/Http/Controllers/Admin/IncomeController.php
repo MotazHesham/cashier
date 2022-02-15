@@ -13,6 +13,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
+use Alert;
 
 class IncomeController extends Controller
 {
@@ -48,6 +49,7 @@ class IncomeController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $income->id]);
         }
 
+        Alert::success('تم بنجاح', 'تم إضافة الأيراد بنجاح ');
         return redirect()->route('admin.incomes.index');
     }
 
@@ -77,6 +79,7 @@ class IncomeController extends Controller
             $income->photo->delete();
         }
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات الأيراد بنجاح ');
         return redirect()->route('admin.incomes.index');
     }
 
@@ -95,7 +98,8 @@ class IncomeController extends Controller
 
         $income->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف الأيراد بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyIncomeRequest $request)

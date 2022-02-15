@@ -11,6 +11,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Alert;
 
 class AttributesController extends Controller
 {
@@ -32,12 +33,12 @@ class AttributesController extends Controller
                 $crudRoutePart = 'attributes';
 
                 return view('partials.datatablesActions', compact(
-                'viewGate',
-                'editGate',
-                'deleteGate',
-                'crudRoutePart',
-                'row'
-            ));
+                    'viewGate',
+                    'editGate',
+                    'deleteGate',
+                    'crudRoutePart',
+                    'row'
+                ));
             });
 
             $table->editColumn('id', function ($row) {
@@ -72,6 +73,7 @@ class AttributesController extends Controller
     {
         $attribute = Attribute::create($request->all());
 
+        Alert::success('تم بنجاح', 'تم إضافة السمة بنجاح ');
         return redirect()->route('admin.attributes.index');
     }
 
@@ -86,6 +88,7 @@ class AttributesController extends Controller
     {
         $attribute->update($request->all());
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات السمة بنجاح ');
         return redirect()->route('admin.attributes.index');
     }
 
@@ -102,7 +105,8 @@ class AttributesController extends Controller
 
         $attribute->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف السمة بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyAttributeRequest $request)

@@ -13,6 +13,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
+use Alert;
 
 class ExpenseController extends Controller
 {
@@ -48,6 +49,7 @@ class ExpenseController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $expense->id]);
         }
 
+        Alert::success('تم بنجاح', 'تم إضافة المصروف بنجاح ');
         return redirect()->route('admin.expenses.index');
     }
 
@@ -77,6 +79,7 @@ class ExpenseController extends Controller
             $expense->photo->delete();
         }
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات المصروف بنجاح ');
         return redirect()->route('admin.expenses.index');
     }
 
@@ -95,7 +98,8 @@ class ExpenseController extends Controller
 
         $expense->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف المصروف بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyExpenseRequest $request)

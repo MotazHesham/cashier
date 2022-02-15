@@ -68,8 +68,9 @@
                             {{ trans('cruds.product.fields.attributes') }}
                         </th>
                         <td>
-                            @foreach($product->attributes as $key => $attributes)
-                                <span class="label label-info">{{ $attributes->attribute }}</span>
+                            @foreach($product->attributeProduct as $key => $row)
+                                <span class="badge badge-info">{{ $row->variant }} <span class="badge badge-success" style="font-size: 14px">{{ $row->price }}</span></span>
+                                
                             @endforeach
                         </td>
                     </tr>

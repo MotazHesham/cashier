@@ -10,6 +10,7 @@ use App\Models\ExpenseCategory;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alert;
 
 class ExpenseCategoryController extends Controller
 {
@@ -33,6 +34,7 @@ class ExpenseCategoryController extends Controller
     {
         $expenseCategory = ExpenseCategory::create($request->all());
 
+        Alert::success('تم بنجاح', 'تم إضافة تصنيف المصروف بنجاح ');
         return redirect()->route('admin.expense-categories.index');
     }
 
@@ -47,6 +49,7 @@ class ExpenseCategoryController extends Controller
     {
         $expenseCategory->update($request->all());
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات تصنيف المصروف بنجاح ');
         return redirect()->route('admin.expense-categories.index');
     }
 
@@ -63,7 +66,8 @@ class ExpenseCategoryController extends Controller
 
         $expenseCategory->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف تصنيف المصروف بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyExpenseCategoryRequest $request)

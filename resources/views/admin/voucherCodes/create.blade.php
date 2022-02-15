@@ -20,6 +20,16 @@
                 <span class="help-block">{{ trans('cruds.voucherCode.fields.code_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="discount">{{ trans('cruds.voucherCode.fields.discount') }}</label>
+                <input class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="number" name="discount" id="discount" value="{{ old('discount', '') }}" step="0.01">
+                @if($errors->has('discount'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('discount') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.voucherCode.fields.discount_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="description">{{ trans('cruds.voucherCode.fields.description') }}</label>
                 <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{{ old('description') }}</textarea>
                 @if($errors->has('description'))

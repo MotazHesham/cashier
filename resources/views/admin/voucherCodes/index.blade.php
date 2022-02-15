@@ -35,6 +35,9 @@
                             {{ trans('cruds.voucherCode.fields.end_date') }}
                         </th>
                         <th>
+                            {{ trans('cruds.voucherCode.fields.discount') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -58,25 +61,17 @@
                                 {{ $voucherCode->end_date ?? '' }}
                             </td>
                             <td>
-                                @can('voucher_code_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.voucher-codes.show', $voucherCode->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('voucher_code_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.voucher-codes.edit', $voucherCode->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('voucher_code_delete')
-                                    <form action="{{ route('admin.voucher-codes.destroy', $voucherCode->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
+                                {{ $voucherCode->discount ?? '' }}
+                            </td>
+                            <td>
+                                @include('partials.datatablesActions',
+                                    [
+                                        'viewGate' => 'voucher_code_show',
+                                        'editGate' => 'voucher_code_edit',
+                                        'deleteGate' => 'voucher_code_delete',
+                                        'crudRoutePart' =>'voucher-codes',
+                                        'row' => $voucherCode
+                                    ])   
 
                             </td>
 

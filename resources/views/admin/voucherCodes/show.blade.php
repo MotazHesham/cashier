@@ -33,6 +33,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.voucherCode.fields.discount') }}
+                        </th>
+                        <td>
+                            {{ $voucherCode->discount }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.voucherCode.fields.description') }}
                         </th>
                         <td>

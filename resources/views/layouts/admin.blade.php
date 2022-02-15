@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html @if(app()->getLocale() == 'ar') dir="rtl" @endif> 
 
 <head>
     <meta charset="UTF-8">
@@ -22,6 +22,20 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/css/perfect-scrollbar.min.css" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/bootstrap-tagsinput.css') }}" rel="stylesheet" />
+    @if(app()->getLocale() == 'ar')
+        <style>
+            .c-sidebar-nav .c-sidebar-nav-dropdown-items{
+            padding-right: 8%; 
+            }
+        </style>
+    @else
+        <style>
+            .c-sidebar-nav .c-sidebar-nav-dropdown-items{
+            padding-left: 8%; 
+            }
+        </style>
+    @endif 
     @yield('styles')
 </head>
 
@@ -119,6 +133,9 @@
             </form>
         </div>
     </div>
+    
+    @include('sweetalert::alert')
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -141,202 +158,306 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-tagsinput.js') }}"></script>
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+    
+    {{-- Sweet alert delete --}}
     <script>
-        $(function() {
-  let copyButtonTrans = '{{ trans('global.datatables.copy') }}'
-  let csvButtonTrans = '{{ trans('global.datatables.csv') }}'
-  let excelButtonTrans = '{{ trans('global.datatables.excel') }}'
-  let pdfButtonTrans = '{{ trans('global.datatables.pdf') }}'
-  let printButtonTrans = '{{ trans('global.datatables.print') }}'
-  let colvisButtonTrans = '{{ trans('global.datatables.colvis') }}'
-  let selectAllButtonTrans = '{{ trans('global.select_all') }}'
-  let selectNoneButtonTrans = '{{ trans('global.deselect_all') }}'
 
-  let languages = {
-    'en': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/English.json',
-        'ar': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json'
-  };
+        function showFrontendAlert(type, title, message){
+            swal({ 
+                title: title,
+                text: message,
+                type: type, 
+                showConfirmButton: 'Okay',
+                timer: 3000
+            });
+        }
 
-  $.extend(true, $.fn.dataTable.Buttons.defaults.dom.button, { className: 'btn' })
-  $.extend(true, $.fn.dataTable.defaults, {
-    language: {
-      url: languages['{{ app()->getLocale() }}']
-    },
-    columnDefs: [{
-        orderable: false,
-        className: 'select-checkbox',
-        targets: 0
-    }, {
-        orderable: false,
-        searchable: false,
-        targets: -1
-    }],
-    select: {
-      style:    'multi+shift',
-      selector: 'td:first-child'
-    },
-    order: [],
-    scrollX: true,
-    pageLength: 100,
-    dom: 'lBfrtip<"actions">',
-    buttons: [
-      {
-        extend: 'selectAll',
-        className: 'btn-primary',
-        text: selectAllButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        },
-        action: function(e, dt) {
-          e.preventDefault()
-          dt.rows().deselect();
-          dt.rows({ search: 'applied' }).select();
-        }
-      },
-      {
-        extend: 'selectNone',
-        className: 'btn-primary',
-        text: selectNoneButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'copy',
-        className: 'btn-default',
-        text: copyButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'csv',
-        className: 'btn-default',
-        text: csvButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'excel',
-        className: 'btn-default',
-        text: excelButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'pdf',
-        className: 'btn-default',
-        text: pdfButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'print',
-        className: 'btn-default',
-        text: printButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'colvis',
-        className: 'btn-default',
-        text: colvisButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      }
-    ]
-  });
+        function deleteConfirmation(route, div = null, partials = false) { 
+            swal({
+                title: "{{trans('global.flash.delete_')}}",
+                text: "{{trans('global.flash.sure_')}}",
+                type: "warning",
+                showCancelButton: !0,
+                confirmButtonText: "{{trans('global.flash.yes_')}}",
+                cancelButtonText: "{{trans('global.flash.no_')}}",
+                reverseButtons: !0
+            }).then(function (e) {
 
-  $.fn.dataTable.ext.classes.sPageButton = '';
-});
+                if (e.value === true) { 
+
+                    $.ajax({
+                        type: 'DELETE',
+                        url: route, 
+                        data: { _token: '{{ csrf_token() }}', partials: partials}, 
+                        success: function (results) { 
+                            if(div != null){ 
+                            showFrontendAlert('success', '{{trans('global.flash.deleted')}}', '');
+                            $(div).html(null);
+                            $(div).html(results);
+                            }else{
+                            location.reload(); 
+                            }
+                        }
+                    });
+
+                } else {
+                    e.dismiss;
+                }
+
+            }, function (dismiss) {
+                return false;
+            })
+        }
+    </script>
+    
+    {{-- attributes script --}}
+    <script> 
+        $('#attributes').on('change', function() {
+            $('#attribute_options').html(null);
+            $.each($("#attributes option:selected"), function(){
+                //console.log($(this).val());
+                add_more_attribute_options($(this).val(), $(this).text());
+            }); 
+        });
+
+        
+        function add_more_attribute_options(i, name){
+            var select = '<div class="row">';
+            select    +=    '<div class="col-md-4">';
+            select    +=        '<input type="hidden" name="attribute_num[]" value="'+i+'">';
+            select    +=        '<input type="text" class="form-control" name="attribute[]" value="'+name+'" placeholder="Attribute Title" readonly>';
+            select    +=    '</div>';
+            select    +=    '<div class="col-md-8">';
+            select    +=        '<input type="text" class="form-control" name="attributes_options_'+i+'[]" placeholder="Enter attribute values" data-role="tagsinput" onchange="update_attribute_combination()">';
+            select    +=    '</div>';
+            select    += '</div>';
+            
+            $('#attribute_options').append(select);
+
+            $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
+        }
+
+        function update_attribute_combination(){ 
+            $.ajax({
+                type:"POST",
+                url:'{{ route('admin.products.attribute_combination') }}',
+                data:$('#product-form').serialize(),
+                success: function(data){
+                    $('#attribute_combination').html(data); 
+                }
+            });
+        }
 
     </script>
+
+    {{-- datatables --}}
+    <script>
+        
+        $(function() {
+            let copyButtonTrans = '{{ trans('global.datatables.copy') }}'
+            let csvButtonTrans = '{{ trans('global.datatables.csv') }}'
+            let excelButtonTrans = '{{ trans('global.datatables.excel') }}'
+            let pdfButtonTrans = '{{ trans('global.datatables.pdf') }}'
+            let printButtonTrans = '{{ trans('global.datatables.print') }}'
+            let colvisButtonTrans = '{{ trans('global.datatables.colvis') }}'
+            let selectAllButtonTrans = '{{ trans('global.select_all') }}'
+            let selectNoneButtonTrans = '{{ trans('global.deselect_all') }}'
+
+            let languages = {
+                'en': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/English.json',
+                    'ar': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json'
+            };
+
+            $.extend(true, $.fn.dataTable.Buttons.defaults.dom.button, { className: 'btn' })
+            $.extend(true, $.fn.dataTable.defaults, {
+                language: {
+                url: languages['{{ app()->getLocale() }}']
+                },
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0
+                }, {
+                    orderable: false,
+                    searchable: false,
+                    targets: -1
+                }],
+                select: {
+                style:    'multi+shift',
+                selector: 'td:first-child'
+                },
+                order: [],
+                scrollX: true,
+                pageLength: 100,
+                dom: 'lBfrtip<"actions">',
+                buttons: [
+                {
+                    extend: 'selectAll',
+                    className: 'btn-primary',
+                    text: selectAllButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    },
+                    action: function(e, dt) {
+                    e.preventDefault()
+                    dt.rows().deselect();
+                    dt.rows({ search: 'applied' }).select();
+                    }
+                },
+                {
+                    extend: 'selectNone',
+                    className: 'btn-primary',
+                    text: selectNoneButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'copy',
+                    className: 'btn-default',
+                    text: copyButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'csv',
+                    className: 'btn-default',
+                    text: csvButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn-default',
+                    text: excelButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn-default',
+                    text: pdfButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'print',
+                    className: 'btn-default',
+                    text: printButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'colvis',
+                    className: 'btn-default',
+                    text: colvisButtonTrans,
+                    exportOptions: {
+                    columns: ':visible'
+                    }
+                }
+                ]
+            });
+
+            $.fn.dataTable.ext.classes.sPageButton = '';
+        });
+
+    </script>
+
+    {{-- notification --}}
     <script>
         $(document).ready(function () {
-    $(".notifications-menu").on('click', function () {
-        if (!$(this).hasClass('open')) {
-            $('.notifications-menu .label-warning').hide();
-            $.get('/admin/user-alerts/read');
-        }
-    });
-});
-
-    </script>
-    <script>
-        $(document).ready(function() {
-    $('.searchable-field').select2({
-        minimumInputLength: 3,
-        ajax: {
-            url: '{{ route("admin.globalSearch") }}',
-            dataType: 'json',
-            type: 'GET',
-            delay: 200,
-            data: function (term) {
-                return {
-                    search: term
-                };
-            },
-            results: function (data) {
-                return {
-                    data
-                };
-            }
-        },
-        escapeMarkup: function (markup) { return markup; },
-        templateResult: formatItem,
-        templateSelection: formatItemSelection,
-        placeholder : '{{ trans('global.search') }}...',
-        language: {
-            inputTooShort: function(args) {
-                var remainingChars = args.minimum - args.input.length;
-                var translation = '{{ trans('global.search_input_too_short') }}';
-
-                return translation.replace(':count', remainingChars);
-            },
-            errorLoading: function() {
-                return '{{ trans('global.results_could_not_be_loaded') }}';
-            },
-            searching: function() {
-                return '{{ trans('global.searching') }}';
-            },
-            noResults: function() {
-                return '{{ trans('global.no_results') }}';
-            },
-        }
-
-    });
-    function formatItem (item) {
-        if (item.loading) {
-            return '{{ trans('global.searching') }}...';
-        }
-        var markup = "<div class='searchable-link' href='" + item.url + "'>";
-        markup += "<div class='searchable-title'>" + item.model + "</div>";
-        $.each(item.fields, function(key, field) {
-            markup += "<div class='searchable-fields'>" + item.fields_formated[field] + " : " + item[field] + "</div>";
+            $(".notifications-menu").on('click', function () {
+                if (!$(this).hasClass('open')) {
+                    $('.notifications-menu .label-warning').hide();
+                    $.get('/admin/user-alerts/read');
+                }
+            });
         });
-        markup += "</div>";
-
-        return markup;
-    }
-
-    function formatItemSelection (item) {
-        if (!item.model) {
-            return '{{ trans('global.search') }}...';
-        }
-        return item.model;
-    }
-    $(document).delegate('.searchable-link', 'click', function() {
-        var url = $(this).attr('href');
-        window.location = url;
-    });
-});
 
     </script>
+
+    {{-- globalSearch --}}
+    <script>
+
+        $(document).ready(function() {
+            $('.searchable-field').select2({
+                minimumInputLength: 3,
+                ajax: {
+                    url: '{{ route("admin.globalSearch") }}',
+                    dataType: 'json',
+                    type: 'GET',
+                    delay: 200,
+                    data: function (term) {
+                        return {
+                            search: term
+                        };
+                    },
+                    results: function (data) {
+                        return {
+                            data
+                        };
+                    }
+                },
+                escapeMarkup: function (markup) { return markup; },
+                templateResult: formatItem,
+                templateSelection: formatItemSelection,
+                placeholder : '{{ trans('global.search') }}...',
+                language: {
+                    inputTooShort: function(args) {
+                        var remainingChars = args.minimum - args.input.length;
+                        var translation = '{{ trans('global.search_input_too_short') }}';
+
+                        return translation.replace(':count', remainingChars);
+                    },
+                    errorLoading: function() {
+                        return '{{ trans('global.results_could_not_be_loaded') }}';
+                    },
+                    searching: function() {
+                        return '{{ trans('global.searching') }}';
+                    },
+                    noResults: function() {
+                        return '{{ trans('global.no_results') }}';
+                    },
+                }
+
+            });
+            function formatItem (item) {
+                if (item.loading) {
+                    return '{{ trans('global.searching') }}...';
+                }
+                var markup = "<div class='searchable-link' href='" + item.url + "'>";
+                markup += "<div class='searchable-title'>" + item.model + "</div>";
+                $.each(item.fields, function(key, field) {
+                    markup += "<div class='searchable-fields'>" + item.fields_formated[field] + " : " + item[field] + "</div>";
+                });
+                markup += "</div>";
+
+                return markup;
+            }
+
+            function formatItemSelection (item) {
+                if (!item.model) {
+                    return '{{ trans('global.search') }}...';
+                }
+                return item.model;
+            }
+            $(document).delegate('.searchable-link', 'click', function() {
+                var url = $(this).attr('href');
+                window.location = url;
+            });
+        });
+
+    </script>
+
     @yield('scripts')
 </body>
 

@@ -30,14 +30,14 @@
                 </a>
                 <ul class="c-sidebar-nav-dropdown-items">
                     @can('permission_access')
-                        <li class="c-sidebar-nav-item">
+                        {{-- <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.permissions.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/permissions") || request()->is("admin/permissions/*") ? "c-active" : "" }}">
                                 <i class="fa-fw fas fa-unlock-alt c-sidebar-nav-icon">
 
                                 </i>
                                 {{ trans('cruds.permission.title') }}
                             </a>
-                        </li>
+                        </li> --}}
                     @endcan
                     @can('role_access')
                         <li class="c-sidebar-nav-item">
@@ -92,14 +92,14 @@
                 </a>
                 <ul class="c-sidebar-nav-dropdown-items">
                     @can('product_tag_access')
-                        <li class="c-sidebar-nav-item">
+                        {{-- <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.product-tags.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/product-tags") || request()->is("admin/product-tags/*") ? "c-active" : "" }}">
                                 <i class="fa-fw fas fa-folder c-sidebar-nav-icon">
 
                                 </i>
                                 {{ trans('cruds.productTag.title') }}
                             </a>
-                        </li>
+                        </li> --}}
                     @endcan
                     @can('product_category_access')
                         <li class="c-sidebar-nav-item">
@@ -224,6 +224,16 @@
                         </li>
                     @endcan
                 </ul>
+            </li>
+        @endcan
+        @can('general_setting_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.general-settings.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/general-settings") || request()->is("admin/general-settings/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-cog c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.generalSetting.title') }}
+                </a>
             </li>
         @endcan
         @php($unread = \App\Models\QaTopic::unreadCount())

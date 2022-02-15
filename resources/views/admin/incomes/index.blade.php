@@ -64,25 +64,14 @@
                                 {{ $income->description ?? '' }}
                             </td>
                             <td>
-                                @can('income_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.incomes.show', $income->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('income_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.incomes.edit', $income->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('income_delete')
-                                    <form action="{{ route('admin.incomes.destroy', $income->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
+                                @include('partials.datatablesActions',
+                                    [
+                                        'viewGate' => 'income_show',
+                                        'editGate' => 'income_edit',
+                                        'deleteGate' => 'income_delete',
+                                        'crudRoutePart' =>'incomes',
+                                        'row' => $income
+                                    ])     
 
                             </td>
 

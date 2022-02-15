@@ -32,6 +32,22 @@
                 </div>
             </div>
         </form>
+        <form method="get"> 
+            <div class="row">
+                <div class="col-3 form-group">
+                    <label class="control-label" for="start_date">بداية التاريخ</label> 
+                    <input class="form-control date {{ $errors->has('start_date') ? 'is-invalid' : '' }}" type="text" name="start_date" id="start_date" value="{{ $start_date ?? '' }}" required>
+                </div>
+                <div class="col-3 form-group">
+                    <label class="control-label" for="end_date">نهاية التاريخ</label>
+                    <input class="form-control date {{ $errors->has('end_date') ? 'is-invalid' : '' }}" type="text" name="end_date" id="end_date" value="{{ $end_date ?? '' }}" required>
+                </div>
+                <div class="col-4">
+                    <label class="control-label">&nbsp;</label><br>
+                    <button class="btn btn-primary" type="submit">{{ trans('global.filterDate') }}</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -56,6 +72,34 @@
                         <th>{{ trans('cruds.expenseReport.reports.profit') }}</th>
                         <td>{{ number_format($profit, 2) }}</td>
                     </tr>
+                </table>
+                <hr>
+                <h4 style="padding:15px">الطالبات المحذوفة</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <td>الطلب</td>
+                        <td>الأجمالي</td>
+                        <td>وقت الحذف</td> 
+                    </thead>
+                    <tbody>
+                        @foreach($trashedOrdersIncomes as $trash_order)
+                            <tr>
+                                <td>
+                                    {{ $trash_order->code }}
+                                </td>
+                                <td>
+                                    {{ $trash_order->total_cost }}
+                                </td>
+                                <td>
+                                    {{ $trash_order->deleted_at ? Carbon\Carbon::parse($trash_order->deleted_at)->format(config('panel.date_format') . ' ' .config('panel.time_format')) : null }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tr>
+                        <th>{{ trans('cruds.order.fields.total_cost') }}</th>
+                        <td colspan="2">{{ number_format($trashedOrdersTotal, 2) }}</td>
+                    </tr> 
                 </table>
             </div>
             <div class="col">

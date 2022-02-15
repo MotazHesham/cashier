@@ -11,23 +11,45 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Attribute;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\AttributeProduct;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Alert;
 
 class ProductController extends Controller
 {
     use MediaUploadingTrait;
-    use CsvImportTrait;
+    use CsvImportTrait; 
+
+    public function attribute_combination(Request $request){ 
+        $combinations = array(); 
+
+        if($request->has('attribute_num')){
+            foreach ($request->attribute_num as $key => $num) {
+                $name = 'attributes_options_'.$num;
+                $my_str = implode('', $request[$name]);
+                array_push($combinations, explode(',', $my_str));
+            }
+        } 
+
+        if($request->has('product_id')){ 
+            $product = Product::find($request->product_id);
+            $product->load('attributeProduct');
+        }else{
+            $product = null;
+        }
+        return view('admin.products.partials.attribute_combination', compact('combinations','product')); 
+    } 
 
     public function index(Request $request)
     {
         abort_if(Gate::denies('product_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Product::with(['category', 'attributes'])->select(sprintf('%s.*', (new Product())->table));
+            $query = Product::with(['category', 'attributeProduct'])->select(sprintf('%s.*', (new Product())->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -40,12 +62,12 @@ class ProductController extends Controller
                 $crudRoutePart = 'products';
 
                 return view('partials.datatablesActions', compact(
-                'viewGate',
-                'editGate',
-                'deleteGate',
-                'crudRoutePart',
-                'row'
-            ));
+                    'viewGate',
+                    'editGate',
+                    'deleteGate',
+                    'crudRoutePart',
+                    'row'
+                ));
             });
 
             $table->editColumn('id', function ($row) {
@@ -67,10 +89,10 @@ class ProductController extends Controller
             $table->editColumn('photo', function ($row) {
                 if ($photo = $row->photo) {
                     return sprintf(
-        '<a href="%s" target="_blank"><img src="%s" width="50px" height="50px"></a>',
-        $photo->url,
-        $photo->thumbnail
-    );
+                        '<a href="%s" target="_blank"><img src="%s" width="50px" height="50px"></a>',
+                        $photo->url,
+                        $photo->thumbnail
+                    );
                 }
 
                 return '';
@@ -96,9 +118,48 @@ class ProductController extends Controller
     }
 
     public function store(StoreProductRequest $request)
-    {
-        $product = Product::create($request->all());
-        $product->attributes()->sync($request->input('attributes', []));
+    { 
+        $validated_request = $request->all();
+        
+        $attributes_options = array();
+
+        if($request->has('attribute_num')){
+            foreach ($validated_request['attribute_num'] as $key => $num) {
+                $str = 'attributes_options_'.$num;
+
+                $item['attribute_id'] = $num;
+                $item['values'] = explode(',', implode('|', $request[$str]));
+
+                array_push($attributes_options, $item);
+            }
+        }
+
+        if (!empty($request->attribute_num)){
+            $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
+        }else{
+            $validated_request['attributes'] = json_encode(array());
+        }
+
+        $validated_request['attributes_options'] = json_encode($attributes_options); 
+
+        $product = Product::create($validated_request);
+        
+        if($request->has('attribute_num')){
+            foreach ($validated_request['attribute_num'] as $key => $num) {  
+
+                $str = explode(',', implode('|', $request['attributes_options_'.$num]));
+
+                foreach($str as $variant){ 
+                    $attribute_product = AttributeProduct::create([
+                        'attribute_id' => $num,
+                        'product_id' => $product->id,
+                        'variant' => $variant,
+                        'price' => $validated_request['extra_price_'.$variant],
+                    ]);
+                } 
+            }
+        }
+
         if ($request->input('photo', false)) {
             $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
         }
@@ -107,6 +168,7 @@ class ProductController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $product->id]);
         }
 
+        Alert::success('تم بنجاح', 'تم إضافة المنتج بنجاح ');
         return redirect()->route('admin.products.index');
     }
 
@@ -118,15 +180,61 @@ class ProductController extends Controller
 
         $attributes = Attribute::pluck('attribute', 'id');
 
-        $product->load('category', 'attributes');
-
+        $product->load('category', 'attributeProduct');
+        
         return view('admin.products.edit', compact('attributes', 'categories', 'product'));
     }
 
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->all());
-        $product->attributes()->sync($request->input('attributes', []));
+        
+        $validated_request = $request->all();
+
+        $attributes_options = array();
+
+        if($request->has('attribute_num')){
+            foreach ($validated_request['attribute_num'] as $key => $num) {
+                $str = 'attributes_options_'.$num;
+
+                $item['attribute_id'] = $num;
+                $item['values'] = explode(',', implode('|', $request[$str]));
+
+                array_push($attributes_options, $item);
+            }
+        }
+
+        if (!empty($request->attribute_num)){
+            $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
+        }else{
+            $validated_request['attributes'] = json_encode(array());
+        }
+
+        $validated_request['attributes_options'] = json_encode($attributes_options); 
+        
+        $product->update($validated_request);
+        
+        if($request->has('attribute_num')){
+            
+            foreach($product->attributeProduct as $row){
+                $row->delete();
+            }
+
+            foreach ($validated_request['attribute_num'] as $key => $num) { 
+
+                $str = explode(',', implode('|', $request['attributes_options_'.$num]));
+
+                foreach($str as $variant){ 
+                    $attribute_product = AttributeProduct::create([
+                        'attribute_id' => $num,
+                        'product_id' => $product->id,
+                        'variant' => $variant,
+                        'price' => $validated_request['extra_price_'.$variant],
+                    ]);
+                } 
+            }
+        }
+
+        
         if ($request->input('photo', false)) {
             if (!$product->photo || $request->input('photo') !== $product->photo->file_name) {
                 if ($product->photo) {
@@ -138,6 +246,7 @@ class ProductController extends Controller
             $product->photo->delete();
         }
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات المنتج بنجاح ');
         return redirect()->route('admin.products.index');
     }
 
@@ -145,7 +254,7 @@ class ProductController extends Controller
     {
         abort_if(Gate::denies('product_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $product->load('category', 'attributes');
+        $product->load('category', 'attributeProduct');
 
         return view('admin.products.show', compact('product'));
     }
@@ -156,7 +265,8 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف المنتج بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyProductRequest $request)

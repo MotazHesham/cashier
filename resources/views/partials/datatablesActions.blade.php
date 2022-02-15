@@ -1,17 +1,20 @@
+
+@if($crudRoutePart == 'orders')
+    <a href="{{ route('admin.' . $crudRoutePart . '.print', $row->id) }}" target="_blank" class="btn btn-outline-dark btn-pill action-buttons-print"  title="{{ trans('global.datatables.print') }}"><i  class="fas fa-print actions-custom-i"></i></a>
+@endif
 @can($viewGate)
-    <a class="btn btn-xs btn-primary" href="{{ route('admin.' . $crudRoutePart . '.show', $row->id) }}">
-        {{ trans('global.view') }}
+    <a class="btn btn-outline-info btn-pill action-buttons-view" href="{{ route('admin.' . $crudRoutePart . '.show', $row->id) }}">
+        <i  class="fas fa-eye actions-custom-i"></i>
     </a>
 @endcan
 @can($editGate)
-    <a class="btn btn-xs btn-info" href="{{ route('admin.' . $crudRoutePart . '.edit', $row->id) }}">
-        {{ trans('global.edit') }}
+    <a class="btn btn-outline-success btn-pill action-buttons-edit" href="{{ route('admin.' . $crudRoutePart . '.edit', $row->id) }}">
+        <i  class="fa fa-edit actions-custom-i"></i>
     </a>
 @endcan
-@can($deleteGate)
-    <form action="{{ route('admin.' . $crudRoutePart . '.destroy', $row->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-        <input type="hidden" name="_method" value="DELETE">
-        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-    </form>
+@can($deleteGate) 
+    <?php $route = route('admin.' . $crudRoutePart . '.destroy', $row->id); ?>
+    <a  href="#" onclick="deleteConfirmation('{{$route}}')" class="btn btn-outline-danger btn-pill action-buttons-delete">
+        <i  class="fa fa-trash actions-custom-i"></i>
+    </a>  
 @endcan

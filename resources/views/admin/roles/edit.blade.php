@@ -28,7 +28,13 @@
                 </div>
                 <select class="form-control select2 {{ $errors->has('permissions') ? 'is-invalid' : '' }}" name="permissions[]" id="permissions" multiple required>
                     @foreach($permissions as $id => $permission)
-                        <option value="{{ $id }}" {{ (in_array($id, old('permissions', [])) || $role->permissions->contains($id)) ? 'selected' : '' }}>{{ $permission }}</option>
+                        <option value="{{ $id }}" {{ (in_array($id, old('permissions', [])) || $role->permissions->contains($id)) ? 'selected' : '' }}> 
+                            @if(app()->getLocale() == 'ar')
+                                {{trans('global.permissions.'.$permission)}}
+                            @else 
+                                {{ $permission }}
+                            @endif
+                        </option>
                     @endforeach
                 </select>
                 @if($errors->has('permissions'))

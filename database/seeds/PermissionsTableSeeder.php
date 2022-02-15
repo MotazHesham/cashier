@@ -346,6 +346,26 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 85,
+                'title' => 'general_setting_create',
+            ],
+            [
+                'id'    => 86,
+                'title' => 'general_setting_edit',
+            ],
+            [
+                'id'    => 87,
+                'title' => 'general_setting_show',
+            ],
+            [
+                'id'    => 88,
+                'title' => 'general_setting_delete',
+            ],
+            [
+                'id'    => 89,
+                'title' => 'general_setting_access',
+            ],
+            [
+                'id'    => 90,
                 'title' => 'profile_password_edit',
             ],
         ];

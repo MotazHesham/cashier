@@ -7,6 +7,7 @@ use App\Traits\Auditable;
 use App\Traits\MultiTenantModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Order extends Model
 {
@@ -24,7 +25,9 @@ class Order extends Model
 
     protected $fillable = [
         'code',
+        'entry_date',
         'paid_up',
+        'discount',
         'total_cost',
         'voucher_code_id',
         'created_by_id',
@@ -37,10 +40,14 @@ class Order extends Model
     {
         return $this->belongsTo(VoucherCode::class, 'voucher_code_id');
     }
+    public function getCreatedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format') . ' ' .config('panel.time_format')) : null;
+    }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(OrderProduct::class);
     }
 
     public function created_by()

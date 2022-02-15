@@ -9,10 +9,13 @@ class CreateAttributeProductPivotTable extends Migration
     public function up()
     {
         Schema::create('attribute_product', function (Blueprint $table) {
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id', 'product_id_fk_5945050')->references('id')->on('products')->onDelete('cascade');
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('attribute_id');
-            $table->foreign('attribute_id', 'attribute_id_fk_5945050')->references('id')->on('attributes')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id', 'product_id_fk_5945050')->references('id')->on('products')->onDelete('cascade'); 
+            $table->string('variant');
+            $table->decimal('price', 15, 2)->nullable();
+            $table->timestamps();
         });
     }
 }

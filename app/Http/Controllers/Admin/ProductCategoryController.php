@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Alert;
 
 class ProductCategoryController extends Controller
 {
@@ -58,10 +59,10 @@ class ProductCategoryController extends Controller
             $table->editColumn('photo', function ($row) {
                 if ($photo = $row->photo) {
                     return sprintf(
-        '<a href="%s" target="_blank"><img src="%s" width="50px" height="50px"></a>',
-        $photo->url,
-        $photo->thumbnail
-    );
+                        '<a href="%s" target="_blank"><img src="%s" width="50px" height="50px"></a>',
+                        $photo->url,
+                        $photo->thumbnail
+                    );
                 }
 
                 return '';
@@ -94,6 +95,7 @@ class ProductCategoryController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $productCategory->id]);
         }
 
+        Alert::success('تم بنجاح', 'تم إضافة الفئة بنجاح ');
         return redirect()->route('admin.product-categories.index');
     }
 
@@ -119,6 +121,7 @@ class ProductCategoryController extends Controller
             $productCategory->photo->delete();
         }
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات الفئة بنجاح ');
         return redirect()->route('admin.product-categories.index');
     }
 
@@ -135,7 +138,8 @@ class ProductCategoryController extends Controller
 
         $productCategory->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف الفئة بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyProductCategoryRequest $request)

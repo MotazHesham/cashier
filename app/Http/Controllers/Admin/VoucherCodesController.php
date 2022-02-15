@@ -10,6 +10,7 @@ use App\Models\VoucherCode;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alert;
 
 class VoucherCodesController extends Controller
 {
@@ -33,6 +34,7 @@ class VoucherCodesController extends Controller
     {
         $voucherCode = VoucherCode::create($request->all());
 
+        Alert::success('تم بنجاح', 'تم إضافة كود الخصم بنجاح ');
         return redirect()->route('admin.voucher-codes.index');
     }
 
@@ -47,6 +49,7 @@ class VoucherCodesController extends Controller
     {
         $voucherCode->update($request->all());
 
+        Alert::success('تم بنجاح', 'تم تعديل بيانات كود الخصم بنجاح ');
         return redirect()->route('admin.voucher-codes.index');
     }
 
@@ -65,7 +68,8 @@ class VoucherCodesController extends Controller
 
         $voucherCode->delete();
 
-        return back();
+        Alert::success('تم بنجاح', 'تم  حذف كود الخصم بنجاح ');
+        return 1;
     }
 
     public function massDestroy(MassDestroyVoucherCodeRequest $request)

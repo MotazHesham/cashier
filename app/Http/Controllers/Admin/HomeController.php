@@ -127,7 +127,7 @@ class HomeController
             'aggregate_field'       => 'amount',
             'filter_field'          => 'created_at',
             'group_by_field_format' => 'd/m/Y',
-            'column_class'          => 'col-md-6',
+            'column_class'          => 'col-md-8',
             'entries_number'        => '5',
             'translation_key'       => 'expense',
         ];
@@ -142,7 +142,7 @@ class HomeController
             'group_by_field'     => 'code',
             'aggregate_function' => 'count',
             'filter_field'       => 'created_at',
-            'column_class'       => 'col-md-6',
+            'column_class'       => 'col-md-4',
             'entries_number'     => '5',
             'relationship_name'  => 'voucher_code',
             'translation_key'    => 'order',
