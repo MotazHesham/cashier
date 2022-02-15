@@ -95,8 +95,7 @@ class CashierModeController extends Controller
             }
         // ----------------------
         
-        $voucher_code = VoucherCode::find($request->voucher_code_id);
-        $discount = $voucher_code->discount ?? 0;
+        
         $order = Order::create([
             'code' => $code,
             'entry_date' => date('Y-m-d',strtotime('now')),
@@ -138,9 +137,15 @@ class CashierModeController extends Controller
             
             $order_total_cost += ($total_cost + $extra_price);
         }
-        if($request->voucher_code_id != null && $discount != 0){
-            $discount = $order_total_cost * ($discount /100);
-            $order->total_cost = $order_total_cost - $discount;
+        $voucher_code = VoucherCode::find($request->voucher_code_id);
+        $discount = $voucher_code->discount;
+        if($request->voucher_code_id != null && $voucher_code && $discount != 0){
+            if($voucher_code->type == 'percentage'){
+                $discount = $order_total_cost * ($discount /100);
+                $order->total_cost = $order_total_cost - $discount;
+            }else{
+                $order->total_cost = $order_total_cost - $discount;
+            }
             $order->discount = $discount;
         }else{
             $order->total_cost = $order_total_cost;
@@ -161,8 +166,6 @@ class CashierModeController extends Controller
             $order_product->delete();
         }
 
-        $voucher_code = VoucherCode::find($request->voucher_code_id);
-        $discount = $voucher_code->discount ?? 0;
         $order_total_cost = 0;
         
         foreach($request->products as $key => $selected_product){
@@ -197,9 +200,16 @@ class CashierModeController extends Controller
             
             $order_total_cost += ($total_cost + $extra_price);
         }
-        if($request->voucher_code_id != null && $discount != 0){
-            $discount = $order_total_cost * ($discount /100);
-            $order->total_cost = $order_total_cost - $discount;
+
+        $voucher_code = VoucherCode::find($request->voucher_code_id);
+        $discount = $voucher_code->discount;
+        if($request->voucher_code_id != null && $voucher_code && $discount != 0){
+            if($voucher_code->type == 'percentage'){
+                $discount = $order_total_cost * ($discount /100);
+                $order->total_cost = $order_total_cost - $discount;
+            }else{
+                $order->total_cost = $order_total_cost - $discount;
+            }
             $order->discount = $discount;
         }else{
             $order->total_cost = $order_total_cost;

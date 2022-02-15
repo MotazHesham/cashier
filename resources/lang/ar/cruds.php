@@ -349,6 +349,8 @@ return [
             'deleted_at_helper'  => ' ',
             'description'        => 'الوصف',
             'description_helper' => ' ',
+            'type'               => 'النوع',
+            'type_helper'        => 'بالجنيه / بالنسبة المؤية',
         ],
     ],
     'generalSetting' => [

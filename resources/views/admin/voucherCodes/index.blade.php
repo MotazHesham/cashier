@@ -35,6 +35,9 @@
                             {{ trans('cruds.voucherCode.fields.end_date') }}
                         </th>
                         <th>
+                            {{ trans('cruds.voucherCode.fields.type') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.voucherCode.fields.discount') }}
                         </th>
                         <th>
@@ -59,6 +62,9 @@
                             </td>
                             <td>
                                 {{ $voucherCode->end_date ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\VoucherCode::TYPE_RADIO[$voucherCode->type] ?? '' }}
                             </td>
                             <td>
                                 {{ $voucherCode->discount ?? '' }}

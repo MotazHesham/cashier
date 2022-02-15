@@ -349,6 +349,8 @@ return [
             'deleted_at_helper'  => ' ',
             'description'        => 'Description',
             'description_helper' => ' ',
+            'type'               => 'Type',
+            'type_helper'        => 'Precentage or Pound',
         ],
     ],
     'generalSetting' => [

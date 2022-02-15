@@ -30,6 +30,9 @@ class StoreVoucherCodeRequest extends FormRequest
                 'required',
                 'date_format:' . config('panel.date_format'),
             ],
+            'type' => [
+                'required',
+            ],
         ];
     }
 }

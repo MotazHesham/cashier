@@ -30,6 +30,21 @@
                 <span class="help-block">{{ trans('cruds.voucherCode.fields.discount_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required">{{ trans('cruds.voucherCode.fields.type') }}</label>
+                @foreach(App\Models\VoucherCode::TYPE_RADIO as $key => $label)
+                    <div class="form-check {{ $errors->has('type') ? 'is-invalid' : '' }}">
+                        <input class="form-check-input" type="radio" id="type_{{ $key }}" name="type" value="{{ $key }}" {{ old('type', 'percentage') === (string) $key ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="type_{{ $key }}">{{ $label }}</label>
+                    </div>
+                @endforeach
+                @if($errors->has('type'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('type') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.voucherCode.fields.type_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="description">{{ trans('cruds.voucherCode.fields.description') }}</label>
                 <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{{ old('description') }}</textarea>
                 @if($errors->has('description'))

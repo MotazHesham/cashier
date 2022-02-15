@@ -15,6 +15,11 @@ class VoucherCode extends Model
 
     public $table = 'voucher_codes';
 
+    public const TYPE_RADIO = [
+        'percentage' => 'Percentage',
+        'flat'       => 'Flat',
+    ];
+    
     protected $dates = [
         'start_date',
         'end_date',
@@ -26,6 +31,7 @@ class VoucherCode extends Model
     protected $fillable = [
         'code',
         'discount',
+        'type',
         'description',
         'start_date',
         'end_date',
