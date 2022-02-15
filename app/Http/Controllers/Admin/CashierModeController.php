@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\VoucherCode;
 use App\Models\AttributeProduct; 
 use Session;
+use Carbon\Carbon;
 use Alert;
 
 class CashierModeController extends Controller
@@ -47,6 +48,17 @@ class CashierModeController extends Controller
         $vouchercodes = VoucherCode::where('start_date','<=',$now_date)->where('end_date','>=',$now_date)->get();
 
         Session::put('counter', 0);
+
+
+        $isAdmin = auth()->user()->roles->contains(1);
+
+        if (!$isAdmin) {
+            $created_at = Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $order->created_at)->format('Y-m-d H:i:s');
+            if(Carbon::parse($created_at)->addMinutes(10)->isPast()){ 
+                Alert::warning('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للتعديل برجاء التواصل مع الأدمن لتنفيذ الأمر '); 
+                return redirect()->route('admin.cashier-modes.index');
+            }
+        }
 
         return view('admin.cashierModes.edit',compact('order','categories','vouchercodes'));
     }

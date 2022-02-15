@@ -48,7 +48,8 @@
                                     <input style="width: 55px;text-align:center" type="number" class="form-control" min="1"
                                         step="1" name="products[{{ Session::get('counter') }}][quantity]"
                                         value="{{ $order_product->quantity }}"
-                                        onkeyup="change_quantity(this,{{ Session::get('counter') }},{{ $product_cost_with_extra }})" required>
+                                        onkeyup="change_quantity(this,{{ Session::get('counter') }},{{ $product_cost_with_extra }})"
+                                        required>
                                 </td>
                                 <td id="receipt-product-cost-{{ Session::get('counter') }}" class="receipt-product-cost">
                                     {{ $product_cost_with_extra * $order_product->quantity }}
@@ -117,26 +118,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            @can('order_edit')
-                                <div class="d-grid gap-2 mt-3 mb-2">
-                                    <button class="btn btn-success btn-block" type="submit"
-                                        style="background: var(--payment-color);border-color:var(--payment-color)">
-                                        تحديث
-                                    </button>
-                                </div>
-                            @endcan
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-grid gap-2 mt-3 mb-2">
-                                @can('order_delete')
-                                    <button class="btn btn-outline-danger btn-block" type="submit">
-                                        حذف
-                                    </button>
-                                </div>
-                            @endcan
-                        </div>
+                    <div class="d-grid gap-2 mt-3 mb-2">
+                        @can('order_edit')
+                            <button class="btn btn-success btn-block" type="submit"
+                                style="background: var(--payment-color);border-color:var(--payment-color)">
+                                تحديث
+                            </button>
+                        @endcan
                     </div>
                 </div>
             </div>

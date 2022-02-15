@@ -96,23 +96,15 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');  
 
-        $order->load('voucher_code', 'products.product', 'created_by');
+        // $order->load('voucher_code', 'products.product', 'created_by');
 
-        $now_date = date('Y-m-d',strtotime('now'));  
+        // $now_date = date('Y-m-d',strtotime('now'));  
 
-        $categories = ProductCategory::with('products.attributeProduct')->get();
-        $vouchercodes = VoucherCode::where('start_date','<=',$now_date)->where('end_date','>=',$now_date)->get();
+        // $categories = ProductCategory::with('products.attributeProduct')->get();
+        // $vouchercodes = VoucherCode::where('start_date','<=',$now_date)->where('end_date','>=',$now_date)->get();
 
-        Session::put('counter', 0);
-
-        $isAdmin = auth()->user()->roles->contains(1);
-
-        if (!$isAdmin) {
-            if(Carbon::parse($order->created_at)->addMinutes(10)->isPast()){ 
-                Alert::success('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للتعديل برجاء التواصل مع الأدمن لتنفيذ الأمر '); 
-                return back();
-            }
-        }
+        // Session::put('counter', 0);
+        
         return view('admin.cashierModes.edit', compact('order', 'categories', 'vouchercodes'));
     }
 
@@ -140,8 +132,9 @@ class OrdersController extends Controller
         $isAdmin = auth()->user()->roles->contains(1);
 
         if (!$isAdmin) {
-            if(Carbon::parse($order->created_at)->addMinutes(15)->isPast()){ 
-                Alert::success('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للمسح برجاء التواصل مع الأدمن لتنفيذ الأمر '); 
+            $created_at = Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $order->created_at)->format('Y-m-d H:i:s');
+            if(Carbon::parse($created_at)->addMinutes(15)->isPast()){ 
+                Alert::warning('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للمسح برجاء التواصل مع الأدمن لتنفيذ الأمر '); 
                 return 1;
             }
         }
