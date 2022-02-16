@@ -112,9 +112,11 @@
         <div style="padding: 20px; border: 1px solid black; width: fit-content; border-radius: 10px;">
             <span>{{ $order->total_cost }} LE</span> :الأجمالي 
         </div>
-        <div style="padding: 8px 20px;">
-            <span>{{ $order->discount }} LE</span> :الخصم  
-        </div>
+        @if($order->discount)
+            <div style="padding: 8px 20px;">
+                <span>{{ $order->discount }} LE</span> :الخصم  
+            </div>
+        @endif
         <div style="padding: 8px 20px;">
             <span>{{ $order->paid_up }} LE</span> :المدفوع  
         </div>
