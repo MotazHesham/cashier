@@ -95,7 +95,10 @@ class CashierModeController extends Controller
             }
         // ----------------------
         
-        
+        if(!$request->has('products')){
+            Alert::error('حدث خطأ','من فضلك اختر منتج أولا');
+            return redirect()->route('admin.cashier-modes.index');
+        }
         $order = Order::create([
             'code' => $code,
             'entry_date' => date('Y-m-d',strtotime('now')),
@@ -138,7 +141,7 @@ class CashierModeController extends Controller
             $order_total_cost += ($total_cost + $extra_price);
         }
         $voucher_code = VoucherCode::find($request->voucher_code_id);
-        $discount = $voucher_code->discount;
+        $discount = $voucher_code->discount ?? 0;
         if($request->voucher_code_id != null && $voucher_code && $discount != 0){
             if($voucher_code->type == 'percentage'){
                 $discount = $order_total_cost * ($discount /100);
