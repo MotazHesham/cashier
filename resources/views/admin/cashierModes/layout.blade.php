@@ -166,7 +166,7 @@
                                                 $attribute = \App\Models\Attribute::find($attribute_option->attribute_id);
                                             @endphp
                                             <div class="col-md-6">
-                                                <div class="card-body attribute">
+                                                <div class="card-body attribute;flex-wrap: wrap;">
                                                     <p class="card-text">{{ $attribute->attribute ?? '' }}</p>
                                                     <span style="display: flex">
                                                         @foreach ($attribute_option->values as $key2 => $value)
