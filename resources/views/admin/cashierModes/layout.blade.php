@@ -166,9 +166,9 @@
                                                 $attribute = \App\Models\Attribute::find($attribute_option->attribute_id);
                                             @endphp
                                             <div class="col-md-6">
-                                                <div class="card-body attribute;flex-wrap: wrap;">
+                                                <div class="card-body attribute;">
                                                     <p class="card-text">{{ $attribute->attribute ?? '' }}</p>
-                                                    <span style="display: flex">
+                                                    <span style="display: flex;flex-wrap: wrap;">
                                                         @foreach ($attribute_option->values as $key2 => $value)
                                                             <input
                                                                 @if ($attribute && $attribute->type == 'single') 
