@@ -42,7 +42,7 @@
         }
 
         .btn-light {
-            background-color:#ECF0FA;
+            background-color: #ECF0FA;
         }
 
         .payment-type {
@@ -52,17 +52,17 @@
             border-radius: 15px;
             cursor: pointer;
             width: 150px
-        } 
+        }
 
-        body{
+        body {
             font-family: system-ui;
-        } 
-        
+        }
+
     </style>
 </head>
 
 <body id="body-pd" class="body-pd" onafterprint="go_full_screen();">
-    
+
     <header class="header body-pd" id="header">
         <div class="header_toggle">
             <div class="nav-items">
@@ -85,8 +85,9 @@
                     <span class="nav_name">Expand</span>
                 </a>
                 <a class="btn btn-lg btn-light" style="border-radius: 35px;position:absolute;right:0">
-                    <form action="{{ route('admin.cashier-modes.edit')}}">
-                        <input style="border-radius: 35px" type="text" class="form-control" name="code" value="{{ date('Ymd',strtotime('now')) }}-" id="">
+                    <form action="{{ route('admin.cashier-modes.edit') }}">
+                        <input style="border-radius: 35px" type="text" class="form-control" name="code"
+                            value="{{ date('Ymd', strtotime('now')) }}-" id="">
                     </form>
                 </a>
             </div>
@@ -96,14 +97,14 @@
         $setting = \App\Models\GeneralSetting::first();
     @endphp
     <div class="l-navbar navbar-show partials-scrollable" style="max-height: 100%" id="nav-bar">
-        <h3 class="text-center">{{ $setting->website_title ?? ''}}</h3>
-        <hr>   
-        
-        @yield('content') 
+        <h3 class="text-center">{{ $setting->website_title ?? '' }}</h3>
+        <hr>
+
+        @yield('content')
     </div>
 
     <!--Container Main start-->
-    <div>
+    <div class="accordion" id="accordionExample">
         <div class="owl-carousel owl-slider-custom ">
             @foreach ($categories as $category)
                 @php
@@ -113,19 +114,19 @@
                         $category_image = asset('noimage.jpg');
                     }
                 @endphp
-                <div onclick="category_collapse({{ $category->id }})"
-                    class="item @if ($loop->first) show @endif" data-bs-toggle="collapse"
-                    href="#multiCollapseExample{{ $category->id }}" role="button" aria-expanded="false"
-                    aria-controls="multiCollapseExample{{ $category->id }}">
-                    <img src="{{ $category_image }}" alt="{{ $category->name }}">
-                    <p>{{ $category->name }}</p>
+                <div class="item" id="heading{{ $category->id }}">
+                    <div class="@if (!$loop->first) collapsed @endif" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapse{{ $category->id }}" aria-expanded="true"
+                        aria-controls="collapse{{ $category->id }}">
+                        <img src="{{ $category_image }}" alt="{{ $category->name }}">
+                        <p>{{ $category->name }}</p>
+                    </div>
                 </div>
             @endforeach
         </div>
-
-        @foreach ($categories as $category)
-            <div class="collapse multi-collapse @if ($loop->first) show @endif"
-                data-id="{{ $category->id }}" id="multiCollapseExample{{ $category->id }}"> 
+        
+        @foreach ($categories as $category) 
+            <div id="collapse{{$category->id}}" class="collapse @if ($loop->first) show @endif" aria-labelledby="headingOne" data-bs-parent="#accordionExample"> 
                 <div class="row text-center justify-content-md-center">
                     @forelse($category->products as $product)
                         @php
@@ -167,21 +168,19 @@
                                             @endphp
                                             <div class="col-md-6">
                                                 <div class="card-body attribute;">
-                                                    <p class="card-text">{{ $attribute->attribute ?? '' }}</p>
+                                                    <p class="card-text">{{ $attribute->attribute ?? '' }}
+                                                    </p>
                                                     <span style="display: flex;flex-wrap: wrap;">
                                                         @foreach ($attribute_option->values as $key2 => $value)
                                                             <input
-                                                                @if ($attribute && $attribute->type == 'single') 
-                                                                    type="radio"
-                                                                    @if($key2 == 0)
-                                                                        checked
-                                                                    @endif
-                                                                @else 
-                                                                    type="checkbox" 
-                                                                @endif
-                                                                name="attributes[]" value="{{ $value }}"
-                                                                id="{{ $product->id . $value }}">
-                                                            <label for="{{  $product->id . $value }}">{{ $value }}</label>
+                                                                @if ($attribute && $attribute->type == 'single') type="radio"
+                                                                    @if ($key2 == 0)
+                                                                        checked @endif
+                                                            @else type="checkbox" @endif
+                                                            name="attributes[]" value="{{ $value }}"
+                                                            id="{{ $product->id . $value }}">
+                                                            <label
+                                                                for="{{ $product->id . $value }}">{{ $value }}</label>
                                                         @endforeach
                                                     </span>
                                                 </div>
@@ -190,99 +189,101 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 10px">أضف</button>
+                                <button type="submit" class="btn btn-primary btn-lg"
+                                    style="border-radius: 10px">أضف</button>
                             </form>
                         </div>
-                    @empty
-                        <div class="alert alert-info" style="margin: 10%"> No Products For This Category Right Now.... </div>
-                    @endforelse
+                        @empty
+                            <div class="alert alert-info" style="margin: 10%"> No Products For This Category Right
+                                Now....
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
-    <!--Container Main end-->
+            @endforeach
+        </div>
+        <!--Container Main end-->
 
-    
-    @include('sweetalert::alert')
 
-    <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('cashier/vendor/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('cashier/js/slide.js') }}"></script>
-    <script> 
-        function category_collapse(selected_id) {
-            $.each($(".multi-collapse"), function() {
-                var id = $(this).data('id');
-                if (id != selected_id) {
-                    $(this).removeClass('show');
-                } else {
-                    $(this).addClass('show');
-                }
-            });
-        }
+        @include('sweetalert::alert')
 
-        function go_full_screen() {
-            var elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
+        <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
+        <script src="{{ asset('cashier/vendor/js/owl.carousel.min.js') }}"></script>
+        <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('cashier/js/slide.js') }}"></script>
+        <script>
+            function category_collapse(selected_id) {
+                $.each($(".multi-collapse"), function() {
+                    var id = $(this).data('id');
+                    if (id != selected_id) {
+                        $(this).removeClass('show');
+                    } else {
+                        $(this).addClass('show');
+                    }
+                });
             }
-        }
 
-        $('.add-product').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: '{{ route('admin.cashier-modes.add_product') }}',
-                data: $(this).serialize(),
-                success: function(data) {
-                    $('#div-table-receipt').css('display', 'block');
-                    $('#table-receipt tbody').append(data);
+            function go_full_screen() {
+                var elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                } else if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                }
+            }
+
+            $('.add-product').on('submit', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('admin.cashier-modes.add_product') }}',
+                    data: $(this).serialize(),
+                    success: function(data) {
+                        $('#div-table-receipt').css('display', 'block');
+                        $('#table-receipt tbody').append(data);
+                        calculate_total_cost();
+                    }
+                });
+            })
+
+            function removeTr(id) {
+                $('#receipt-product-' + id).fadeOut(300, function() {
+                    $('#receipt-product-' + id).remove();
                     calculate_total_cost();
-                }
-            });
-        })
-
-        function removeTr(id) {
-            $('#receipt-product-' + id).fadeOut(300, function() {
-                $('#receipt-product-' + id).remove();
-                calculate_total_cost();
-            });
-        } 
-
-        function change_quantity(item,id,price){
-            $('#receipt-product-cost-'+id).html(item.value * price); 
-            calculate_total_cost();
-        }
-
-        function calculate_total_cost(){ 
-            var total = 0;
-            $.each($("#div-table-receipt tbody .receipt-product-cost"), function() {
-                total += parseFloat($(this).text());
-            });
-            $('#total_cost').text(total);
-            if($('#paid_up').val() > 0){
-                rest_of_the_amount();
+                });
             }
-        }
 
-        function rest_of_the_amount(){
-            var rest_of_the_amount = $('#paid_up').val() - parseFloat($('#total_cost').text());
-            $('#rest_of_the_amount').html(rest_of_the_amount); 
-        }
-        $("body").on("submit", "form", function() {
-            $(this).submit(function() {
-                return false;
-            });
-            return true;
-        }); // prevent submitting multiple times 
-        
-    </script>
-</body>
+            function change_quantity(item, id, price) {
+                $('#receipt-product-cost-' + id).html(item.value * price);
+                calculate_total_cost();
+            }
 
-</html>
+            function calculate_total_cost() {
+                var total = 0;
+                $.each($("#div-table-receipt tbody .receipt-product-cost"), function() {
+                    total += parseFloat($(this).text());
+                });
+                $('#total_cost').text(total);
+                if ($('#paid_up').val() > 0) {
+                    rest_of_the_amount();
+                }
+            }
+
+            function rest_of_the_amount() {
+                var rest_of_the_amount = $('#paid_up').val() - parseFloat($('#total_cost').text());
+                $('#rest_of_the_amount').html(rest_of_the_amount);
+            }
+            $("body").on("submit", "form", function() {
+                $(this).submit(function() {
+                    return false;
+                });
+                return true;
+            }); // prevent submitting multiple times 
+        </script>
+    </body>
+
+    </html>

@@ -76,7 +76,7 @@
     <small>
         <b>@ 2022</b> | All Rights Reserved. 
     </small>
-    Powerd By <a href="https://ebtekarstore.com"><b>Ebtekar</b></a>
+    Powerd By <a href="https://ebtekarstore.com"><b>Ebtekar Store</b></a>
 </footer>
 
 </html> 
