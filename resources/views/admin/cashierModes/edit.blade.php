@@ -48,7 +48,10 @@
                                     <input style="width: 55px;text-align:center" type="number" class="form-control" min="1"
                                         step="1" name="products[{{ Session::get('counter') }}][quantity]"
                                         value="{{ $order_product->quantity }}"
+                                        id="table-numpad-{{ Session::get('counter') }}"
+                                        onchange="change_quantity(this,{{ Session::get('counter') }},{{ $product_cost_with_extra }})"
                                         onkeyup="change_quantity(this,{{ Session::get('counter') }},{{ $product_cost_with_extra }})"
+                                        onclick="open_easy_num('table-numpad-{{ Session::get('counter') }}')"
                                         required>
                                 </td>
                                 <td id="receipt-product-cost-{{ Session::get('counter') }}" class="receipt-product-cost">
@@ -79,7 +82,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <input type="number" name="paid_up" min="0" class="form-control" placeholder="المدفوع" required
-                            id="paid_up" onkeyup="rest_of_the_amount()" value="{{ $order->paid_up }}">
+                            id="paid_up" onkeyup="rest_of_the_amount()" onchange="rest_of_the_amount()" onclick="open_easy_num('paid_up')" value="{{ $order->paid_up }}">
                     </div>
                     <div class="col-md-6">
                         <select name="voucher_code_id" id="" class="form-control">

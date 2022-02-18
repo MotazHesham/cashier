@@ -25,7 +25,10 @@
             $code = explode('-',$order->code);
             $setting = \App\Models\GeneralSetting::first();
         @endphp
-        <h3 class="text-center mb-3">{{ $setting->website_title ?? ''}}</h3>
+        <div class="text-center">
+            <img class="text-center" src="{{ $setting->logo ? $setting->logo->getUrl('thumb') : ''}}" alt="">
+            <h3 class="text-center mb-3">{{ $setting->website_title ?? ''}}</h3>
+        </div>
         <div style="display: flex;justify-content:space-around;border:1px dotted black;border-top:hidden"> 
             <div>Date: <b>{{ $date[0] ?? ''}}</b></div>
             <div>Order Code: <b>{{ $code[1] }}</b></div>

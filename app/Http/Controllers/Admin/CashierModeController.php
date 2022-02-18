@@ -79,7 +79,7 @@ class CashierModeController extends Controller
         $product_cost_with_extra = $extra_price + $product->price;
         return view('admin.cashierModes.partials.add_product',compact('product','attributes','quantity','product_cost_with_extra'));
     }
-    public function store(Request $request){  
+    public function store(Request $request){   
         // generate Order Code
             $now_date = date('Ymd',strtotime('now'));
             $order = Order::latest()->first(); 
@@ -205,7 +205,7 @@ class CashierModeController extends Controller
         }
 
         $voucher_code = VoucherCode::find($request->voucher_code_id);
-        $discount = $voucher_code->discount;
+        $discount = $voucher_code->discount ?? 0;
         if($request->voucher_code_id != null && $voucher_code && $discount != 0){
             if($voucher_code->type == 'percentage'){
                 $discount = $order_total_cost * ($discount /100);

@@ -9,9 +9,12 @@
             <b class="badge bg-info">{{ $value }}</b> 
         @endforeach  
     </td> 
-    <td>
-        <input style="width: 55px;text-align:center" type="number" class="form-control" min="1" step="1"
-                name="products[{{ Session::get('counter') }}][quantity]" value="{{$quantity}}" required onkeyup="change_quantity(this,{{ Session::get('counter') }},{{$product_cost_with_extra}})">
+    <td> 
+        <input style="width: 55px;text-align:center" type="number" class="form-control easy-put" min="1" step="1"
+                name="products[{{ Session::get('counter') }}][quantity]" value="{{$quantity}}"
+                required onchange="change_quantity(this,{{ Session::get('counter') }},{{$product_cost_with_extra}})" 
+                onkeyup="change_quantity(this,{{ Session::get('counter') }},{{$product_cost_with_extra}})"
+                id="table-numpad-{{ Session::get('counter') }}" onclick="open_easy_num('table-numpad-{{ Session::get('counter') }}')"> 
     </td>
     <td id="receipt-product-cost-{{ Session::get('counter') }}" class="receipt-product-cost">
         {{ $product_cost_with_extra * $quantity }}

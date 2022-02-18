@@ -25,9 +25,7 @@
         <div class="form-container sign-in-container">
             <form method="POST" action="{{ route('login') }}">
                 @csrf
-                <h1>Sign in</h1>
-                <br>
-                <span>or use your account</span>
+                <h1>Sign in</h1> 
                 <input id="email" name="email" type="email" class="{{ $errors->has('email') ? ' is-invalid' : '' }}" required autocomplete="email" autofocus placeholder="Email" value="{{ old('email', null) }}">
                 @if($errors->has('email'))
                     <div class="invalid-feedback">
