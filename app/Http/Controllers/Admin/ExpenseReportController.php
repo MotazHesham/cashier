@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Expense;
 use App\Models\Income;
 use App\Models\Order;
+use App\Models\OrderProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,8 @@ class ExpenseReportController extends Controller
 {
     public function index(Request $request)
     {
+        global $from,$to,$start_date,$end_date;
+
         $from = Carbon::parse(sprintf(
             '%s-%s-01',
             request()->query('y', Carbon::now()->year),
@@ -42,6 +45,13 @@ class ExpenseReportController extends Controller
                     , Carbon::createFromFormat(config('panel.date_format'), $end_date)->format('Y-m-d') 
                 ]);
 
+            $orderProducts = OrderProduct::whereHas('order',function($q){
+                $q->whereBetween('entry_date', 
+                [   Carbon::createFromFormat(config('panel.date_format'), $GLOBALS['start_date'])->format('Y-m-d')
+                    , Carbon::createFromFormat(config('panel.date_format'), $GLOBALS['end_date'])->format('Y-m-d') 
+                ]);
+            });
+
             $trashed_orders = Order::onlyTrashed()->whereBetween('entry_date', 
                 [   Carbon::createFromFormat(config('panel.date_format'), $start_date)->format('Y-m-d')
                     , Carbon::createFromFormat(config('panel.date_format'), $end_date)->format('Y-m-d') 
@@ -55,6 +65,10 @@ class ExpenseReportController extends Controller
 
             $orders = Order::whereBetween('entry_date', [$from, $to]);
 
+            $orderProducts = OrderProduct::whereHas('order',function($q){
+                $q->whereBetween('entry_date', [$GLOBALS['from'], $GLOBALS['to']]);
+            });
+
             $trashed_orders = Order::onlyTrashed()->whereBetween('entry_date', [$from, $to]);
         }
         $expensesTotal   = $expenses->sum('amount');
@@ -63,6 +77,8 @@ class ExpenseReportController extends Controller
         $trashedOrdersTotal    = $trashed_orders->sum('total_cost') ?? 0;
         $groupedExpenses = $expenses->whereNotNull('expense_category_id')->orderBy('amount', 'desc')->get()->groupBy('expense_category_id');
         $groupedIncomes  = $incomes->whereNotNull('income_category_id')->orderBy('amount', 'desc')->get()->groupBy('income_category_id'); 
+        $groupedOrderProducts  = $orderProducts->groupBy('product_name','attributes')->select('attributes')->selectRaw('sum(total_cost) as total_cost,sum(quantity) as quantity, product_name')->get(); 
+        //return $groupedOrderProducts;
         $trashedOrdersIncomes  = $trashed_orders->get();
         $profit          = ($incomesTotal + $ordersTotal) - $expensesTotal;
 
@@ -97,16 +113,28 @@ class ExpenseReportController extends Controller
             'amount' => $ordersTotal,
         ]; 
 
-        return view('admin.expenseReports.index', compact(
-            'expensesSummary',
-            'incomesSummary',
-            'expensesTotal',
-            'incomesTotal',
-            'start_date',
-            'end_date',
-            'trashedOrdersTotal',
-            'trashedOrdersIncomes',
-            'profit'
-        ));
+        if($request->has('print')){
+            return view('admin.expenseReports.report_print')->with([
+                                                                        'products_report' => $groupedOrderProducts,
+                                                                        'year' => $request->y,
+                                                                        'month' => $request->m,
+                                                                        'start_date' => $request->start_date,
+                                                                        'end_date' => $request->end_date,
+                                                                        'ordersTotal' => $ordersTotal,
+                                                                    ]);
+        }else{
+            return view('admin.expenseReports.index', compact(
+                'expensesSummary',
+                'incomesSummary',
+                'expensesTotal',
+                'incomesTotal',
+                'ordersTotal',
+                'start_date',
+                'end_date',
+                'trashedOrdersTotal',
+                'trashedOrdersIncomes', 
+                'profit'
+            ));
+        }
     }
 }

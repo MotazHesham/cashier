@@ -1,5 +1,12 @@
 <?php
-
+Route::get('fixing',function(){
+    foreach(\App\Models\OrderProduct::get() as $orderproduct){
+        $product = \App\Models\Product::find($orderproduct->product_id);
+        $orderproduct->product_name = $product->name ?? 'deleted';
+        $orderproduct->save();
+    }
+    return 'success';
+});
 Route::redirect('/', '/login');
 Route::get('/home', function () {
     if (session('status')) {

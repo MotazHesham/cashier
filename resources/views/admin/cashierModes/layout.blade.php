@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="{{ asset('cashier/vendor/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('cashier/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('cashier/css/easy-numpad.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <link rel="stylesheet" href="{{ asset('dashboard_offline/css/font-awesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('dashboard_offline/css/all.css') }}">
     <style>
         .partials-scrollable {
             max-height: 235px;
@@ -217,6 +218,35 @@
     <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('cashier/js/slide.js') }}"></script>
     <script>
+
+        $('#store_form').on('submit',function(event){
+            event.preventDefault();
+            $.ajax({
+                type: $(this).attr("method"),
+                url: $(this).attr("action"),
+                data: $(this).serialize(),
+                success: function(link) { 
+                    $('#div-table-receipt').css('display', 'none');
+                    $('#table-receipt tbody').html(null); 
+                    $('#paid_up').val(null);
+                    $('#rest_of_the_amount').html('00.00');
+                    window.open(link, "_blank");
+                }
+            });
+        })
+
+        $('#update_form').on('submit',function(event){
+            event.preventDefault();
+            $.ajax({
+                type: $(this).attr("method"),
+                url: $(this).attr("action"),
+                data: $(this).serialize(),
+                success: function(link) {   
+                    window.open(link, "_blank");
+                }
+            });
+        })
+
         function category_collapse(selected_id) {
             $.each($(".multi-collapse"), function() {
                 var id = $(this).data('id');

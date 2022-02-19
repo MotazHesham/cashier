@@ -2,7 +2,7 @@
 
 @section('content')
     <div style="display:none" id="div-table-receipt">
-        <form action="{{ route('admin.cashier-modes.store') }}" method="Post">
+        <form action="{{ route('admin.cashier-modes.store') }}" method="Post" id="store_form">
             @csrf 
             <div class="partials-scrollable" style="max-height: 43vh">
                 <table id="table-receipt" class="table table-borderless table-striped" style="direction: rtl;">
@@ -60,7 +60,7 @@
                     </div>
                     <div class="d-grid gap-2 mt-3 mb-2">
                         <button class="btn btn-primary" type="submit"
-                            style="border-radius:10px;background: #69becf;border-color: #69becf;">
+                            style="border-radius:10px;background: #69becf;border-color: #69becf; padding: 22px; font-size: 34px;">
                             دفع
                         </button>
                     </div>

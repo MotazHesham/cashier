@@ -29,6 +29,7 @@
                 <div class="col-4">
                     <label class="control-label">&nbsp;</label><br>
                     <button class="btn btn-primary" type="submit">{{ trans('global.filterDate') }}</button>
+                    <button class="btn btn-success" type="submit" name="print">تقرير</button>
                 </div>
             </div>
         </form>
@@ -45,6 +46,7 @@
                 <div class="col-4">
                     <label class="control-label">&nbsp;</label><br>
                     <button class="btn btn-primary" type="submit">{{ trans('global.filterDate') }}</button>
+                    <button class="btn btn-success" type="submit" name="print">تقرير</button>
                 </div>
             </div>
         </form>
@@ -62,7 +64,7 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>{{ trans('cruds.expenseReport.reports.income') }}</th>
-                        <td>{{ number_format($incomesTotal, 2) }}</td>
+                        <td>{{ number_format(($incomesTotal + $ordersTotal), 2) }}</td>
                     </tr>
                     <tr>
                         <th>{{ trans('cruds.expenseReport.reports.expense') }}</th>
@@ -106,7 +108,7 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>{{ trans('cruds.expenseReport.reports.incomeByCategory') }}</th>
-                        <th>{{ number_format($incomesTotal, 2) }}</th>
+                        <th>{{ number_format(($incomesTotal + $ordersTotal), 2) }}</th>
                     </tr>
                     @foreach($incomesSummary as $inc)
                         <tr>

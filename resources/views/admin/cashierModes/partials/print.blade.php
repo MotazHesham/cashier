@@ -15,6 +15,9 @@
 			size: auto;   /* auto is the initial value */
 			margin: 0;  /* this affects the margin in the printer settings */
 		}
+        .table>:not(caption)>*>*{
+            padding:0
+        }
     </style>
 </head>
 
@@ -28,14 +31,13 @@
         <div class="text-center">
             <img class="text-center" src="{{ $setting->logo ? $setting->logo->getUrl('thumb') : ''}}" alt="">
             <h3 class="text-center mb-3">{{ $setting->website_title ?? ''}}</h3>
+            <small> Order: <b>{{ $code[1] }}</b> </small>
         </div>
-        <div style="display: flex;justify-content:space-around;border:1px dotted black;border-top:hidden"> 
-            <div>Date: <b>{{ $date[0] ?? ''}}</b></div>
-            <div>Order Code: <b>{{ $code[1] }}</b></div>
-            <div>Time: <b>{{ $date[1] ?? ''}}</b></div>
+        <div style="display: flex;justify-content:center;border:1px dotted black;border-top:hidden"> 
+            <div style="padding:0 12px">Date: <b style="font-size:12px">{{ $date[0] ?? ''}} {{ $date[1] ?? ''}}</b></div> 
         </div>
         
-        <table id="table-receipt" class="table table-borderless table-striped" style="direction: rtl;">
+        <table id="table-receipt" class="table table-bordered table-striped text-center" style="direction: rtl;">
             <thead>
                 <tr>
                     <td>المنتج</td>
@@ -71,17 +73,7 @@
                         <td>
                             <div style="display: flex;flex-direction:column">
                                 <div>
-                                    {{$order_product->product->name ?? ''}}  
-                                    @foreach($single as $row)
-                                        <span class="badge bg-info">{{ $row['slug'] }} <small>{{ $row['variant']}}</small></span>
-                                        <br>
-                                    @endforeach
-                                </div>
-                                <div> 
-                                    @foreach($multiple as $row)   
-                                        <span>{{ $row['slug'] }} <small>{{ $row['variant']}}</small> <small>(+{{ $row['price'] }}LE)</small></span>
-                                        <br>
-                                    @endforeach
+                                    {{$order_product->product->name ?? ''}}   
                                 </div>
                             </div>
                         </td>
@@ -106,26 +98,34 @@
                             {{$order_product->quantity}}
                         </td>
                         <td>
-                            {{$order_product->total_cost}}LE 
+                            {{$order_product->total_cost}} 
                         </td> 
                     </tr>  
+                    <tr style="border-width: 0 1px;  border-color: inherit; border-style: solid;font-size:14px;font-weight: 900;">
+                        <td colspan="4">
+                            @foreach($single as $row)
+                                <span style="background: black; color: white;border-radius: 2px; padding: 2px;">{{ $row['slug'] }} <small>{{ $row['variant']}}</small></span> -
+                            @endforeach
+                            
+                            @foreach($multiple as $row)    
+                                <span style="background: black; color: white;border-radius: 2px; padding: 2px;">{{ $row['slug'] }} <small>{{ $row['variant']}}</small> <small>+{{ $row['price'] }}</small></span> -
+                            @endforeach 
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
-        <div style="padding: 20px; border: 1px solid black; width: fit-content; border-radius: 10px;">
+        <div style="padding: 0 10px">
             <span>{{ $order->total_cost }} LE</span> :الأجمالي 
-        </div>
-        @if($order->discount)
-            <div style="padding: 8px 20px;">
-                <span>{{ $order->discount }} LE</span> :الخصم  
-            </div>
-        @endif
-        <div style="padding: 8px 20px;">
-            <span>{{ $order->paid_up }} LE</span> :المدفوع  
-        </div>
-        <div style="padding: 8px 20px;">
+            <br>
+            @if($order->discount) 
+                <span>{{ $order->discount }} LE</span> :الخصم   
+                <br>
+            @endif
+            <span>{{ $order->paid_up }} LE</span> :المدفوع 
+            <br>
             <span>{{ $order->paid_up - $order->total_cost}} LE</span> :المتبقي  
-        </div>
+        </div> 
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -133,7 +133,7 @@
             setTimeout(() => {
                 window.print();
                 setTimeout(() => {
-                    window.location.href = '{{ route('admin.cashier-modes.index') }}'; 
+                    window.close();
                 }, 100); 
             }, 100);
         });

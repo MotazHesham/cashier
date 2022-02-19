@@ -12,7 +12,7 @@
     </div>
     <hr>
     <div style="display:block" id="div-table-receipt">
-        <form action="{{ route('admin.cashier-modes.update') }}" method="Post">
+        <form action="{{ route('admin.cashier-modes.update') }}" method="Post" id="update_form">
             @csrf
             <input type="hidden" name="order_id" value="{{ $order->id }}" id="">
             <div class="partials-scrollable" style="max-height: 43vh">
@@ -124,7 +124,7 @@
                     <div class="d-grid gap-2 mt-3 mb-2">
                         @can('order_edit')
                             <button class="btn btn-success btn-block" type="submit"
-                            style="border-radius:10px;background:#69becf;border-color:#69becf;">
+                            style="border-radius:10px;background:#69becf;border-color:#69becf;padding: 22px; font-size: 34px;">
                                 تحديث
                             </button>
                         @endcan

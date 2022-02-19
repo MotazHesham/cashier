@@ -131,6 +131,7 @@ class CashierModeController extends Controller
             $orderProduct = OrderProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $selected_product['product_id'],
+                'product_name' => $product->name,
                 'attributes' => json_encode($attributes),
                 'quantity' => $selected_product['quantity'],
                 'price' => $product->price,
@@ -157,7 +158,7 @@ class CashierModeController extends Controller
 
         $order->load('products.product');
         
-        return redirect()->route('admin.orders.print',$order->id);
+        return route('admin.orders.print',$order->id);
     }
 
     public function update(Request $request){  
@@ -194,6 +195,7 @@ class CashierModeController extends Controller
             $orderProduct = OrderProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $selected_product['product_id'],
+                'product_name' => $product->name,
                 'attributes' => json_encode($attributes),
                 'quantity' => $selected_product['quantity'],
                 'price' => $product->price,
@@ -227,7 +229,7 @@ class CashierModeController extends Controller
 
         $order->load('products.product');
         
-        return redirect()->route('admin.orders.print',$order->id);
+        return route('admin.orders.print',$order->id);
     }
 
 }

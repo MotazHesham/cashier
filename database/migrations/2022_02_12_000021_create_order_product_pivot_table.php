@@ -15,6 +15,7 @@ class CreateOrderProductPivotTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id', 'product_id_fk_5945076')->references('id')->on('products')->onDelete('cascade');
             $table->longText('attributes')->default('[]');
+            $table->string('product_name')->nullable();
             $table->integer('quantity');
             $table->decimal('price', 15, 2)->default(0);
             $table->decimal('extra_price', 15, 2)->default(0);
