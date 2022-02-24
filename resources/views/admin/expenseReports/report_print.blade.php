@@ -70,8 +70,8 @@
                         </td> 
                         <td>
                             <div style="display: flex;flex-direction:row;justify-content: center;">
-                                @foreach(json_decode($item->attributes) as $attribute)
-                                    <small style="background: black; color: white;border-radius: 2px; padding: 2px;display:inline">{{ $attribute->price }}  {{ $attribute->variant}} </small> 
+                                @foreach(json_decode($item->attributes) as $attribute) 
+                                    <span style="background: black; color: white;border-radius: 2px; padding: 2px;display:inline"><small>{{ $attribute->price }}  {{ $attribute->variant}} </small></span> 
                                     @if(!$loop->last) - @endif
                                 @endforeach
                             </div>

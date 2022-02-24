@@ -12,7 +12,7 @@
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^6.3", 
         "laravel/dusk": "^5.9",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
@@ -20,7 +20,7 @@
         "laraveldaily/laravel-charts": "^0.1.14",
         "nuovo/spreadsheet-reader": "^0.5.11",
         "realrashid/sweet-alert": "^5.0",
-        "spatie/laravel-medialibrary": "^7.19",
+        "spatie/laravel-medialibrary": "^7.19", 
         "yajra/laravel-datatables-oracle": "^9.9"
     },
     "require-dev": {

@@ -18,6 +18,7 @@ use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Alert;
+use DB;
 
 class ProductController extends Controller
 {
@@ -119,57 +120,66 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     { 
-        $validated_request = $request->all();
+        try{
+            DB::beginTransaction();
+
+            $validated_request = $request->all();
         
-        $attributes_options = array();
-
-        if($request->has('attribute_num')){
-            foreach ($validated_request['attribute_num'] as $key => $num) {
-                $str = 'attributes_options_'.$num;
-
-                $item['attribute_id'] = $num;
-                $item['values'] = explode(',', implode('|', $request[$str]));
-
-                array_push($attributes_options, $item);
+            $attributes_options = array();
+    
+            if($request->has('attribute_num')){
+                foreach ($validated_request['attribute_num'] as $key => $num) {
+                    $str = 'attributes_options_'.$num;
+    
+                    $item['attribute_id'] = $num;
+                    $item['values'] = explode(',', implode('|', $request[$str]));
+    
+                    array_push($attributes_options, $item);
+                }
             }
-        }
-
-        if (!empty($request->attribute_num)){
-            $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
-        }else{
-            $validated_request['attributes'] = json_encode(array());
-        }
-
-        $validated_request['attributes_options'] = json_encode($attributes_options); 
-
-        $product = Product::create($validated_request);
-        
-        if($request->has('attribute_num')){
-            foreach ($validated_request['attribute_num'] as $key => $num) {  
-
-                $str = explode(',', implode('|', $request['attributes_options_'.$num]));
-
-                foreach($str as $variant){ 
-                    $attribute_product = AttributeProduct::create([
-                        'attribute_id' => $num,
-                        'product_id' => $product->id,
-                        'variant' => $variant,
-                        'price' => $validated_request['extra_price_'.$variant],
-                    ]);
-                } 
+    
+            if (!empty($request->attribute_num)){
+                $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
+            }else{
+                $validated_request['attributes'] = json_encode(array());
             }
+    
+            $validated_request['attributes_options'] = json_encode($attributes_options); 
+    
+            $product = Product::create($validated_request);
+            
+            if($request->has('attribute_num')){
+                foreach ($validated_request['attribute_num'] as $key => $num) {  
+    
+                    $str = explode(',', implode('|', $request['attributes_options_'.$num]));
+    
+                    foreach($str as $variant){ 
+                        $attribute_product = AttributeProduct::create([
+                            'attribute_id' => $num,
+                            'product_id' => $product->id,
+                            'variant' => $variant,
+                            'price' => $validated_request['extra_price_'.$variant],
+                        ]);
+                    } 
+                }
+            }
+    
+            if ($request->input('photo', false)) {
+                $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+            }
+    
+            if ($media = $request->input('ck-media', false)) {
+                Media::whereIn('id', $media)->update(['model_id' => $product->id]);
+            }
+    
+            DB::commit();
+            Alert::success('تم بنجاح', 'تم إضافة المنتج بنجاح ');
+            return redirect()->route('admin.products.index'); 
+        }catch(\Exception $ex){
+            DB::rollBack();
+            Alert::error('حدث خطأ','برجاء أدخال الحقول بطريقة صحيحة'); 
+            return redirect()->route('admin.products.index'); 
         }
-
-        if ($request->input('photo', false)) {
-            $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
-        }
-
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $product->id]);
-        }
-
-        Alert::success('تم بنجاح', 'تم إضافة المنتج بنجاح ');
-        return redirect()->route('admin.products.index');
     }
 
     public function edit(Product $product)
@@ -186,68 +196,76 @@ class ProductController extends Controller
     }
 
     public function update(UpdateProductRequest $request, Product $product)
-    {
+    { 
+        try{
+            DB::beginTransaction();
+
+                $validated_request = $request->all();
+
+                $attributes_options = array();
         
-        $validated_request = $request->all();
-
-        $attributes_options = array();
-
-        if($request->has('attribute_num')){
-            foreach ($validated_request['attribute_num'] as $key => $num) {
-                $str = 'attributes_options_'.$num;
-
-                $item['attribute_id'] = $num;
-                $item['values'] = explode(',', implode('|', $request[$str]));
-
-                array_push($attributes_options, $item);
-            }
-        }
-
-        if (!empty($request->attribute_num)){
-            $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
-        }else{
-            $validated_request['attributes'] = json_encode(array());
-        }
-
-        $validated_request['attributes_options'] = json_encode($attributes_options); 
+                if($request->has('attribute_num')){
+                    foreach ($validated_request['attribute_num'] as $key => $num) {
+                        $str = 'attributes_options_'.$num;
         
-        $product->update($validated_request);
+                        $item['attribute_id'] = $num;
+                        $item['values'] = explode(',', implode('|', $request[$str]));
         
-        if($request->has('attribute_num')){
-            
-            foreach($product->attributeProduct as $row){
-                $row->delete();
-            }
-
-            foreach ($validated_request['attribute_num'] as $key => $num) { 
-
-                $str = explode(',', implode('|', $request['attributes_options_'.$num]));
-
-                foreach($str as $variant){ 
-                    $attribute_product = AttributeProduct::create([
-                        'attribute_id' => $num,
-                        'product_id' => $product->id,
-                        'variant' => $variant,
-                        'price' => $validated_request['extra_price_'.$variant],
-                    ]);
-                } 
-            }
-        }
-
+                        array_push($attributes_options, $item);
+                    }
+                }
         
-        if ($request->input('photo', false)) {
-            if (!$product->photo || $request->input('photo') !== $product->photo->file_name) {
-                if ($product->photo) {
+                if (!empty($request->attribute_num)){
+                    $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
+                }else{
+                    $validated_request['attributes'] = json_encode(array());
+                }
+        
+                $validated_request['attributes_options'] = json_encode($attributes_options); 
+                
+                $product->update($validated_request);
+                
+                if($request->has('attribute_num')){
+                    
+                    foreach($product->attributeProduct as $row){
+                        $row->delete();
+                    }
+        
+                    foreach ($validated_request['attribute_num'] as $key => $num) { 
+        
+                        $str = explode(',', implode('|', $request['attributes_options_'.$num]));
+        
+                        foreach($str as $variant){ 
+                            $attribute_product = AttributeProduct::create([
+                                'attribute_id' => $num,
+                                'product_id' => $product->id,
+                                'variant' => $variant,
+                                'price' => $validated_request['extra_price_'.$variant],
+                            ]);
+                        } 
+                    }
+                }
+        
+                
+                if ($request->input('photo', false)) {
+                    if (!$product->photo || $request->input('photo') !== $product->photo->file_name) {
+                        if ($product->photo) {
+                            $product->photo->delete();
+                        }
+                        $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+                    }
+                } elseif ($product->photo) {
                     $product->photo->delete();
                 }
-                $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
-            }
-        } elseif ($product->photo) {
-            $product->photo->delete();
-        }
-
-        Alert::success('تم بنجاح', 'تم تعديل بيانات المنتج بنجاح ');
-        return redirect()->route('admin.products.index');
+    
+            Alert::success('تم بنجاح', 'تم تعديل بيانات المنتج بنجاح ');
+            DB::commit(); 
+            return redirect()->route('admin.products.index'); 
+        }catch(\Exception $ex){
+            DB::rollBack();
+            Alert::error('حدث خطأ','برجاء أدخال الحقول بطريقة صحيحة'); 
+            return redirect()->route('admin.products.index'); 
+        } 
     }
 
     public function show(Product $product)

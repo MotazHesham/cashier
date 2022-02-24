@@ -40,7 +40,7 @@
         }
 
         .nav-items a {
-            margin: 0 25px;
+            margin: 0 10px;
         }
 
         .btn-light {
@@ -88,13 +88,18 @@
                 <a class="btn btn-lg btn-light" onclick="go_full_screen()">
                     <i class="fas fa-expand"></i>
                     <span class="nav_name">Expand</span>
-                </a>
+                </a> 
+                <a class="btn btn-lg btn-light" >
+                    <input type="checkbox" id="printing" name="printing" value="1"  checked onclick="change_printing()">
+                    <label for="printing">Printing</label><br>
+                </a> 
                 <a class="btn btn-lg btn-light" style="border-radius: 35px;position:absolute;right:0">
                     <form action="{{ route('admin.cashier-modes.edit') }}">
                         <input style="border-radius: 35px" type="text" class="form-control" name="code"
                             value="{{ date('Ymd', strtotime('now')) }}-" id="">
                     </form>
                 </a>
+                
             </div>
         </div>
     </header>
@@ -103,6 +108,7 @@
     @endphp
     <div class="l-navbar navbar-show partials-scrollable" style="max-height: 100%" id="nav-bar">
         <h3 class="text-center">{{ $setting->website_title ?? '' }}</h3>
+        
         <hr>
         @yield('content')
     </div>
@@ -217,7 +223,32 @@
     <script src="{{ asset('cashier/vendor/js/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('cashier/js/slide.js') }}"></script>
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{{ asset('dashboard_offline/css/sweetalert2.min.css') }}">
+    <script src="{{ asset('dashboard_offline/js/sweetalert2.all.min.js') }}"></script>
+    {{-- Sweet alert delete --}}
     <script>
+
+        function showFrontendAlert(type, title, message){
+            swal({ 
+                title: title,
+                text: message,
+                type: type, 
+                showConfirmButton: 'Okay',
+                timer: 3000
+            });
+        } 
+    </script>
+    <script>
+
+        function change_printing(){
+            var printing = $('#printing').val();
+            if(printing == 1){
+                $('#printing').val(0);
+            }else{ 
+                $('#printing').val(1);
+            }
+        }
 
         $('#store_form').on('submit',function(event){
             event.preventDefault();
@@ -230,7 +261,16 @@
                     $('#table-receipt tbody').html(null); 
                     $('#paid_up').val(null);
                     $('#rest_of_the_amount').html('00.00');
-                    window.open(link, "_blank");
+                    
+                    var printing = $('#printing').val();
+                    if(printing == 1){ 
+                        window.open(link, "_blank");
+                    }else{
+                        showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
+                    }
+                },
+                error: function(){
+                    showFrontendAlert('error', 'حدث خطأ', '');
                 }
             });
         })
@@ -242,7 +282,15 @@
                 url: $(this).attr("action"),
                 data: $(this).serialize(),
                 success: function(link) {   
-                    window.open(link, "_blank");
+                    var printing = $('#printing').val();
+                    if(printing == 1){ 
+                        window.open(link, "_blank");
+                    }else{
+                        showFrontendAlert('success', 'تم تعديل الطلب بنجاح', '');
+                    } 
+                },
+                error: function(){
+                    showFrontendAlert('error', 'حدث خطأ', '');
                 }
             });
         })
