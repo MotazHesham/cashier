@@ -1,4 +1,7 @@
 <div class="row">
+    @php
+        $user->wallet->refreshBalance();
+    @endphp
     <div class="col-md-3">
         <div class="c-callout c-callout-info b-t-1 b-r-1 b-b-1">
             <small class="text-muted">Wallet Balance</small><br>

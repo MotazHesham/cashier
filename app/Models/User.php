@@ -23,7 +23,7 @@ class User extends Authenticatable implements HasMedia , Wallet
     use SoftDeletes;
     use Notifiable;
     use HasMediaTrait;
-    use HasWallet, HasWallets;
+    use HasWallet;
 
     public const USER_TYPE_SELECT = [
         'staff'   => 'Staff',

@@ -21,12 +21,13 @@ use RealRashid\SweetAlert\Facades\Alert;
 class CashierModeController extends Controller
 {
     public function qr_scanner(Request $request){
-        //$user = User::find(4);
+        $user = User::find(4); 
         return view('admin.cashierModes.qr_code_scanner');
     }
 
     public function qr_output(Request $request){
         $user = User::find($request->code);
+        $user->wallet->refreshBalance();
         if($user){
             if($user->balance){
                 if($user->balance >= $request->total){
@@ -40,19 +41,24 @@ class CashierModeController extends Controller
                                             <div class="text-center">
                                                 <h3> '.$user->name.' </h3>
                                                 <h5> '.$user->phone.' </h5>
+                                                <div class="c-callout c-callout-info b-t-1 b-r-1 b-b-1">
+                                                    <small class="text-muted">Wallet Balance</small><br>
+                                                    <strong class="h4">EGP '. $user->balance .' </strong>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" type="submit"
+                            <div class="alert alert-success">Success Available To Use Qr Code</div> 
+                            <button class="btn btn-primary" onclick="submit_pay_form()"
                                 style="border-radius:10px;background: #69becf;border-color: #69becf; padding: 22px; font-size: 34px;">
                                 دفع
                             </button>
                             ';
                     return [
                         'status' => true,
-                        'message' =>  $output . "<div class='alert alert-success'>Success Available To Use Qr Code</div>",
+                        'message' =>  $output,
                         'user_id' => $request->code,
                     ];
                 }else{
@@ -216,8 +222,11 @@ class CashierModeController extends Controller
             }
 
             if($request->payment_type == 'qr_code'){
-                $user = User::find($request->qr_user_id);
+                $user = User::find($request->qr_user_id); 
                 $user->withdraw($order->total_cost,['order' => $order->code]);
+                $user->balance;
+                $user->wallet->refreshBalance();
+                $user->balance;
             }
 
             $order->save();

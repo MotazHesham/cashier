@@ -216,6 +216,22 @@
     </div>
 
 
+    <!--Container Main end-->
+    <div class="modal fade" id="QRModal"  aria-labelledby="QRModalLabel"  >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="QRModalLabel">Qr Scanner</h5>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    
     @include('sweetalert::alert')
 
     <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
@@ -257,6 +273,8 @@
                 url: $(this).attr("action"),
                 data: $(this).serialize(),
                 success: function(link) {
+                    $('#QRModal').modal('hide');
+                    $('#QRModal .modal-body').html(null);
                     $('#div-table-receipt').css('display', 'none');
                     $('#table-receipt tbody').html(null);
                     $('#paid_up').val(null);
@@ -391,6 +409,10 @@
                 $('#qr_user_id').val(null);
                 rest_of_the_amount()
             }
+        }
+        
+        function submit_pay_form(){
+            $('#store_form').submit();
         }
     </script>
     @yield('scripts')
