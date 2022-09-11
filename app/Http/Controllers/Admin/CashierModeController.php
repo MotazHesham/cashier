@@ -26,25 +26,45 @@ class CashierModeController extends Controller
     }
 
     public function qr_output(Request $request){
-        $user = User::find($request->code); 
+        $user = User::find($request->code);
         if($user){
             if($user->balance){
                 if($user->balance >= $request->total){
+                    $output = '<div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" class="rounded" width="155" >
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="text-center">
+                                                <h3>{{ '.$user->name.' }}</h3>
+                                                <h5>{{ '.$user->phone.' }}</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit"
+                                style="border-radius:10px;background: #69becf;border-color: #69becf; padding: 22px; font-size: 34px;">
+                                دفع
+                            </button>
+                            ';
                     return [
                         'status' => true,
-                        'message' => 'Success',
+                        'message' => "<div class='alert alert-success'>Success Available To Use Qr Code</div>" + $output,
                         'user_id' => $request->code,
                     ];
                 }else{
                     return [
                         'status' => false,
-                        'message' => "<div class='alert alert-danger'>Balance Not Enough</div>"  
+                        'message' => "<div class='alert alert-danger'>Balance Not Enough</div>"
                     ];
                 }
             }else{
                     return [
                         'status' => false,
-                        'message' => "<div class='alert alert-danger'>No Balance Available</div>" 
+                        'message' => "<div class='alert alert-danger'>No Balance Available</div>"
                     ];
             }
         }else{

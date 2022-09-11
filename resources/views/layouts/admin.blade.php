@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html @if(app()->getLocale() == 'ar') dir="rtl" @endif> 
+<html @if(app()->getLocale() == 'ar') dir="rtl" @endif>
 
 <head>
     <meta charset="UTF-8">
@@ -26,16 +26,16 @@
     @if(app()->getLocale() == 'ar')
         <style>
             .c-sidebar-nav .c-sidebar-nav-dropdown-items{
-            padding-right: 8%; 
+            padding-right: 8%;
             }
         </style>
     @else
         <style>
             .c-sidebar-nav .c-sidebar-nav-dropdown-items{
-            padding-left: 8%; 
+            padding-left: 8%;
             }
         </style>
-    @endif 
+    @endif
     @yield('styles')
 </head>
 
@@ -133,7 +133,7 @@
             </form>
         </div>
     </div>
-    
+
     @include('sweetalert::alert')
 
     <script src="{{ asset('dashboard_offline/js/jquery.min.js') }}"></script>
@@ -162,21 +162,21 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('dashboard_offline/css/sweetalert2.min.css') }}">
     <script src="{{ asset('dashboard_offline/js/sweetalert2.all.min.js') }}"></script>
-    
+
     {{-- Sweet alert delete --}}
     <script>
 
         function showFrontendAlert(type, title, message){
-            swal({ 
+            swal({
                 title: title,
                 text: message,
-                type: type, 
+                type: type,
                 showConfirmButton: 'Okay',
                 timer: 3000
             });
         }
 
-        function deleteConfirmation(route, div = null, partials = false) { 
+        function deleteConfirmation(route, div = null, partials = false) {
             swal({
                 title: "{{trans('global.flash.delete_')}}",
                 text: "{{trans('global.flash.sure_')}}",
@@ -187,19 +187,19 @@
                 reverseButtons: !0
             }).then(function (e) {
 
-                if (e.value === true) { 
+                if (e.value === true) {
 
                     $.ajax({
                         type: 'DELETE',
-                        url: route, 
-                        data: { _token: '{{ csrf_token() }}', partials: partials}, 
-                        success: function (results) { 
-                            if(div != null){ 
+                        url: route,
+                        data: { _token: '{{ csrf_token() }}', partials: partials},
+                        success: function (results) {
+                            if(div != null){
                             showFrontendAlert('success', '{{trans('global.flash.deleted')}}', '');
                             $(div).html(null);
                             $(div).html(results);
                             }else{
-                            location.reload(); 
+                            location.reload();
                             }
                         }
                     });
@@ -213,18 +213,18 @@
             })
         }
     </script>
-    
+
     {{-- attributes script --}}
-    <script> 
+    <script>
         $('#attributes').on('change', function() {
             $('#attribute_options').html(null);
             $.each($("#attributes option:selected"), function(){
                 //console.log($(this).val());
                 add_more_attribute_options($(this).val(), $(this).text());
-            }); 
+            });
         });
 
-        
+
         function add_more_attribute_options(i, name){
             var select = '<div class="row">';
             select    +=    '<div class="col-md-4">';
@@ -235,19 +235,19 @@
             select    +=        '<input type="text" class="form-control" name="attributes_options_'+i+'[]" placeholder="Enter attribute values" data-role="tagsinput" onchange="update_attribute_combination()">';
             select    +=    '</div>';
             select    += '</div>';
-            
+
             $('#attribute_options').append(select);
 
             $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
         }
 
-        function update_attribute_combination(){ 
+        function update_attribute_combination(){
             $.ajax({
                 type:"POST",
                 url:'{{ route('admin.products.attribute_combination') }}',
                 data:$('#product-form').serialize(),
                 success: function(data){
-                    $('#attribute_combination').html(data); 
+                    $('#attribute_combination').html(data);
                 }
             });
         }
@@ -256,7 +256,7 @@
 
     {{-- datatables --}}
     <script>
-        
+
         $(function() {
             let copyButtonTrans = '{{ trans('global.datatables.copy') }}'
             let csvButtonTrans = '{{ trans('global.datatables.csv') }}'
