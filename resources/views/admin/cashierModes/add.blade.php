@@ -44,7 +44,7 @@
                     <div class="row text-center mt-3">
                         <div class="col-md-6">
                             <input type="radio" name="payment_type" value="cash" id="cash" checked>
-                            <label for="cash" class="payment-type">
+                            <label for="cash" class="payment-type" onclick="qr_code_modal(false)">
                                 <i class="payment-type-i fas fa-money-bill" style="font-size:50px;"></i>
                                 <br>
                                 Cash
@@ -52,7 +52,7 @@
                         </div>
                         <div class="col-md-6">
                             <input type="radio" name="payment_type" value="qr_code" id="qr_code">
-                            <label for="qr_code" class="payment-type" onclick="qr_code_modal()">
+                            <label for="qr_code" class="payment-type" onclick="qr_code_modal(true)">
                                 <i class="payment-type-i fas fa-qrcode" style="font-size:50px;"></i>
                                 <br>
                                 QR Code
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="d-grid gap-2 mt-3 mb-2">
-                        <button class="btn btn-primary" type="submit"
+                        <button class="btn btn-primary" type="submit" id="submit-button"
                             style="border-radius:10px;background: #69becf;border-color: #69becf; padding: 22px; font-size: 34px;">
                             دفع
                         </button>

@@ -384,17 +384,24 @@
         }); // prevent submitting multiple times
 
 
-        function qr_code_modal(){
-            $.ajax({
-                type: "POST",
-                url: '{{ route('admin.cashier-modes.qr_scanner') }}',
-                data:{_token:'{{ csrf_token() }}'},
-                success: function(data) {
-                    $('#QRModal').modal('show');
-                    $('#QRModal .modal-body').html(null);
-                    $('#QRModal .modal-body').html(data);
-                }
-            });
+        function qr_code_modal(status){
+            if(status){
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('admin.cashier-modes.qr_scanner') }}',
+                    data:{_token:'{{ csrf_token() }}'},
+                    success: function(data) {
+                        $('#submit-button').css('visibility','hidden');
+                        $('#qr_user_id').val(null);
+                        $('#QRModal').modal('show');
+                        $('#QRModal .modal-body').html(null);
+                        $('#QRModal .modal-body').html(data);
+                    }
+                });
+            }else{
+                $('#submit-button').css('visibility','visible');
+                $('#qr_user_id').val(null);
+            }
         }
     </script>
     @yield('scripts')
