@@ -215,21 +215,6 @@
         @endforeach
     </div>
 
-    <!--Container Main end-->
-    <div class="modal fade" id="QRModal"  aria-labelledby="QRModalLabel"  >
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="QRModalLabel">Qr Scanner</h5>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
 
     @include('sweetalert::alert')
 

@@ -4,6 +4,7 @@
     <div style="display:none" id="div-table-receipt">
         <form action="{{ route('admin.cashier-modes.store') }}" method="Post" id="store_form">
             @csrf
+
             <input type="hidden" name="qr_user_id" id="qr_user_id">
             <div class="partials-scrollable" style="max-height: 43vh">
                 <table id="table-receipt" class="table table-borderless table-striped" style="direction: rtl;">
@@ -67,6 +68,23 @@
                     </div>
                 </div>
             </div>
+
+            <!--Container Main end-->
+            <div class="modal fade" id="QRModal"  aria-labelledby="QRModalLabel"  >
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="QRModalLabel">Qr Scanner</h5>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </form>
     </div>
 @endsection
