@@ -48,6 +48,7 @@
                 code: result.text
             }, function(data) {
                 console.log(data);
+
                 if (data.status == true) {
                     $('#qr_user_id').val(data.user_id);
                     $('#cam-content').html(data.message);
