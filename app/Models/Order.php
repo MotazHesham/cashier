@@ -17,6 +17,11 @@ class Order extends Model
 
     public $table = 'orders';
 
+    public const PAYMENT_TYPE_SELECT = [
+        'cash' => 'cash',
+        'qr_code'   => 'Qr Code',
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -29,6 +34,7 @@ class Order extends Model
         'paid_up',
         'discount',
         'total_cost',
+        'payment_type',
         'voucher_code_id',
         'created_by_id',
         'created_at',

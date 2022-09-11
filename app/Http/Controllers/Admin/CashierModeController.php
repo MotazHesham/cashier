@@ -30,7 +30,7 @@ class CashierModeController extends Controller
         if($user){
             if($user->balance){
                 if($user->balance >= $request->total){
-                    $output = '<div class="card">
+                    $output = '<div class="card" style="height:auto;margin:15px 0px">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-4">
@@ -38,8 +38,8 @@ class CashierModeController extends Controller
                                         </div>
                                         <div class="col-md-8">
                                             <div class="text-center">
-                                                <h3>{{ '.$user->name.' }}</h3>
-                                                <h5>{{ '.$user->phone.' }}</h5>
+                                                <h3> '.$user->name.' </h3>
+                                                <h5> '.$user->phone.' </h5>
                                             </div>
                                         </div>
                                     </div>
@@ -52,7 +52,7 @@ class CashierModeController extends Controller
                             ';
                     return [
                         'status' => true,
-                        'message' => "<div class='alert alert-success'>Success Available To Use Qr Code</div>" . $output,
+                        'message' =>  $output . "<div class='alert alert-success'>Success Available To Use Qr Code</div>",
                         'user_id' => $request->code,
                     ];
                 }else{
@@ -163,6 +163,7 @@ class CashierModeController extends Controller
                 'paid_up' => $request->paid_up,
                 'total_cost' => 0,
                 'voucher_code_id' => $request->voucher_code_id,
+                'payment_type' => $request->payment_type,
             ]);
 
             $order_total_cost = 0;
@@ -213,6 +214,12 @@ class CashierModeController extends Controller
             }else{
                 $order->total_cost = $order_total_cost;
             }
+
+            if($request->payment_type == 'qr_code'){
+                $user = User::find($request->qr_user_id);
+                $user->withdraw($order->total_cost,['order' => $order->code]);
+            }
+
             $order->save();
 
             $order->load('products.product');

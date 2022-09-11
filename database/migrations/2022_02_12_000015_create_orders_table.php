@@ -11,6 +11,7 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('code');
+            $table->string('payment_type')->default('cash');
             $table->date('entry_date')->nullable();
             $table->decimal('paid_up', 15, 2)->nullable();
             $table->decimal('discount', 15, 2)->nullable();

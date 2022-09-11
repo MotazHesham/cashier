@@ -393,6 +393,8 @@
                     success: function(data) {
                         $('#submit-button').css('visibility','hidden');
                         $('#qr_user_id').val(null);
+                        $('#paid_up').val(parseFloat($('#total_cost').text()));
+                        rest_of_the_amount()
                         $('#QRModal').modal('show');
                         $('#QRModal .modal-body').html(null);
                         $('#QRModal .modal-body').html(data);
@@ -400,7 +402,9 @@
                 });
             }else{
                 $('#submit-button').css('visibility','visible');
+                $('#paid_up').val(null);
                 $('#qr_user_id').val(null);
+                rest_of_the_amount()
             }
         }
     </script>
