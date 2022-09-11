@@ -215,7 +215,7 @@
     </div>
 
     <!--Container Main end-->
-    <div class="modal fade" id="QRModal" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true">
+    <div class="modal fade" id="QRModal"  aria-labelledby="QRModalLabel"  >
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -223,6 +223,8 @@
                 </div>
                 <div class="modal-body">
 
+                </div>
+                <div class="modal-footer">
                 </div>
             </div>
         </div>
@@ -388,6 +390,7 @@
                 data:{_token:'{{ csrf_token() }}'},
                 success: function(data) {
                     $('#QRModal').modal('show');
+                    $('#QRModal .modal-body').html(null);
                     $('#QRModal .modal-body').html(data);
                 }
             });

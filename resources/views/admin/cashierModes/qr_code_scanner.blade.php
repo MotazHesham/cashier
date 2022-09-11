@@ -40,6 +40,8 @@
 <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
 <script type="text/javascript">
 
+load_cam();
+
 function decodeOnce(codeReader, selectedDeviceId) {
         codeReader.decodeFromInputVideoDevice(selectedDeviceId, 'video').then((result) => {
         console.log(result)
@@ -53,8 +55,7 @@ function decodeOnce(codeReader, selectedDeviceId) {
 }
 
 
-window.addEventListener('load', function () {
-
+function load_cam(){
 
     let selectedDeviceId;
     const codeReader = new ZXing.BrowserQRCodeReader();
@@ -108,5 +109,6 @@ window.addEventListener('load', function () {
         console.error(err)
     })
 
-})
+}
 </script>
+
