@@ -6,7 +6,7 @@
     </div>
 
     <div class="card-body text-center">
-        <section class="container" id="demo-content">
+        <section class="container" id="cam-content">
             <div class="mb-3">
                 <button class="btn btn-pill btn-lg btn-success" id="startButton" >Start</button>
                 <button class="btn btn-pill btn-lg btn-info " id="resetButton" >Stop</button>
@@ -17,20 +17,20 @@
             </div>
 
             <div id="sourceSelectPanel" style="display:none">
-                <label for="sourceSelect">Change video source:</label>
+                <span for="sourceSelect">Change video source:</span>
                 <select id="sourceSelect" style="max-width:400px">
                 </select>
             </div>
 
             <div style="display: none" class="text-center">
-                <label for="decoding-style"> Decoding Style:</label>
+                <span for="decoding-style"> Decoding Style:</span>
                 <select id="decoding-style" size="1">
                 <option value="once">Decode once</option>
                 <option value="continuously">Decode continuously</option>
                 </select>
             </div>
 
-            <label>Result:</label>
+            <span>Result:</span>
             <pre><code id="result"></code></pre>
         </section>
     </div>
@@ -44,9 +44,11 @@ load_cam();
 
 function decodeOnce(codeReader, selectedDeviceId) {
         codeReader.decodeFromInputVideoDevice(selectedDeviceId, 'video').then((result) => {
-        console.log(result)
-        $.post('{{ route('admin.cashier-modes.qr_output') }}', {_token:'{{ csrf_token() }}', code:result}, function(data){
-            document.getElementById('result').textContent = data['message'];
+        console.log(result.text)
+        $.post('{{ route('admin.cashier-modes.qr_output') }}', {_token:'{{ csrf_token() }}', code:result.text}, function(data){
+            console.log(data);
+            $('#cam-content').html(data.message);
+            
         });
     }).catch((err) => {
         console.error(err)

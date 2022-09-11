@@ -21,28 +21,36 @@ use RealRashid\SweetAlert\Facades\Alert;
 class CashierModeController extends Controller
 {
     public function qr_scanner(Request $request){
+        //$user = User::find(4);
         return view('admin.cashierModes.qr_code_scanner');
     }
 
     public function qr_output(Request $request){
-        $user = User::find($request->code);
+        $user = User::find($request->code); 
         if($user){
-            if($user->balance >= $request->total){
-                return [
-                    'status' => true,
-                    'message' => 'Success',
-                    'user_id' => $request->code,
-                ];
+            if($user->balance){
+                if($user->balance >= $request->total){
+                    return [
+                        'status' => true,
+                        'message' => 'Success',
+                        'user_id' => $request->code,
+                    ];
+                }else{
+                    return [
+                        'status' => false,
+                        'message' => "<div class='alert alert-danger'>Balance Not Enough</div>"  
+                    ];
+                }
             }else{
-                return [
-                    'status' => false,
-                    'message' => 'Balance Not Enough'
-                ];
+                    return [
+                        'status' => false,
+                        'message' => "<div class='alert alert-danger'>No Balance Available</div>" 
+                    ];
             }
         }else{
             return [
                 'status' => false,
-                'message' => 'Not Found The Qr Code Owner'
+                'message' => "<div class='alert alert-danger'>Not Found The Qr Code Owner</div>"
             ];
         }
     }

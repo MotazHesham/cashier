@@ -105,7 +105,7 @@ class StudentsController extends Controller
 
         $student->load('user', 'father');
         $user = $student->user;
-        $transactions = $user->transactions()->orderBy('created_at','desc')->paginate(5);
+        $transactions = $user->transactions()->orderBy('created_at','desc')->paginate(5);  
         return view('admin.students.show', compact('student','user','transactions'));
     }
 
