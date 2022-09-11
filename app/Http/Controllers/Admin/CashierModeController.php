@@ -52,7 +52,7 @@ class CashierModeController extends Controller
                             ';
                     return [
                         'status' => true,
-                        'message' => "<div class='alert alert-success'>Success Available To Use Qr Code</div>" + $output,
+                        'message' => "<div class='alert alert-success'>Success Available To Use Qr Code</div>" . $output,
                         'user_id' => $request->code,
                     ];
                 }else{
