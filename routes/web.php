@@ -1,12 +1,9 @@
 <?php
-Route::get('fixing',function(){
-    foreach(\App\Models\OrderProduct::get() as $orderproduct){
-        $product = \App\Models\Product::find($orderproduct->product_id);
-        $orderproduct->product_name = $product->name ?? 'deleted';
-        $orderproduct->save();
-    }
-    return 'success';
-});
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+
 Route::redirect('/', '/login');
 Route::get('/home', function () {
     if (session('status')) {
@@ -30,6 +27,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
+    Route::post('users/media', 'UsersController@storeMedia')->name('users.storeMedia');
+    Route::post('users/ckmedia', 'UsersController@storeCKEditorImages')->name('users.storeCKEditorImages');
     Route::resource('users', 'UsersController');
 
     // Product Category
@@ -52,6 +51,23 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('products/process-csv-import', 'ProductController@processCsvImport')->name('products.processCsvImport');
     Route::any('products/attribute_combination', 'ProductController@attribute_combination')->name('products.attribute_combination');
     Route::resource('products', 'ProductController');
+
+    // Schools
+    Route::delete('schools/destroy', 'SchoolsController@massDestroy')->name('schools.massDestroy');
+    Route::resource('schools', 'SchoolsController');
+
+    // Fathers
+    Route::delete('fathers/destroy', 'FathersController@massDestroy')->name('fathers.massDestroy');
+    Route::resource('fathers', 'FathersController');
+
+    // Students
+    Route::delete('students/destroy', 'StudentsController@massDestroy')->name('students.massDestroy');
+    Route::resource('students', 'StudentsController');
+
+    // Payments
+    Route::delete('payments/destroy', 'PaymentsController@massDestroy')->name('payments.massDestroy');
+    Route::resource('payments', 'PaymentsController');
+
 
     // Audit Logs
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
@@ -100,6 +116,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('cashier-modes', 'CashierModeController@index')->name('cashier-modes.index');
     Route::post('cashier-modes/store', 'CashierModeController@store')->name('cashier-modes.store');
     Route::post('cashier-modes/update', 'CashierModeController@update')->name('cashier-modes.update');
+    Route::post('cashier-modes/qr_scanner', 'CashierModeController@qr_scanner')->name('cashier-modes.qr_scanner');
+    Route::post('cashier-modes/qr_output', 'CashierModeController@qr_output')->name('cashier-modes.qr_output');
     Route::get('cashier-modes/edit', 'CashierModeController@edit')->name('cashier-modes.edit');
 
     // Voucher Codes
@@ -111,7 +129,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('general-settings/media', 'GeneralSettingsController@storeMedia')->name('general-settings.storeMedia');
     Route::post('general-settings/ckmedia', 'GeneralSettingsController@storeCKEditorImages')->name('general-settings.storeCKEditorImages');
     Route::resource('general-settings', 'GeneralSettingsController');
-    
+
     Route::get('global-search', 'GlobalSearchController@search')->name('globalSearch');
     Route::get('messenger', 'MessengerController@index')->name('messenger.index');
     Route::get('messenger/create', 'MessengerController@createTopic')->name('messenger.createTopic');

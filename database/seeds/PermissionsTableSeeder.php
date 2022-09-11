@@ -368,6 +368,90 @@ class PermissionsTableSeeder extends Seeder
                 'id'    => 90,
                 'title' => 'profile_password_edit',
             ],
+            [
+                'id'    => 91,
+                'title' => 'schools_managment_access',
+            ],
+            [
+                'id'    => 92,
+                'title' => 'school_create',
+            ],
+            [
+                'id'    => 93,
+                'title' => 'school_edit',
+            ],
+            [
+                'id'    => 94,
+                'title' => 'school_show',
+            ],
+            [
+                'id'    => 95,
+                'title' => 'school_delete',
+            ],
+            [
+                'id'    => 96,
+                'title' => 'school_access',
+            ],
+            [
+                'id'    => 97,
+                'title' => 'father_create',
+            ],
+            [
+                'id'    => 98,
+                'title' => 'father_edit',
+            ],
+            [
+                'id'    => 99,
+                'title' => 'father_show',
+            ],
+            [
+                'id'    => 100,
+                'title' => 'father_delete',
+            ],
+            [
+                'id'    => 101,
+                'title' => 'father_access',
+            ],
+            [
+                'id'    => 102,
+                'title' => 'student_create',
+            ],
+            [
+                'id'    => 103,
+                'title' => 'student_edit',
+            ],
+            [
+                'id'    => 104,
+                'title' => 'student_show',
+            ],
+            [
+                'id'    => 105,
+                'title' => 'student_delete',
+            ],
+            [
+                'id'    => 105,
+                'title' => 'student_access',
+            ],
+            [
+                'id'    => 106,
+                'title' => 'payment_create',
+            ],
+            [
+                'id'    => 107,
+                'title' => 'payment_edit',
+            ],
+            [
+                'id'    => 108,
+                'title' => 'payment_show',
+            ],
+            [
+                'id'    => 109,
+                'title' => 'payment_delete',
+            ],
+            [
+                'id'    => 110,
+                'title' => 'payment_access',
+            ],
         ];
 
         Permission::insert($permissions);

@@ -3,7 +3,7 @@
 @section('content')
     <div style="display:none" id="div-table-receipt">
         <form action="{{ route('admin.cashier-modes.store') }}" method="Post" id="store_form">
-            @csrf 
+            @csrf
             <div class="partials-scrollable" style="max-height: 43vh">
                 <table id="table-receipt" class="table table-borderless table-striped" style="direction: rtl;">
                     <thead>
@@ -19,9 +19,9 @@
             </div>
             <div style="background: white;position: absolute;bottom:0">
                 <div class="row">
-                    <div class="col-md-6">  
-                        <input type="number" name="paid_up" min="0" class="form-control" placeholder="المدفوع" required 
-                        id="paid_up" onkeyup="rest_of_the_amount()" onchange="rest_of_the_amount()" onclick="open_easy_num('paid_up')"> 
+                    <div class="col-md-6">
+                        <input type="number" name="paid_up" min="0" class="form-control" placeholder="المدفوع" required
+                        id="paid_up" onkeyup="rest_of_the_amount()" onchange="rest_of_the_amount()" onclick="open_easy_num('paid_up')">
                     </div>
                     <div class="col-md-6">
                         <select name="voucher_code_id" id="" class="form-control">
@@ -51,10 +51,10 @@
                         </div>
                         <div class="col-md-6">
                             <input type="radio" name="payment_type" value="credit" id="credit">
-                            <label for="credit" class="payment-type">
-                                <i class="payment-type-i fas fa-credit-card" style="font-size:50px;"></i>
+                            <label for="credit" class="payment-type" onclick="qr_code_modal()">
+                                <i class="payment-type-i fas fa-qrcode" style="font-size:50px;"></i>
                                 <br>
-                                Credit Card
+                                QR Code
                             </label>
                         </div>
                     </div>

@@ -32,6 +32,13 @@ class UpdateUserRequest extends FormRequest
                 'required',
                 'array',
             ],
+            'identity' => [
+                'array',
+            ],
+            'phone' => [
+                'string',
+                'required',
+            ],
         ];
     }
 }

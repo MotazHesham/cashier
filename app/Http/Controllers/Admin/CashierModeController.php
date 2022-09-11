@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller; 
-use Gate;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\ProductCategory;
@@ -11,30 +10,58 @@ use App\Models\Product;
 use App\Models\OrderProduct;
 use App\Models\Order;
 use App\Models\VoucherCode;
-use App\Models\AttributeProduct; 
-use Session;
+use App\Models\AttributeProduct;
+use App\Models\User;
 use Carbon\Carbon;
-use Alert;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Session;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CashierModeController extends Controller
 {
+    public function qr_scanner(Request $request){
+        return view('admin.cashierModes.qr_code_scanner');
+    }
+
+    public function qr_output(Request $request){
+        $user = User::find($request->code);
+        if($user){
+            if($user->balance >= $request->total){
+                return [
+                    'status' => true,
+                    'message' => 'Success',
+                    'user_id' => $request->code,
+                ];
+            }else{
+                return [
+                    'status' => false,
+                    'message' => 'Balance Not Enough'
+                ];
+            }
+        }else{
+            return [
+                'status' => false,
+                'message' => 'Not Found The Qr Code Owner'
+            ];
+        }
+    }
 
     public function index()
     {
         abort_if(Gate::denies('cashier_mode_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $now_date = date('Y-m-d',strtotime('now'));  
+        $now_date = date('Y-m-d',strtotime('now'));
 
         $categories = ProductCategory::with('products.attributeProduct')->get();
         $vouchercodes = VoucherCode::where('start_date','<=',$now_date)->where('end_date','>=',$now_date)->get();
         Session::put('counter', 0);
 
         return view('admin.cashierModes.add',compact('categories','vouchercodes'));
-    } 
+    }
 
     public function edit(Request $request)
-    { 
+    {
         $order = Order::where('code',$request->code)->first();
 
         if(!$order){
@@ -42,8 +69,8 @@ class CashierModeController extends Controller
             return redirect()->route('admin.cashier-modes.index');
         }
 
-        $order->load('products.product'); 
-        $now_date = date('Y-m-d',strtotime('now'));  
+        $order->load('products.product');
+        $now_date = date('Y-m-d',strtotime('now'));
 
         $categories = ProductCategory::with('products.attributeProduct')->get();
         $vouchercodes = VoucherCode::where('start_date','<=',$now_date)->where('end_date','>=',$now_date)->get();
@@ -55,8 +82,8 @@ class CashierModeController extends Controller
 
         if (!$isAdmin) {
             $created_at = Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $order->created_at)->format('Y-m-d H:i:s');
-            if(Carbon::parse($created_at)->addMinutes(10)->isPast()){ 
-                Alert::warning('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للتعديل برجاء التواصل مع الأدمن لتنفيذ الأمر '); 
+            if(Carbon::parse($created_at)->addMinutes(10)->isPast()){
+                Alert::warning('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للتعديل برجاء التواصل مع الأدمن لتنفيذ الأمر ');
                 return redirect()->route('admin.cashier-modes.index');
             }
         }
@@ -64,7 +91,7 @@ class CashierModeController extends Controller
         return view('admin.cashierModes.edit',compact('order','categories','vouchercodes'));
     }
     public function add_product(Request $request){
-        Session::put('counter', Session::get('counter') + 1); 
+        Session::put('counter', Session::get('counter') + 1);
 
         $product = Product::findOrFail($request->product_id);
 
@@ -73,19 +100,19 @@ class CashierModeController extends Controller
         $extra_price = 0;
 
         foreach($attributes as $value){
-            $attributeProduct = AttributeProduct::where('product_id',$product->id)->where('variant',$value)->first(); 
+            $attributeProduct = AttributeProduct::where('product_id',$product->id)->where('variant',$value)->first();
             $extra_price += $attributeProduct->price;
         }
 
         $product_cost_with_extra = $extra_price + $product->price;
         return view('admin.cashierModes.partials.add_product',compact('product','attributes','quantity','product_cost_with_extra'));
     }
-    public function store(Request $request){   
+    public function store(Request $request){
         try{
             DB::beginTransaction();
             // generate Order Code
                 $now_date = date('Ymd',strtotime('now'));
-                $order = Order::latest()->first(); 
+                $order = Order::latest()->first();
                 if($order){
                     $exploded_code = explode('-',$order->code);
                     if($now_date == $exploded_code[0]){
@@ -105,13 +132,13 @@ class CashierModeController extends Controller
             $order = Order::create([
                 'code' => $code,
                 'entry_date' => date('Y-m-d',strtotime('now')),
-                'paid_up' => $request->paid_up, 
+                'paid_up' => $request->paid_up,
                 'total_cost' => 0,
                 'voucher_code_id' => $request->voucher_code_id,
             ]);
-            
+
             $order_total_cost = 0;
-            
+
             foreach($request->products as $key => $selected_product){
                 $product = Product::find($selected_product['product_id']);
 
@@ -121,17 +148,17 @@ class CashierModeController extends Controller
                 if(isset($selected_product['attributes'])){
                     foreach($selected_product['attributes'] as $value){
                         $item = array();
-                        $attributeProduct = AttributeProduct::where('product_id',$selected_product['product_id'])->where('variant',$value)->first(); 
+                        $attributeProduct = AttributeProduct::where('product_id',$selected_product['product_id'])->where('variant',$value)->first();
                         if($attributeProduct){
-                            $item['attribute_id'] = $attributeProduct->attribute_id; 
-                            $item['variant'] = $value; 
-                            $item['price'] = $attributeProduct->price; 
-                            array_push($attributes, $item); 
+                            $item['attribute_id'] = $attributeProduct->attribute_id;
+                            $item['variant'] = $value;
+                            $item['price'] = $attributeProduct->price;
+                            array_push($attributes, $item);
                             $extra_price += ($attributeProduct->price * $selected_product['quantity']);
                         }
                     }
                 }
-                
+
                 $orderProduct = OrderProduct::create([
                     'order_id' => $order->id,
                     'product_id' => $selected_product['product_id'],
@@ -141,8 +168,8 @@ class CashierModeController extends Controller
                     'price' => $product->price,
                     'extra_price' => $extra_price,
                     'total_cost' => $total_cost + $extra_price,
-                ]); 
-                
+                ]);
+
                 $order_total_cost += ($total_cost + $extra_price);
             }
             $voucher_code = VoucherCode::find($request->voucher_code_id);
@@ -158,7 +185,7 @@ class CashierModeController extends Controller
             }else{
                 $order->total_cost = $order_total_cost;
             }
-            $order->save(); 
+            $order->save();
 
             $order->load('products.product');
             DB::commit();
@@ -169,7 +196,7 @@ class CashierModeController extends Controller
         }
     }
 
-    public function update(Request $request){   
+    public function update(Request $request){
         try{
             DB::beginTransaction();
             $order = Order::findOrFail($request->order_id);
@@ -180,7 +207,7 @@ class CashierModeController extends Controller
             }
 
             $order_total_cost = 0;
-            
+
             foreach($request->products as $key => $selected_product){
                 $product = Product::find($selected_product['product_id']);
 
@@ -190,17 +217,17 @@ class CashierModeController extends Controller
                 if(isset($selected_product['attributes'])){
                     foreach($selected_product['attributes'] as $value){
                         $item = array();
-                        $attributeProduct = AttributeProduct::where('product_id',$selected_product['product_id'])->where('variant',$value)->first(); 
+                        $attributeProduct = AttributeProduct::where('product_id',$selected_product['product_id'])->where('variant',$value)->first();
                         if($attributeProduct){
-                            $item['attribute_id'] = $attributeProduct->attribute_id; 
-                            $item['variant'] = $value; 
-                            $item['price'] = $attributeProduct->price; 
-                            array_push($attributes, $item); 
+                            $item['attribute_id'] = $attributeProduct->attribute_id;
+                            $item['variant'] = $value;
+                            $item['price'] = $attributeProduct->price;
+                            array_push($attributes, $item);
                             $extra_price += ($attributeProduct->price * $selected_product['quantity']);
                         }
                     }
                 }
-                
+
                 $orderProduct = OrderProduct::create([
                     'order_id' => $order->id,
                     'product_id' => $selected_product['product_id'],
@@ -210,8 +237,8 @@ class CashierModeController extends Controller
                     'price' => $product->price,
                     'extra_price' => $extra_price,
                     'total_cost' => $total_cost + $extra_price,
-                ]); 
-                
+                ]);
+
                 $order_total_cost += ($total_cost + $extra_price);
             }
 
@@ -228,18 +255,18 @@ class CashierModeController extends Controller
             }else{
                 $order->total_cost = $order_total_cost;
             }
-            $order->save(); 
+            $order->save();
 
-            $order->update([ 
+            $order->update([
                 'paid_up' => $request->paid_up,
-                'discount' => $discount, 
+                'discount' => $discount,
                 'voucher_code_id' => $request->voucher_code_id,
             ]);
 
             $order->load('products.product');
-            
+
             DB::commit();
-            return route('admin.orders.print',$order->id); 
+            return route('admin.orders.print',$order->id);
         }catch(\Exception $ex){
             DB::rollBack();
             return 0;

@@ -134,6 +134,58 @@
                 </ul>
             </li>
         @endcan
+        @can('schools_managment_access')
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/schools*") ? "c-show" : "" }} {{ request()->is("admin/fathers*") ? "c-show" : "" }} {{ request()->is("admin/students*") ? "c-show" : "" }}">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-chalkboard-teacher c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.schoolsManagment.title') }}
+                </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    @can('school_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.schools.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/schools") || request()->is("admin/schools/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-chalkboard c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.school.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('father_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.fathers.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/fathers") || request()->is("admin/fathers/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-users c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.father.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('student_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.students.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/students") || request()->is("admin/students/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-user-graduate c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.student.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
+        @can('payment_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.payments.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/payments") || request()->is("admin/payments/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-credit-card c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.payment.title') }}
+                </a>
+            </li>
+        @endcan
         @can('order_access')
             <li class="c-sidebar-nav-item">
                 <a href="{{ route("admin.orders.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/orders") || request()->is("admin/orders/*") ? "c-active" : "" }}">

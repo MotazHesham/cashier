@@ -66,7 +66,7 @@
 <body id="body-pd" class="body-pd" onafterprint="go_full_screen();">
 
     <header class="header body-pd" id="header">
-        <div class="header_toggle"> 
+        <div class="header_toggle">
             <div class="nav-items">
                 <a class="btn btn-lg btn-light">
                     <i id="header-toggle" class="fas fa-bars "></i>
@@ -74,7 +74,7 @@
                 <a class="btn btn-lg btn-light" href="{{ route('admin.home') }}">
                     <i class="fas fa-chevron-circle-left"></i>
                     <span class="nav_name">Dashboard</span>
-                </a> 
+                </a>
                 <a class="btn btn-lg btn-light" href="{{ route('admin.cashier-modes.index') }}">
                     <i class="fas fa-redo-alt"></i>
                     <span class="nav_name">Refresh</span>
@@ -88,18 +88,18 @@
                 <a class="btn btn-lg btn-light" onclick="go_full_screen()">
                     <i class="fas fa-expand"></i>
                     <span class="nav_name">Expand</span>
-                </a> 
+                </a>
                 <a class="btn btn-lg btn-light" >
                     <input type="checkbox" id="printing" name="printing" value="1"  checked onclick="change_printing()">
                     <label for="printing">Printing</label><br>
-                </a> 
+                </a>
                 <a class="btn btn-lg btn-light" style="border-radius: 35px;position:absolute;right:0">
                     <form action="{{ route('admin.cashier-modes.edit') }}">
                         <input style="border-radius: 35px" type="text" class="form-control" name="code"
                             value="{{ date('Ymd', strtotime('now')) }}-" id="">
                     </form>
                 </a>
-                
+
             </div>
         </div>
     </header>
@@ -108,7 +108,7 @@
     @endphp
     <div class="l-navbar navbar-show partials-scrollable" style="max-height: 100%" id="nav-bar">
         <h3 class="text-center">{{ $setting->website_title ?? '' }}</h3>
-        
+
         <hr>
         @yield('content')
     </div>
@@ -213,8 +213,20 @@
             </div>
         @endforeach
     </div>
-    <!--Container Main end-->
 
+    <!--Container Main end-->
+    <div class="modal fade" id="QRModal" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="QRModalLabel">Qr Scanner</h5>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     @include('sweetalert::alert')
 
@@ -230,14 +242,14 @@
     <script>
 
         function showFrontendAlert(type, title, message){
-            swal({ 
+            swal({
                 title: title,
                 text: message,
-                type: type, 
+                type: type,
                 showConfirmButton: 'Okay',
                 timer: 3000
             });
-        } 
+        }
     </script>
     <script>
 
@@ -245,7 +257,7 @@
             var printing = $('#printing').val();
             if(printing == 1){
                 $('#printing').val(0);
-            }else{ 
+            }else{
                 $('#printing').val(1);
             }
         }
@@ -256,14 +268,14 @@
                 type: $(this).attr("method"),
                 url: $(this).attr("action"),
                 data: $(this).serialize(),
-                success: function(link) { 
+                success: function(link) {
                     $('#div-table-receipt').css('display', 'none');
-                    $('#table-receipt tbody').html(null); 
+                    $('#table-receipt tbody').html(null);
                     $('#paid_up').val(null);
                     $('#rest_of_the_amount').html('00.00');
-                    
+
                     var printing = $('#printing').val();
-                    if(printing == 1){ 
+                    if(printing == 1){
                         window.open(link, "_blank");
                     }else{
                         showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
@@ -281,13 +293,13 @@
                 type: $(this).attr("method"),
                 url: $(this).attr("action"),
                 data: $(this).serialize(),
-                success: function(link) {   
+                success: function(link) {
                     var printing = $('#printing').val();
-                    if(printing == 1){ 
+                    if(printing == 1){
                         window.open(link, "_blank");
                     }else{
                         showFrontendAlert('success', 'تم تعديل الطلب بنجاح', '');
-                    } 
+                    }
                 },
                 error: function(){
                     showFrontendAlert('error', 'حدث خطأ', '');
@@ -366,8 +378,22 @@
                 return false;
             });
             return true;
-        }); // prevent submitting multiple times 
+        }); // prevent submitting multiple times
+
+
+        function qr_code_modal(){
+            $.ajax({
+                type: "POST",
+                url: '{{ route('admin.cashier-modes.qr_scanner') }}',
+                data:{_token:'{{ csrf_token() }}'},
+                success: function(data) {
+                    $('#QRModal').modal('show');
+                    $('#QRModal .modal-body').html(data);
+                }
+            });
+        }
     </script>
+    @yield('scripts')
 </body>
 
 </html>

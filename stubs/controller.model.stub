@@ -1,0 +1,96 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\MassDestroyRoleRequest;
+use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest; 
+use Gate; 
+use Symfony\Component\HttpFoundation\Response;
+use Alert;
+
+class {{ class }} extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        abort_if(Gate::denies('role_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $roles = Role::with(['permissions'])->get();
+
+        return view('admin.roles.index', compact('roles'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function edit({{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, {{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+}

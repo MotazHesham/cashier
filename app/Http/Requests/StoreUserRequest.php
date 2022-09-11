@@ -35,6 +35,16 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'array',
             ],
+            'identity' => [
+                'array',
+            ],
+            'phone' => [
+                'string',
+                'required',
+            ],
+            'user_type' => [
+                'required',
+            ],
         ];
     }
 }

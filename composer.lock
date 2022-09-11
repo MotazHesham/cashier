@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e54b321e432ff2df2172afc034ac578b",
+    "content-hash": "0ce07c680f587488befd3e9e016a57e3",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -61,6 +61,146 @@
                 "source": "https://github.com/asm89/stack-cors/tree/1.3.0"
             },
             "time": "2019-12-24T22:41:47+00:00"
+        },
+        {
+            "name": "bacon/bacon-qr-code",
+            "version": "2.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Bacon/BaconQrCode.git",
+                "reference": "d70c840f68657ce49094b8d91f9ee0cc07fbf66c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/d70c840f68657ce49094b8d91f9ee0cc07fbf66c",
+                "reference": "d70c840f68657ce49094b8d91f9ee0cc07fbf66c",
+                "shasum": ""
+            },
+            "require": {
+                "dasprid/enum": "^1.0.3",
+                "ext-iconv": "*",
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "phly/keep-a-changelog": "^2.1",
+                "phpunit/phpunit": "^7 | ^8 | ^9",
+                "spatie/phpunit-snapshot-assertions": "^4.2.9",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "suggest": {
+                "ext-imagick": "to generate QR code images"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BaconQrCode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Scholzen 'DASPRiD'",
+                    "email": "mail@dasprids.de",
+                    "homepage": "https://dasprids.de/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "BaconQrCode is a QR code generator for PHP.",
+            "homepage": "https://github.com/Bacon/BaconQrCode",
+            "support": {
+                "issues": "https://github.com/Bacon/BaconQrCode/issues",
+                "source": "https://github.com/Bacon/BaconQrCode/tree/2.0.7"
+            },
+            "time": "2022-03-14T02:02:36+00:00"
+        },
+        {
+            "name": "bavix/laravel-wallet",
+            "version": "7.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bavix/laravel-wallet.git",
+                "reference": "3bb95fdcff50715457d672fda122d4fcb823a26a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bavix/laravel-wallet/zipball/3bb95fdcff50715457d672fda122d4fcb823a26a",
+                "reference": "3bb95fdcff50715457d672fda122d4fcb823a26a",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.8",
+                "doctrine/dbal": "^2.8|^3.0",
+                "ext-json": "*",
+                "ext-pdo": "*",
+                "illuminate/contracts": "^6.0|^7.0|^8.0",
+                "illuminate/database": "^6.0|^7.0|^8.0",
+                "illuminate/events": "^6.0|^7.0|^8.0",
+                "php": "^7.4|^8.0",
+                "ramsey/uuid": "^3.0|^4.0"
+            },
+            "require-dev": {
+                "brianium/paratest": "^6.4",
+                "cknow/laravel-money": "^6.1",
+                "ergebnis/phpstan-rules": "^1.0",
+                "infection/infection": "~0.25",
+                "laravel/cashier": "^13.6",
+                "nunomaduro/collision": "^5.10",
+                "orchestra/testbench": "^6.23",
+                "phpstan/phpstan": "^1.2",
+                "phpunit/phpunit": "^9.5",
+                "psalm/plugin-laravel": "^1.5",
+                "rector/rector": "^0.12",
+                "symplify/easy-coding-standard": "^10.0",
+                "vimeo/psalm": "^4.15"
+            },
+            "suggest": {
+                "bavix/laravel-wallet-swap": "Addition to the laravel-wallet library for quick setting of exchange rates",
+                "bavix/laravel-wallet-warmup": "Addition to the laravel-wallet library for refresh balance wallets"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Bavix\\Wallet\\WalletServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bavix\\Wallet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Babichev Maxim",
+                    "email": "info@babichev.net"
+                }
+            ],
+            "description": "Easy work with virtual wallet.",
+            "homepage": "https://bavix.github.io/laravel-wallet/",
+            "keywords": [
+                "bavix",
+                "credits",
+                "currency",
+                "laravel",
+                "laravel-package",
+                "laravel-wallet",
+                "payments",
+                "virtual",
+                "wallet"
+            ],
+            "support": {
+                "issues": "https://github.com/bavix/laravel-wallet/issues",
+                "source": "https://github.com/bavix/laravel-wallet/tree/7.3.4"
+            },
+            "time": "2022-08-08T15:08:44+00:00"
         },
         {
             "name": "brick/math",
@@ -121,6 +261,53 @@
                 }
             ],
             "time": "2021-08-15T20:50:18+00:00"
+        },
+        {
+            "name": "dasprid/enum",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DASPRiD/Enum.git",
+                "reference": "5abf82f213618696dda8e3bf6f64dd042d8542b2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/5abf82f213618696dda8e3bf6f64dd042d8542b2",
+                "reference": "5abf82f213618696dda8e3bf6f64dd042d8542b2",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7 | ^8 | ^9",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DASPRiD\\Enum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Scholzen 'DASPRiD'",
+                    "email": "mail@dasprids.de",
+                    "homepage": "https://dasprids.de/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP 7.1 enum implementation",
+            "keywords": [
+                "enum",
+                "map"
+            ],
+            "support": {
+                "issues": "https://github.com/DASPRiD/Enum/issues",
+                "source": "https://github.com/DASPRiD/Enum/tree/1.0.3"
+            },
+            "time": "2020-10-02T16:03:48+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -3277,6 +3464,74 @@
             "time": "2022-02-04T09:38:53+00:00"
         },
         {
+            "name": "simplesoftwareio/simple-qrcode",
+            "version": "4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleSoftwareIO/simple-qrcode.git",
+                "reference": "916db7948ca6772d54bb617259c768c9cdc8d537"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleSoftwareIO/simple-qrcode/zipball/916db7948ca6772d54bb617259c768c9cdc8d537",
+                "reference": "916db7948ca6772d54bb617259c768c9cdc8d537",
+                "shasum": ""
+            },
+            "require": {
+                "bacon/bacon-qr-code": "^2.0",
+                "ext-gd": "*",
+                "php": ">=7.2|^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1",
+                "phpunit/phpunit": "~9"
+            },
+            "suggest": {
+                "ext-imagick": "Allows the generation of PNG QrCodes.",
+                "illuminate/support": "Allows for use within Laravel."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider"
+                    ],
+                    "aliases": {
+                        "QrCode": "SimpleSoftwareIO\\QrCode\\Facades\\QrCode"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SimpleSoftwareIO\\QrCode\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Simple Software LLC",
+                    "email": "support@simplesoftware.io"
+                }
+            ],
+            "description": "Simple QrCode is a QR code generator made for Laravel.",
+            "homepage": "https://www.simplesoftware.io/#/docs/simple-qrcode",
+            "keywords": [
+                "Simple",
+                "generator",
+                "laravel",
+                "qrcode",
+                "wrapper"
+            ],
+            "support": {
+                "issues": "https://github.com/SimpleSoftwareIO/simple-qrcode/issues",
+                "source": "https://github.com/SimpleSoftwareIO/simple-qrcode/tree/4.2.0"
+            },
+            "time": "2021-02-08T20:43:55+00:00"
+        },
+        {
             "name": "spatie/image",
             "version": "1.10.6",
             "source": {
@@ -6174,6 +6429,81 @@
     ],
     "packages-dev": [
         {
+            "name": "crestapps/laravel-code-generator",
+            "version": "v2.4.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CrestApps/laravel-code-generator.git",
+                "reference": "9b238987abe4b9ca1db4f09b4bce23fd9769c5af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CrestApps/laravel-code-generator/zipball/9b238987abe4b9ca1db4f09b4bce23fd9769c5af",
+                "reference": "9b238987abe4b9ca1db4f09b4bce23fd9769c5af",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": ">=5.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9||~1.0",
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "^5.0||^6.0||^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "CrestApps\\CodeGenerator\\CodeGeneratorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CrestApps\\CodeGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Majd Alhayek (Mike)",
+                    "email": "mike@crestapps.com",
+                    "homepage": "https://www.crestapps.com"
+                }
+            ],
+            "description": "An intelligent code generator for Laravel framework that will save you time! This awesome tool will help you generate resources like views, controllers, routes, migrations, languages and/or form-requests! It is extremely flexible and customizable to cover many on the use cases. It is shipped with cross-browsers compatible template, along with a client-side validation to modernize your application.",
+            "keywords": [
+                "Alhayek",
+                "CrestApps",
+                "Majd Alhayek",
+                "Mike Alhayek",
+                "code generator",
+                "code-generator",
+                "controller creator",
+                "crud",
+                "crud builder",
+                "crud generator",
+                "generator",
+                "generators",
+                "laravel",
+                "laravel code generator",
+                "laravel crud",
+                "laravel crud builder",
+                "laravel crud generator",
+                "laravel-code-generator",
+                "routes creator",
+                "views creator"
+            ],
+            "support": {
+                "issues": "https://github.com/CrestApps/laravel-code-generator/issues",
+                "source": "https://github.com/CrestApps/laravel-code-generator/tree/v2.4.8"
+            },
+            "time": "2022-03-02T21:08:06+00:00"
+        },
+        {
             "name": "doctrine/instantiator",
             "version": "1.4.0",
             "source": {
@@ -8686,5 +9016,5 @@
         "php": "^7.2.5|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

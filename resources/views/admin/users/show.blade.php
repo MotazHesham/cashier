@@ -23,30 +23,9 @@
                             {{ $user->id }}
                         </td>
                     </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.user.fields.name') }}
-                        </th>
-                        <td>
-                            {{ $user->name }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.user.fields.email') }}
-                        </th>
-                        <td>
-                            {{ $user->email }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.user.fields.email_verified_at') }}
-                        </th>
-                        <td>
-                            {{ $user->email_verified_at }}
-                        </td>
-                    </tr>
+
+                    @include('admin.users.partials.show')
+
                     <tr>
                         <th>
                             {{ trans('cruds.user.fields.roles') }}
@@ -68,22 +47,6 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.relatedData') }}
-    </div>
-    <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
-        <li class="nav-item">
-            <a class="nav-link" href="#user_user_alerts" role="tab" data-toggle="tab">
-                {{ trans('cruds.userAlert.title') }}
-            </a>
-        </li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane" role="tabpanel" id="user_user_alerts">
-            @includeIf('admin.users.relationships.userUserAlerts', ['userAlerts' => $user->userUserAlerts])
-        </div>
-    </div>
-</div>
+
 
 @endsection
