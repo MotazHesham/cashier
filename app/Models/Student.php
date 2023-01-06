@@ -13,6 +13,9 @@ class Student extends Model
     public $table = 'students';
 
     public const GRADE_SELECT = [
+        'pre-k'   => 'Pre K',
+        'k-1'   => 'K1',
+        'k-2'   => 'K2',
         '1'   => 'Grade 1',
         '2'  => 'Grade 2',
         '3' => 'Grade 3',
@@ -20,13 +23,18 @@ class Student extends Model
         '5'  => 'Grade 5',
         '6' => 'Grade 6',
         '7' => 'Grade 7',
+        '8' => 'Grade 8',
+        '9' => 'Grade 9',
+        '10' => 'Grade 10',
+        '11' => 'Grade 11',
+        '12' => 'Grade 12',
     ];
     public const CLASS_SELECT = [
-        'a'   => 'Class A',
-        'b'  => 'Class B',
-        'c' => 'Class C',
-        'd' => 'Class D',
-        'e' => 'Class E',
+        '01'   => 'Class 01',
+        '02'  => 'Class 02',
+        '03' => 'Class 03',
+        '04' => 'Class 04',
+        '05' => 'Class 05',
     ];
     protected $dates = [
         'created_at',
