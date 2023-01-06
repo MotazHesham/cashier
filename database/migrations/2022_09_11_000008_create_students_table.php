@@ -10,6 +10,8 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('grade');
+            $table->string('class');
             $table->timestamps();
             $table->softDeletes();
         });

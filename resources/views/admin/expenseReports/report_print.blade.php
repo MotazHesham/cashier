@@ -10,7 +10,7 @@
     <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
     <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
     <style>
-        
+
 		@page {
 			size: auto;   /* auto is the initial value */
 			margin: 0;  /* this affects the margin in the printer settings */
@@ -21,57 +21,57 @@
     </style>
 </head>
 
-<body> 
+<body>
     <div style="page-break-after: always;" class="text-center">
-        @php 
+        @php
             $setting = \App\Models\GeneralSetting::first();
         @endphp
         <div class="text-center">
             <img class="text-center" src="{{ $setting->logo ? $setting->logo->getUrl('preview') : ''}}" alt="">
-            <h3 class="text-center mb-3">{{ $setting->website_title ?? ''}}</h3> 
+            <h3 class="text-center mb-3">{{ $setting->website_title ?? ''}}</h3>
         </div>
-        <div> 
+        <div>
             <div style="padding:0 12px">
                 Date:
                 <b style="font-size:12px">
                     @if($start_date)
                         {{$start_date}} to {{$end_date}}
-                    @else 
+                    @else
                         {{$year}} - {{$month}}
                     @endif
                 </b>
-            </div> 
+            </div>
             <div style="padding:0 12px">
-                Print Time: 
+                Print Time:
                 <b style="font-size:12px">{{ date('Y-m-d h:i a',strtotime('now')) }}</b>
-            </div> 
+            </div>
         </div>
-        
+
         <table id="table-receipt" class="table table-bordered table-striped text-center" style="direction: rtl;">
             <thead>
                 <tr>
-                    <td>المنتج</td> 
+                    <td>المنتج</td>
                     <td>الأضافات</td>
                     <td>الكمية</td>
                     <td>الأجمالي</td>
                 </tr>
             </thead>
-            <tbody> 
+            <tbody>
                 @php
                     $total = 0;
                 @endphp
-                @foreach($products_report as $item) 
-                    @php
+                @foreach($products_report as $item)
+                    <!-- @php
                         $total += $item->total_cost;
-                    @endphp
+                    @endphp -->
                     <tr>
                         <td>
-                            {{$item->product_name}}   
-                        </td> 
+                            {{$item->product_name}}
+                        </td>
                         <td>
                             <div style="display: flex;flex-direction:row;justify-content: center;">
-                                @foreach(json_decode($item->attributes) as $attribute) 
-                                    <span style="background: black; color: white;border-radius: 2px; padding: 2px;display:inline"><small>{{ $attribute->price }}  {{ $attribute->variant}} </small></span> 
+                                @foreach(json_decode($item->attributes) as $attribute)
+                                    <span style="background: black; color: white;border-radius: 2px; padding: 2px;display:inline"><small>{{ $attribute->price }}  {{ $attribute->variant}} </small></span>
                                     @if(!$loop->last) - @endif
                                 @endforeach
                             </div>
@@ -80,23 +80,23 @@
                             {{$item->quantity}}
                         </td>
                         <td>
-                            {{$item->total_cost}} 
-                        </td> 
-                    </tr>   
+                            {{$item->total_cost}}
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
-        <div style="padding: 0 10px">
-            <b>{{ number_format($total,2) }} LE</b> :الأجمالي  
+        <!-- <div style="padding: 0 10px">
+            <b>{{ number_format($total,2) }} LE</b> :الأجمالي
             <br>
-            <b>{{ number_format(($total - $ordersTotal),2) }} LE</b> :الخصومات  
+            <b>{{ number_format(($total - $ordersTotal),2) }} LE</b> :الخصومات
             <br>
-            <b>{{ number_format($ordersTotal,2) }} LE</b> :الأجمالي بعد الخصم  
-        </div> 
+            <b>{{ number_format($ordersTotal,2) }} LE</b> :الأجمالي بعد الخصم
+        </div> -->
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
-            window.print(); 
+            window.print();
         });
     </script>
 </body>

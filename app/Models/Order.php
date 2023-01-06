@@ -18,10 +18,14 @@ class Order extends Model
     public $table = 'orders';
 
     public const PAYMENT_TYPE_SELECT = [
-        'cash' => 'cash',
+        'cash' => 'Cash',
         'qr_code'   => 'Qr Code',
     ];
 
+    public const ORDER_FROM_SELECT = [
+        'cashier' => 'Cashier',
+        'teacher'   => 'Teacher',
+    ];
     protected $dates = [
         'created_at',
         'updated_at',
@@ -30,6 +34,9 @@ class Order extends Model
 
     protected $fillable = [
         'code',
+        'order_from',
+        'description',
+        'viewed',
         'entry_date',
         'paid_up',
         'discount',
@@ -37,6 +44,7 @@ class Order extends Model
         'payment_type',
         'voucher_code_id',
         'created_by_id',
+        'user_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -59,6 +67,11 @@ class Order extends Model
     public function created_by()
     {
         return $this->belongsTo(User::class, 'created_by_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     protected function serializeDate(DateTimeInterface $date)

@@ -21,16 +21,17 @@ use RealRashid\SweetAlert\Facades\Alert;
 class CashierModeController extends Controller
 {
     public function qr_scanner(Request $request){
-        $user = User::find(4); 
-        return view('admin.cashierModes.qr_code_scanner');
+        $type = $request->type;
+        return view('admin.cashierModes.qr_code_scanner',compact('type'));
     }
 
     public function qr_output(Request $request){
         $user = User::find($request->code);
-        $user->wallet->refreshBalance();
+        $balance = $user->current_balance();
+        $isStoreForm = $request->type == 'store' ? 1 : 0;
         if($user){
-            if($user->balance){
-                if($user->balance >= $request->total){
+            if($balance){
+                if($balance >= $request->total){
                     $output = '<div class="card" style="height:auto;margin:15px 0px">
                                 <div class="card-body">
                                     <div class="row">
@@ -43,15 +44,15 @@ class CashierModeController extends Controller
                                                 <h5> '.$user->phone.' </h5>
                                                 <div class="c-callout c-callout-info b-t-1 b-r-1 b-b-1">
                                                     <small class="text-muted">Wallet Balance</small><br>
-                                                    <strong class="h4">EGP '. $user->balance .' </strong>
+                                                    <strong class="h4">EGP '. $balance .' </strong>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="alert alert-success">Success Available To Use Qr Code</div> 
-                            <button class="btn btn-primary" onclick="submit_pay_form()"
+                            <div class="alert alert-success">Ready To Use Qr Code</div>
+                            <button class="btn btn-primary" onclick="submit_pay_form('.$isStoreForm.')"
                                 style="border-radius:10px;background: #69becf;border-color: #69becf; padding: 22px; font-size: 34px;">
                                 دفع
                             </button>
@@ -59,7 +60,7 @@ class CashierModeController extends Controller
                     return [
                         'status' => true,
                         'message' =>  $output,
-                        'user_id' => $request->code,
+                        'user_id' => $request->code
                     ];
                 }else{
                     return [
@@ -126,10 +127,14 @@ class CashierModeController extends Controller
     }
     public function add_product(Request $request){
         Session::put('counter', Session::get('counter') + 1);
-
         $product = Product::findOrFail($request->product_id);
 
-        $attributes = $request->input('attributes', []);
+        $attributes = [];
+        foreach($request->input('attributes', []) as $key => $values){
+            foreach($values as $value){
+                $attributes[] = $value;
+            }
+        }
         $quantity = $request->quantity;
         $extra_price = 0;
 
@@ -170,6 +175,7 @@ class CashierModeController extends Controller
                 'total_cost' => 0,
                 'voucher_code_id' => $request->voucher_code_id,
                 'payment_type' => $request->payment_type,
+                'order_from' => 'cashier',
             ]);
 
             $order_total_cost = 0;
@@ -222,11 +228,16 @@ class CashierModeController extends Controller
             }
 
             if($request->payment_type == 'qr_code'){
-                $user = User::find($request->qr_user_id); 
-                $user->withdraw($order->total_cost,['order' => $order->code]);
-                $user->balance;
-                $user->wallet->refreshBalance();
-                $user->balance;
+                $user = User::find($request->qr_user_id);
+                $balance = $user->current_balance();
+                if($balance < $order->total_cost){
+                  DB::rollBack();
+                  return 0;
+                }
+                $user->withdraw($order->total_cost,['info' => $user->current_balance(),'order' => $order->code,'meta' => 'عملية سحب لشراء طلب']);
+                $user->current_balance();
+
+                $order->user_id = $request->qr_user_id;
             }
 
             $order->save();
@@ -244,6 +255,28 @@ class CashierModeController extends Controller
         try{
             DB::beginTransaction();
             $order = Order::findOrFail($request->order_id);
+
+            if($request->payment_type == 'qr_code'){
+                $user = User::find($request->qr_user_id);
+                $remain = $order->total_cost - $old_total_cost;
+                if($user->current_balance() < $remain){
+                  Alert::error('Balance Not Enough');
+                  return redirect()->route('admin.cashier-modes.index');
+                }
+            }
+            // check ability to edit
+            $isAdmin = auth()->user()->roles->contains(1);
+
+            if (!$isAdmin) {
+                $created_at = Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $order->created_at)->format('Y-m-d H:i:s');
+                if(Carbon::parse($created_at)->addMinutes(10)->isPast()){
+                    Alert::warning('لم يتم تنفيذ الأمر', 'تعدي الوقت المسموح به للتعديل برجاء التواصل مع الأدمن لتنفيذ الأمر ');
+                    return redirect()->route('admin.cashier-modes.index');
+                }
+            }
+            //----------------------
+
+            $old_total_cost = $order->total_cost; // for orders have payment_type => qr_code
             $order->load('products.product');
 
             foreach($order->products as $order_product){
@@ -299,6 +332,17 @@ class CashierModeController extends Controller
             }else{
                 $order->total_cost = $order_total_cost;
             }
+
+            if($request->payment_type == 'qr_code'){
+                if($remain > 0){
+                  $user->withdraw($remain,['info' => $user->current_balance() ,'order' => $order->code ,'meta' => 'عملية سحب بعد تعديل الطلب']);
+                }elseif($remain < 0){
+                  $user->deposit(($old_total_cost - $order->total_cost),['info' => $user->current_balance() ,'order' => $order->code,'meta' => 'عملية أضافة بعد تعديل الطلب']);
+                }
+
+                $order->user_id = $request->qr_user_id;
+            }
+
             $order->save();
 
             $order->update([

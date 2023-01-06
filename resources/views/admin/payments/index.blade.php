@@ -28,6 +28,9 @@
                         {{ trans('cruds.payment.fields.payment_type') }}
                     </th>
                     <th>
+                      {{ trans('cruds.payment.fields.type') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.payment.fields.payment_status') }}
                     </th>
                     <th>
@@ -35,6 +38,9 @@
                     </th>
                     <th>
                         {{ trans('cruds.payment.fields.user') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.payment.fields.created_at') }}
                     </th>
                     <th>
                         &nbsp;
@@ -53,35 +59,6 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('payment_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
-  let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.payments.massDestroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).data(), function (entry) {
-          return entry.id
-      });
-
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
-
-        return
-      }
-
-      if (confirm('{{ trans('global.areYouSure') }}')) {
-        $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  }
-  dtButtons.push(deleteButton)
-@endcan
 
   let dtOverrideGlobals = {
     buttons: dtButtons,
@@ -94,9 +71,11 @@
       { data: 'placeholder', name: 'placeholder' },
 { data: 'id', name: 'id' },
 { data: 'payment_type', name: 'payment_type' },
+{ data: 'type', name: 'type' },
 { data: 'payment_status', name: 'payment_status' },
 { data: 'amount', name: 'amount' },
 { data: 'user_name', name: 'user.name' },
+{ data: 'created_at', name: 'created_at' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

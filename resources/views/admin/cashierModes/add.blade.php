@@ -3,7 +3,7 @@
 @section('content')
     <div style="display:none" id="div-table-receipt">
         <form action="{{ route('admin.cashier-modes.store') }}" method="Post" id="store_form">
-            @csrf 
+            @csrf
 
             <input type="hidden" name="qr_user_id" id="qr_user_id">
             <div class="partials-scrollable" style="max-height: 43vh">
@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-md-6">
                             <input type="radio" name="payment_type" value="qr_code" id="qr_code">
-                            <label for="qr_code" class="payment-type" onclick="qr_code_modal(true)">
+                            <label for="qr_code" class="payment-type" onclick="qr_code_modal(true,'store')">
                                 <i class="payment-type-i fas fa-qrcode" style="font-size:50px;"></i>
                                 <br>
                                 QR Code

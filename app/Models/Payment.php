@@ -6,6 +6,7 @@ use \DateTimeInterface;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Payment extends Model
 {
@@ -13,13 +14,18 @@ class Payment extends Model
     use Auditable;
 
     public const PAYMENT_STATUS_SELECT = [
-        'unpaid' => 'Un Paid',
         'paid'   => 'Paid',
+        'unpaid' => 'Un Paid',
     ];
 
     public const PAYMENT_TYPE_SELECT = [
         'cash'        => 'Cash',
         'credit_card' => 'Credit Card',
+    ];
+
+    public const TYPE_SELECT = [
+        'charge' => 'Charge',
+        'withdraw'        => 'Withdraw',
     ];
 
     public $table = 'payments';
@@ -35,6 +41,7 @@ class Payment extends Model
         'payment_order',
         'payment_type',
         'payment_status',
+        'type',
         'amount',
         'user_id',
         'created_at',
@@ -45,6 +52,12 @@ class Payment extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+
+    public function getCreatedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format') . ' ' .config('panel.time_format')) : null;
     }
 
     protected function serializeDate(DateTimeInterface $date)

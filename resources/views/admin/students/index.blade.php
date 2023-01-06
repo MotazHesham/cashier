@@ -6,6 +6,10 @@
                 <a class="btn btn-success" href="{{ route('admin.students.create') }}">
                     {{ trans('global.add') }} {{ trans('cruds.student.title_singular') }}
                 </a>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                    {{ trans('global.app_csvImport') }}
+                </button>
+                @include('csvImport.modal', ['model' => 'Student', 'route' => 'admin.students.parseCsvImport'])
             </div>
         </div>
     @endcan
@@ -53,6 +57,12 @@
                                 </td>
                                 <td>
                                     {{ $student->user->name ?? '' }}
+                                    <br>
+                                    <span class="badge badge-info">
+                                        {{ trans('cruds.student.fields.grade') }} : {{$student->grade}}
+                                      <br>
+                                        {{ trans('cruds.student.fields.class') }} : {{$student->class}}
+                                    </span>
                                 </td>
                                 <td>
                                     {{ $student->user->email ?? '' }}
@@ -103,45 +113,6 @@
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-            @can('student_delete')
-                let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-                let deleteButton = {
-                    text: deleteButtonTrans,
-                    url: "{{ route('admin.students.massDestroy') }}",
-                    className: 'btn-danger',
-                    action: function(e, dt, node, config) {
-                        var ids = $.map(dt.rows({
-                            selected: true
-                        }).nodes(), function(entry) {
-                            return $(entry).data('entry-id')
-                        });
-
-                        if (ids.length === 0) {
-                            alert('{{ trans('global.datatables.zero_selected') }}')
-
-                            return
-                        }
-
-                        if (confirm('{{ trans('global.areYouSure') }}')) {
-                            $.ajax({
-                                    headers: {
-                                        'x-csrf-token': _token
-                                    },
-                                    method: 'POST',
-                                    url: config.url,
-                                    data: {
-                                        ids: ids,
-                                        _method: 'DELETE'
-                                    }
-                                })
-                                .done(function() {
-                                    location.reload()
-                                })
-                        }
-                    }
-                }
-                dtButtons.push(deleteButton)
-            @endcan
 
             $.extend(true, $.fn.dataTable.defaults, {
                 orderCellsTop: true,

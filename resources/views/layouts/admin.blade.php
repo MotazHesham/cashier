@@ -36,6 +36,14 @@
             }
         </style>
     @endif
+    <style>
+      .alaa:hover{
+        color: blue;
+      }
+      .alaa:focus{
+        color: blue;
+      }
+    </style>
     @yield('styles')
 </head>
 
@@ -133,7 +141,21 @@
             </form>
         </div>
     </div>
+    <!--Container Main end-->
+    <div class="modal fade" id="OrderDetails"  aria-labelledby="OrderDetailsLabel"  >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="OrderDetailsLabel">OrderDetails</h5>
+                </div>
+                <div class="modal-body">
 
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
     @include('sweetalert::alert')
 
     <script src="{{ asset('dashboard_offline/js/jquery.min.js') }}"></script>
@@ -159,6 +181,7 @@
     <script src="{{ asset('dashboard_offline/js/dropzone.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('js/JSPrintManager.js') }}"></script>
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('dashboard_offline/css/sweetalert2.min.css') }}">
     <script src="{{ asset('dashboard_offline/js/sweetalert2.all.min.js') }}"></script>
@@ -195,12 +218,12 @@
                         data: { _token: '{{ csrf_token() }}', partials: partials},
                         success: function (results) {
                             if(div != null){
-                            showFrontendAlert('success', '{{trans('global.flash.deleted')}}', '');
-                            $(div).html(null);
-                            $(div).html(results);
-                            }else{
-                            location.reload();
+                                showFrontendAlert('success', '{{trans('global.flash.deleted')}}', '');
+                                $(div).html(null);
+                                $(div).html(results);
                             }
+
+                            location.reload();
                         }
                     });
 
@@ -216,6 +239,20 @@
 
     {{-- attributes script --}}
     <script>
+
+        function showOrderDetails(order_code){
+          $.ajax({
+              type:"POST",
+              url:'{{ route('admin.orders.details') }}',
+              data:{_token:'{{csrf_token()}}',code:order_code},
+              success: function(data){
+                $('#OrderDetails').modal('show');
+                $('#OrderDetails .modal-body').html(null);
+                $('#OrderDetails .modal-body').html(data);
+              }
+          });
+        }
+
         $('#attributes').on('change', function() {
             $('#attribute_options').html(null);
             $.each($("#attributes option:selected"), function(){

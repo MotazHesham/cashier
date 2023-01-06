@@ -28,7 +28,16 @@
                             {{ trans('cruds.order.fields.code') }}
                         </th>
                         <th>
+                            {{ trans('cruds.order.fields.order_from') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.order.fields.payment_type') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.order.fields.total_cost') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.order.fields.created_at') }}
                         </th>
                         <th>
                             &nbsp;
@@ -44,35 +53,7 @@
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-            @can('order_delete')
-                let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
-                let deleteButton = {
-                text: deleteButtonTrans,
-                url: "{{ route('admin.orders.massDestroy') }}",
-                className: 'btn-danger',
-                action: function (e, dt, node, config) {
-                var ids = $.map(dt.rows({ selected: true }).data(), function (entry) {
-                return entry.id
-                });
-            
-                if (ids.length === 0) {
-                alert('{{ trans('global.datatables.zero_selected') }}')
-            
-                return
-                }
-            
-                if (confirm('{{ trans('global.areYouSure') }}')) {
-                $.ajax({
-                headers: {'x-csrf-token': _token},
-                method: 'POST',
-                url: config.url,
-                data: { ids: ids, _method: 'DELETE' }})
-                .done(function () { location.reload() })
-                }
-                }
-                }
-                dtButtons.push(deleteButton)
-            @endcan
+
 
             let dtOverrideGlobals = {
                 buttons: dtButtons,
@@ -94,9 +75,21 @@
                         name: 'code'
                     },
                     {
+                        data: 'order_from',
+                        name: 'order_from'
+                    },
+                    {
+                        data: 'payment_type',
+                        name: 'payment_type'
+                    },
+                    {
                         data: 'total_cost',
                         name: 'total_cost'
-                    }, 
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
                     {
                         data: 'actions',
                         name: '{{ trans('global.actions') }}'

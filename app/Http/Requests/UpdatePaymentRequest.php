@@ -20,6 +20,9 @@ class UpdatePaymentRequest extends FormRequest
             'payment_type' => [
                 'required',
             ],
+            'type' => [
+                'required',
+            ],
             'payment_status' => [
                 'required',
             ],

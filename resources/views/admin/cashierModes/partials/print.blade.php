@@ -10,7 +10,7 @@
     <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
     <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
     <style>
-        
+
 		@page {
 			size: auto;   /* auto is the initial value */
 			margin: 0;  /* this affects the margin in the printer settings */
@@ -21,7 +21,7 @@
     </style>
 </head>
 
-<body> 
+<body>
     <div style="page-break-after: always;">
         @php
             $date = explode(' ',$order->created_at,2);
@@ -31,12 +31,14 @@
         <div class="text-center">
             <img class="text-center" src="{{ $setting->logo ? $setting->logo->getUrl('preview') : ''}}" alt="">
             <h3 class="text-center mb-3">{{ $setting->website_title ?? ''}}</h3>
-            <small> Order: <b>{{ $code[1] }}</b> </small>
+            <h4 class="tex-center">{{$order->created_by->name ?? 'admin' }} : {{trans('cruds.order.fields.order_from')}} </h4>
+            <h4 class="text-center">{{ $order->order_from == 'teacher' ?  $order->description : ''}}</h4>
+            <small> Order: <b>{{ $code[1] }}</b> -> <span>{{\App\Models\Order::PAYMENT_TYPE_SELECT[$order->payment_type]}}</span></small>
         </div>
-        <div style="display: flex;justify-content:center;border:1px dotted black;border-top:hidden"> 
-            <div style="padding:0 12px">Date: <b style="font-size:12px">{{ $date[0] ?? ''}} {{ $date[1] ?? ''}}</b></div> 
+        <div style="display: flex;justify-content:center;border:1px dotted black;border-top:hidden">
+            <div style="padding:0 12px">Date: <b style="font-size:12px">{{ $date[0] ?? ''}} {{ $date[1] ?? ''}}</b></div>
         </div>
-        
+
         <table id="table-receipt" class="table table-bordered table-striped text-center" style="direction: rtl;">
             <thead>
                 <tr>
@@ -46,15 +48,15 @@
                     <td>الأجمالي</td>
                 </tr>
             </thead>
-            <tbody> 
-                @foreach($order->products as $order_product)
+            <tbody>
+                @foreach($products as $order_product)
                     @php
                         $single = array();
                         $multiple = array();
                         foreach (json_decode($order_product->attributes) as $row){
                             $item = array();
-                            
-                            $attribute = \App\Models\Attribute::find($row->attribute_id); 
+
+                            $attribute = \App\Models\Attribute::find($row->attribute_id);
                             $item['slug'] = $attribute->slug ?? '';
                             $item['variant'] = $row->variant;
                             $item['price'] = $row->price;
@@ -73,11 +75,11 @@
                         <td>
                             <div style="display: flex;flex-direction:column">
                                 <div>
-                                    {{$order_product->product->name ?? ''}}   
+                                    {{$order_product->product->name ?? ''}}
                                 </div>
                             </div>
                         </td>
-                        <td> 
+                        <td>
                             <div style="display: flex;flex-direction:column">
                                 <div>
                                     @php
@@ -87,7 +89,7 @@
                                             $extra_single += $row['price'];
                                         }
 
-                                    @endphp 
+                                    @endphp
                                     {{ $total + $extra_single}}LE
                                 </div>
                                 <div>
@@ -98,46 +100,72 @@
                             {{$order_product->quantity}}
                         </td>
                         <td>
-                            {{$order_product->total_cost}} 
-                        </td> 
-                    </tr>  
+                            {{$order_product->total_cost}}
+                        </td>
+                    </tr>
                     <tr style="border-width: 0 1px;  border-color: inherit; border-style: solid;font-size:14px;font-weight: 900;">
                         <td colspan="4">
                             @foreach($single as $row)
                                 <span style="background: black; color: white;border-radius: 2px; padding: 2px;">{{ $row['slug'] }} <small>{{ $row['variant']}}</small></span> -
                             @endforeach
-                            
-                            @foreach($multiple as $row)    
+
+                            @foreach($multiple as $row)
                                 <span style="background: black; color: white;border-radius: 2px; padding: 2px;">{{ $row['slug'] }} <small>{{ $row['variant']}}</small> <small>+{{ $row['price'] }}</small></span> -
-                            @endforeach 
+                            @endforeach
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
         <div style="padding: 0 10px">
-            <span>{{ $order->total_cost }} LE</span> :الأجمالي 
+            <span>{{ $order->total_cost }} LE</span> :الأجمالي
             <br>
-            @if($order->discount) 
-                <span>{{ $order->discount }} LE</span> :الخصم   
+            @if($order->discount)
+                <span>{{ $order->discount }} LE</span> :الخصم
                 <br>
             @endif
-            <span>{{ $order->paid_up }} LE</span> :المدفوع 
+            <span>{{ $order->paid_up }} LE</span> :المدفوع
             <br>
-            <span>{{ $order->paid_up - $order->total_cost}} LE</span> :المتبقي  
-        </div> 
+            <span>{{ $order->paid_up - $order->total_cost}} LE</span> :المتبقي
+        </div>
     </div>
+    <script src="{{ asset('js/JSPrintManager.js') }}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            window.print();
-            setTimeout(() => {
-                window.print();
-                setTimeout(() => {
-                    window.close();
-                }, 100); 
-            }, 100);
-        });
+        // $(document).ready(function() {
+        //     window.print();
+        //     setTimeout(() => {
+        //         window.print();
+        //         setTimeout(() => {
+        //             window.close();
+        //         }, 100);
+        //     }, 100);
+        // });
     </script>
+    <script type="text/javascript">
+
+        JSPM.JSPrintManager.auto_reconnect = true;
+        JSPM.JSPrintManager.start();
+        JSPM.JSPrintManager.WS.onStatusChanged = function () {
+            if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
+                var myfile = new JSPM.PrintFilePDF('http://local.cashier/public/uploads/pdf_orders/{{$order->code}}.pdf', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
+
+                // var cpj1 = new JSPM.ClientPrintJob();
+                // cpj1.clientPrinter = new JSPM.InstalledPrinter('{{json_decode($setting->cashier_printer)->printer}}');
+                // cpj1.files.push(myfile);
+
+                // var cpj2 = new JSPM.ClientPrintJob();
+                // cpj2.clientPrinter = new JSPM.InstalledPrinter('{{json_decode($setting->kitchen_printer)->printer}}');
+                // cpj2.files.push(myfile);
+
+                // var cpjg = new JSPM.ClientPrintJobGroup();
+                // cpjg.jobs.push(cpj1);
+                // cpjg.jobs.push(cpj2);
+                // cpjg.sendToClient();
+            }
+        };
+
+    </script>
+
 </body>
 
 </html>

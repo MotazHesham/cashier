@@ -59,6 +59,16 @@
                             </a>
                         </li>
                     @endcan
+                    @can('teacher_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.teachers.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/teachers") || request()->is("admin/teachers/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-user c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.teacher.title') }}
+                            </a>
+                        </li>
+                    @endcan
                     @can('user_alert_access')
                         <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.user-alerts.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/user-alerts") || request()->is("admin/user-alerts/*") ? "c-active" : "" }}">
@@ -82,6 +92,7 @@
                 </ul>
             </li>
         @endcan
+
         @can('product_management_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/product-tags*") ? "c-show" : "" }} {{ request()->is("admin/product-categories*") ? "c-show" : "" }} {{ request()->is("admin/products*") ? "c-show" : "" }} {{ request()->is("admin/attributes*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
@@ -134,25 +145,48 @@
                 </ul>
             </li>
         @endcan
-        @can('schools_managment_access')
-            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/schools*") ? "c-show" : "" }} {{ request()->is("admin/fathers*") ? "c-show" : "" }} {{ request()->is("admin/students*") ? "c-show" : "" }}">
+
+        @can('stock_managment_access')
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/stock*") ? "c-show" : "" }} {{ request()->is("admin/items*") ? "c-show" : "" }} ">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-folder c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.stockManagment.title') }}
+                </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    @can('item_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.items.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/items") || request()->is("admin/items/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-shopping-cart c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.item.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('stock_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.stock.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/stock") || request()->is("admin/stock/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-folder c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.stock.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
+        @can('students_managment_access')
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/fathers*") ? "c-show" : "" }} {{ request()->is("admin/students*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
                     <i class="fa-fw fas fa-chalkboard-teacher c-sidebar-nav-icon">
 
                     </i>
-                    {{ trans('cruds.schoolsManagment.title') }}
+                    {{ trans('cruds.studentsManagment.title') }}
                 </a>
                 <ul class="c-sidebar-nav-dropdown-items">
-                    @can('school_access')
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.schools.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/schools") || request()->is("admin/schools/*") ? "c-active" : "" }}">
-                                <i class="fa-fw fas fa-chalkboard c-sidebar-nav-icon">
-
-                                </i>
-                                {{ trans('cruds.school.title') }}
-                            </a>
-                        </li>
-                    @endcan
                     @can('father_access')
                         <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.fathers.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/fathers") || request()->is("admin/fathers/*") ? "c-active" : "" }}">

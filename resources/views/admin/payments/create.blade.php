@@ -12,10 +12,11 @@
             <div class="form-group">
                 <label class="required">{{ trans('cruds.payment.fields.payment_type') }}</label>
                 <select class="form-control {{ $errors->has('payment_type') ? 'is-invalid' : '' }}" name="payment_type" id="payment_type" required>
-                    <option value disabled {{ old('payment_type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <!-- <option value disabled {{ old('payment_type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Payment::PAYMENT_TYPE_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('payment_type', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
+                    @endforeach -->
+                    <option value="cash" >Cash</option>
                 </select>
                 @if($errors->has('payment_type'))
                     <div class="invalid-feedback">
@@ -25,12 +26,28 @@
                 <span class="help-block">{{ trans('cruds.payment.fields.payment_type_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required">{{ trans('cruds.payment.fields.type') }}</label>
+                <select class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" name="type" id="type" required>
+                    <option value disabled {{ old('type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Payment::TYPE_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('type', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('type'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('type') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.payment.fields.type_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required">{{ trans('cruds.payment.fields.payment_status') }}</label>
                 <select class="form-control {{ $errors->has('payment_status') ? 'is-invalid' : '' }}" name="payment_status" id="payment_status" required>
-                    <option value disabled {{ old('payment_status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <!-- <option value disabled {{ old('payment_status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Payment::PAYMENT_STATUS_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('payment_status', 'unpaid') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
+                    @endforeach -->
+                    <option value="paid" >Paid</option>
                 </select>
                 @if($errors->has('payment_status'))
                     <div class="invalid-feedback">

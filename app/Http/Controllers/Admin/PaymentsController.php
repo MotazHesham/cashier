@@ -12,6 +12,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Alert;
 
 class PaymentsController extends Controller
 {
@@ -26,26 +27,29 @@ class PaymentsController extends Controller
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
 
-            $table->editColumn('actions', function ($row) {
-                $viewGate = 'payment_show';
-                $editGate = 'payment_edit';
-                $deleteGate = 'payment_delete';
-                $crudRoutePart = 'payments';
-
-                return view('partials.datatablesActions', compact(
-                'viewGate',
-                'editGate',
-                'deleteGate',
-                'crudRoutePart',
-                'row'
-            ));
-            });
+            // $table->editColumn('actions', function ($row) {
+            //     $viewGate = 'payment_show';
+            //     $editGate = 'payment_edit';
+            //     $deleteGate = 'payment_delete';
+            //     $crudRoutePart = 'payments';
+            //
+            //     return view('partials.datatablesActions', compact(
+            //       'viewGate',
+            //       'editGate',
+            //       'deleteGate',
+            //       'crudRoutePart',
+            //       'row'
+            //   ));
+            // });
 
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
             });
             $table->editColumn('payment_type', function ($row) {
                 return $row->payment_type ? Payment::PAYMENT_TYPE_SELECT[$row->payment_type] : '';
+            });
+            $table->editColumn('type', function ($row) {
+                return $row->type ? Payment::TYPE_SELECT[$row->type] : '';
             });
             $table->editColumn('payment_status', function ($row) {
                 return $row->payment_status ? Payment::PAYMENT_STATUS_SELECT[$row->payment_status] : '';
@@ -55,6 +59,9 @@ class PaymentsController extends Controller
             });
             $table->addColumn('user_name', function ($row) {
                 return $row->user ? $row->user->name : '';
+            });
+            $table->editColumn('created_at', function ($row) {
+                return $row->created_at ? $row->created_at : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'user']);
@@ -76,8 +83,24 @@ class PaymentsController extends Controller
 
     public function store(StorePaymentRequest $request)
     {
-        $payment = Payment::create($request->all());
 
+        $user = User::findOrFail($request->user_id);
+        if($request->type == 'withdraw'){
+          if($user->current_balance() < $request->amount){
+            $error_message = 'الرصيد ' . $user->current_balance() . ' لا يكفي لأتمام عملية السحب';
+            Alert::error($error_message);
+            return redirect()->back();
+          }
+        }
+
+        $payment = Payment::create($request->all());
+        if($payment){
+            if($request->type == 'withdraw'){
+              $user->withdraw($request->amount,['info' => $user->current_balance(),'meta' => 'عملية سحب من الحساب']);
+            }elseif($request->type == 'charge'){
+              $user->deposit($request->amount,['info' => $user->current_balance(),'meta' => 'عملية أضافة للحساب']);
+            }
+        }
         return redirect()->route('admin.payments.index');
     }
 

@@ -28,6 +28,37 @@
                 <span class="help-block">{{ trans('cruds.student.fields.father_helper') }}</span>
             </div>
 
+            <div class="form-group">
+                <label class="required">{{ trans('cruds.student.fields.grade') }}</label>
+                <select class="form-control {{ $errors->has('grade') ? 'is-invalid' : '' }}" name="grade" id="grade" required>
+                    <option value disabled {{ old('grade', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Student::GRADE_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('grade', $student->grade) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('grade'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('grade') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.student.fields.grade_helper') }}</span>
+            </div>
+
+            <div class="form-group">
+                <label class="required">{{ trans('cruds.student.fields.class') }}</label>
+                <select class="form-control {{ $errors->has('class') ? 'is-invalid' : '' }}" name="class" id="class" required>
+                    <option value disabled {{ old('class', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Student::CLASS_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('class', $student->class) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('class'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('class') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.student.fields.class_helper') }}</span>
+            </div>
             @include('admin.users.partials.edit')
 
             <div class="form-group">

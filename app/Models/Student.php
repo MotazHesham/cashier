@@ -12,6 +12,22 @@ class Student extends Model
 
     public $table = 'students';
 
+    public const GRADE_SELECT = [
+        '1'   => 'Grade 1',
+        '2'  => 'Grade 2',
+        '3' => 'Grade 3',
+        '4' => 'Grade 4',
+        '5'  => 'Grade 5',
+        '6' => 'Grade 6',
+        '7' => 'Grade 7',
+    ];
+    public const CLASS_SELECT = [
+        'a'   => 'Class A',
+        'b'  => 'Class B',
+        'c' => 'Class C',
+        'd' => 'Class D',
+        'e' => 'Class E',
+    ];
     protected $dates = [
         'created_at',
         'updated_at',
@@ -21,6 +37,8 @@ class Student extends Model
     protected $fillable = [
         'user_id',
         'father_id',
+        'grade',
+        'class',
         'created_at',
         'updated_at',
         'deleted_at',

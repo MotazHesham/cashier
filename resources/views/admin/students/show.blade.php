@@ -39,6 +39,22 @@
                                 </tr>
                                 <tr>
                                     <th>
+                                        {{ trans('cruds.student.fields.grade') }}
+                                    </th>
+                                    <td>
+                                        {{ $student->grade ? \App\Models\Student::GRADE_SELECT[$student->grade] : '' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {{ trans('cruds.student.fields.class') }}
+                                    </th>
+                                    <td>
+                                        {{ $student->class ? \App\Models\Student::CLASS_SELECT[$student->class] : '' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
                                         {{ trans('cruds.student.fields.father') }}
                                     </th>
                                     <td>

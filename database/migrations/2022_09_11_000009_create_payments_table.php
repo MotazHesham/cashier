@@ -14,6 +14,7 @@ class CreatePaymentsTable extends Migration
             $table->integer('payment_order')->nullable();
             $table->string('payment_type');
             $table->string('payment_status');
+            $table->string('type');
             $table->decimal('amount', 15, 2);
             $table->timestamps();
             $table->softDeletes();

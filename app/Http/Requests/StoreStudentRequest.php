@@ -25,6 +25,14 @@ class StoreStudentRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'grade' => [
+                'string',
+                'required',
+            ],
+            'class' => [
+                'string',
+                'required',
+            ],
             'email' => [
                 'required',
                 'unique:users',

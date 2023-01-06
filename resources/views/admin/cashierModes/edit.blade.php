@@ -14,6 +14,7 @@
     <div style="display:block" id="div-table-receipt">
         <form action="{{ route('admin.cashier-modes.update') }}" method="Post" id="update_form">
             @csrf
+            <input type="hidden" name="qr_user_id" id="qr_user_id" value="{{$order->user_id}}">
             <input type="hidden" name="order_id" value="{{ $order->id }}" id="">
             <div class="partials-scrollable" style="max-height: 43vh">
                 <table id="table-receipt" class="table table-borderless table-striped" style="direction: rtl;">
@@ -103,30 +104,23 @@
                     <h4 class="btn btn-lg btn-light"><b id="total_cost">{{ $order->total_cost }}</b> : الأجمالي</h4>
                 </div>
                 <div class="payment_type_container" style="padding:8px">
-                    <div class="row text-center mt-3">
-                        <div class="col-md-6">
-                            <input type="radio" name="payment_type" value="cash" id="cash" checked>
-                            <label for="cash" class="payment-type">
-                                <i class="payment-type-i fas fa-money-bill" style="font-size:50px;"></i>
-                                <br>
-                                Cash
-                            </label>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="radio" name="payment_type" value="credit" id="credit">
-                            <label for="credit" class="payment-type">
-                                <i class="payment-type-i fas fa-credit-card" style="font-size:50px;"></i>
-                                <br>
-                                Credit Card
-                            </label>
-                        </div>
-                    </div>
+
+                    <input type="hidden" name="payment_type" value="{{$order->payment_type}}" >
                     <div class="d-grid gap-2 mt-3 mb-2">
                         @can('order_edit')
+                          @if($order->payment_type == 'qr_code')
+
+                          <label for="qr_code" class="payment-type" onclick="qr_code_modal(true,'update')">
+                              <i class="payment-type-i fas fa-qrcode" style="font-size:50px;"></i>
+                              <br>
+                              QR Code
+                          </label>
+                          @else
                             <button class="btn btn-success btn-block" type="submit"
                             style="border-radius:10px;background:#69becf;border-color:#69becf;padding: 22px; font-size: 34px;">
                                 تحديث
                             </button>
+                          @endif
                         @endcan
                     </div>
                 </div>

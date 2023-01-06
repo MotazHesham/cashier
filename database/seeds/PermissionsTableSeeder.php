@@ -370,27 +370,7 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 91,
-                'title' => 'schools_managment_access',
-            ],
-            [
-                'id'    => 92,
-                'title' => 'school_create',
-            ],
-            [
-                'id'    => 93,
-                'title' => 'school_edit',
-            ],
-            [
-                'id'    => 94,
-                'title' => 'school_show',
-            ],
-            [
-                'id'    => 95,
-                'title' => 'school_delete',
-            ],
-            [
-                'id'    => 96,
-                'title' => 'school_access',
+                'title' => 'students_managment_access',
             ],
             [
                 'id'    => 97,
@@ -429,28 +409,96 @@ class PermissionsTableSeeder extends Seeder
                 'title' => 'student_delete',
             ],
             [
-                'id'    => 105,
+                'id'    => 106,
                 'title' => 'student_access',
             ],
             [
-                'id'    => 106,
+                'id'    => 107,
                 'title' => 'payment_create',
             ],
             [
-                'id'    => 107,
+                'id'    => 108,
                 'title' => 'payment_edit',
             ],
             [
-                'id'    => 108,
+                'id'    => 109,
                 'title' => 'payment_show',
             ],
             [
-                'id'    => 109,
+                'id'    => 110,
                 'title' => 'payment_delete',
             ],
             [
-                'id'    => 110,
+                'id'    => 111,
                 'title' => 'payment_access',
+            ],
+            [
+                'id'    => 112,
+                'title' => 'item_access',
+            ],
+            [
+                'id'    => 113,
+                'title' => 'item_edit',
+            ],
+            [
+                'id'    => 114,
+                'title' => 'item_show',
+            ],
+            [
+                'id'    => 115,
+                'title' => 'item_create',
+            ],
+            [
+                'id'    => 116,
+                'title' => 'item_delete',
+            ],
+            [
+                'id'    => 117,
+                'title' => 'stock_access',
+            ],
+            [
+                'id'    => 118,
+                'title' => 'stock_create',
+            ],
+            [
+                'id'    => 119,
+                'title' => 'stock_edit',
+            ],
+            [
+                'id'    => 120,
+                'title' => 'stock_show',
+            ],
+            [
+                'id'    => 121,
+                'title' => 'stock_delete',
+            ],
+            [
+                'id'    => 122,
+                'title' => 'stock_managment_access',
+            ],
+            [
+                'id'    => 123,
+                'title' => 'stock_operation_create',
+            ],
+            [
+                'id'    => 124,
+                'title' => 'teacher_access',
+            ],
+            [
+                'id'    => 125,
+                'title' => 'teacher_create',
+            ],
+            [
+                'id'    => 126,
+                'title' => 'teacher_edit',
+            ],
+            [
+                'id'    => 127,
+                'title' => 'teacher_show',
+            ],
+            [
+                'id'    => 128,
+                'title' => 'teacher_delete',
             ],
         ];
 

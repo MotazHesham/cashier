@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Http\Requests\MassDestroyStudentRequest;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
@@ -13,9 +14,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
+use Alert;
 
 class StudentsController extends Controller
 {
+
+    use CsvImportTrait;
+
     public function index()
     {
         abort_if(Gate::denies('student_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -55,6 +60,8 @@ class StudentsController extends Controller
         $student = Student::create([
             'user_id' => $user->id,
             'father_id' => $request->father_id,
+            'grade' => $request->grade,
+            'class' => $request->class,
         ]);
 
         return redirect()->route('admin.students.index');
@@ -94,6 +101,8 @@ class StudentsController extends Controller
 
         $student->update([
             'father_id' => $request->father_id,
+            'grade' => $request->grade,
+            'class' => $request->class,
         ]);
 
         return redirect()->route('admin.students.index');
@@ -104,26 +113,25 @@ class StudentsController extends Controller
         abort_if(Gate::denies('student_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $student->load('user', 'father');
-        $user = $student->user; 
-        $transactions = $user->transactions()->orderBy('created_at','desc')->paginate(5);  
+        $user = $student->user;
+        $transactions = $user->transactions()->orderBy('created_at','desc')->paginate(5);
         return view('admin.students.show', compact('student','user','transactions'));
     }
 
     public function destroy(Student $student)
     {
         abort_if(Gate::denies('student_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        if($student->user->orders || $student->user->order_products()->get()->isNotEmpty() || $student->user->current_balance() > 0){
+          Alert::error('لا يمكن المسح');
+          return back();
+        }
+        $student->user()->delete();
         $student->delete();
 
+        Alert::success('تم الحذف بنجاح');
         return back();
     }
 
-    public function massDestroy(MassDestroyStudentRequest $request)
-    {
-        Student::whereIn('id', request('ids'))->delete();
-
-        return response(null, Response::HTTP_NO_CONTENT);
-    }
     public function storeCKEditorImages(Request $request)
     {
 

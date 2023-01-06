@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Spatie\MediaLibrary\Models\Media;
+use Alert;
 
 class FathersController extends Controller
 {
@@ -104,17 +105,15 @@ class FathersController extends Controller
     public function destroy(Father $father)
     {
         abort_if(Gate::denies('father_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        if($father->user->current_balance() > 0){
+          Alert::error('لا يمكن المسح');
+          return back();
+        }
+        $father->user()->delete();
         $father->delete();
 
+        Alert::success('تم الحذف بنجاح');
         return back();
-    }
-
-    public function massDestroy(MassDestroyFatherRequest $request)
-    {
-        Father::whereIn('id', request('ids'))->delete();
-
-        return response(null, Response::HTTP_NO_CONTENT);
     }
 
     public function storeCKEditorImages(Request $request)

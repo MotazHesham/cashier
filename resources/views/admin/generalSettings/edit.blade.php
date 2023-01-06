@@ -43,7 +43,7 @@
                         </div>
                     @endif
                     <span class="help-block">{{ trans('cruds.generalSetting.fields.phone_2_helper') }}</span>
-                </div> 
+                </div>
                 <div class="form-group">
                     <label for="address">{{ trans('cruds.generalSetting.fields.address') }}</label>
                     <input class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" type="text"
@@ -66,6 +66,66 @@
                     @endif
                     <span class="help-block">{{ trans('cruds.generalSetting.fields.logo_helper') }}</span>
                 </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required">{{ trans('cruds.generalSetting.fields.cashier_printer') }} <span class="badge badge-success">{{$cashier_printer->printer}}</span></label>
+                        <select class="form-control {{ $errors->has('cashier_printer') ? 'is-invalid' : '' }}" name="cashier_printer" id="cashier_printer" required>
+                            <option value disabled {{ old('cashier_printer', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        </select>
+                        @if($errors->has('cashier_printer'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('cashier_printer') }}
+                            </div>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.generalSetting.fields.cashier_printer_helper') }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="address">{{ trans('cruds.generalSetting.fields.print_times') }}</label>
+                        <input class="form-control {{ $errors->has('print_times_cashier') ? 'is-invalid' : '' }}" type="number" min="1" step="1" max="5"
+                            name="print_times_cashier" id="print_times_cashier" value="{{ old('print_times_cashier', $cashier_printer->print_times) }}">
+                        @if ($errors->has('print_times_cashier'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('print_times_cashier') }}
+                            </div>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.generalSetting.fields.print_times_helper') }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required">{{ trans('cruds.generalSetting.fields.kitchen_printer') }} <span class="badge badge-success">{{$kitchen_printer->printer}}</span></label>
+                        <select class="form-control {{ $errors->has('kitchen_printer') ? 'is-invalid' : '' }}" name="kitchen_printer" id="kitchen_printer" required>
+                            <option value disabled {{ old('kitchen_printer', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        </select>
+                        @if($errors->has('kitchen_printer'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('kitchen_printer') }}
+                            </div>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.generalSetting.fields.kitchen_printer_helper') }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <div class="form-group">
+                          <label for="address">{{ trans('cruds.generalSetting.fields.print_times') }}</label>
+                          <input class="form-control {{ $errors->has('print_times_kitchen') ? 'is-invalid' : '' }}" type="number" min="1" step="1" max="5"
+                              name="print_times_kitchen" id="print_times_kitchen" value="{{ old('print_times_kitchen', $kitchen_printer->print_times) }}">
+                          @if ($errors->has('print_times_kitchen'))
+                              <div class="invalid-feedback">
+                                  {{ $errors->first('print_times_kitchen') }}
+                              </div>
+                          @endif
+                          <span class="help-block">{{ trans('cruds.generalSetting.fields.print_times_helper') }}</span>
+                      </div>
+                  </div>
+                </div>
+
+
                 <div class="form-group">
                     <button class="btn btn-danger" type="submit">
                         {{ trans('global.save') }}
@@ -77,6 +137,23 @@
 @endsection
 
 @section('scripts')
+    <script type="text/javascript">
+
+        JSPM.JSPrintManager.auto_reconnect = true;
+        JSPM.JSPrintManager.start();
+        JSPM.JSPrintManager.WS.onStatusChanged = function () {
+            if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
+                JSPM.JSPrintManager.getPrintersInfo().then(function (printersList) {
+                    console.log(printersList);
+                    for(i=0; i < printersList.length; i++ ){
+                        $('#kitchen_printer').append('<option id='+printersList[i]['name']+'>'+printersList[i]['name']+'</option>');
+                        $('#cashier_printer').append('<option id='+printersList[i]['name']+'>'+printersList[i]['name']+'</option>');
+                    }
+                });
+            }
+        };
+
+    </script>
     <script>
         Dropzone.options.logoDropzone = {
             url: '{{ route('admin.general-settings.storeMedia') }}',

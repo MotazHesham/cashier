@@ -6,18 +6,20 @@ use \DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderProduct extends Model
-{ 
+{
 
     public $table = 'order_product';
 
     protected $dates = [
         'created_at',
-        'updated_at', 
+        'updated_at',
     ];
 
-    protected $fillable = [ 
+    protected $fillable = [
         'order_id',
         'product_id',
+        'user_id',
+        'payment_type',
         'product_name',
         'attributes',
         'quantity',
@@ -25,18 +27,23 @@ class OrderProduct extends Model
         'extra_price',
         'total_cost',
         'created_at',
-        'updated_at', 
-    ]; 
+        'updated_at',
+    ];
 
     public function product()
     {
         return $this->belongsTo(Product::class);
-    } 
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function order()
     {
         return $this->belongsTo(Order::class);
-    } 
+    }
 
     protected function serializeDate(DateTimeInterface $date)
     {

@@ -29,7 +29,7 @@ class User extends Authenticatable implements HasMedia , Wallet
         'staff'   => 'Staff',
         'father'  => 'Father',
         'student' => 'Student',
-        'school'  => 'School',
+        'teacher' => 'Teacher',
     ];
 
     public $table = 'users';
@@ -58,6 +58,7 @@ class User extends Authenticatable implements HasMedia , Wallet
         'remember_token',
         'phone',
         'user_type',
+        'approved',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -106,6 +107,15 @@ class User extends Authenticatable implements HasMedia , Wallet
         return $this->belongsToMany(Role::class);
     }
 
+    public function student()
+    {
+      return $this->hasOne(Student::class);
+    }
+
+    public function order_products(){
+      return $this->hasMany(OrderProduct::class,'user_id');
+    }
+
     public function getIdentityAttribute()
     {
         $files = $this->getMedia('identity');
@@ -116,6 +126,11 @@ class User extends Authenticatable implements HasMedia , Wallet
         });
 
         return $files;
+    }
+
+    public function current_balance(){
+        $this->wallet->refreshBalance();
+        return $this->balance;
     }
 
     protected function serializeDate(DateTimeInterface $date)

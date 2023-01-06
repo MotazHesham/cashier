@@ -23,6 +23,9 @@ class StorePaymentRequest extends FormRequest
             'payment_status' => [
                 'required',
             ],
+            'type' => [
+                'required',
+            ],
             'amount' => [
                 'required',
             ],

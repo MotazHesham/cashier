@@ -69,23 +69,16 @@
     <header class="header body-pd" id="header">
         <div class="header_toggle">
             <div class="nav-items">
-                <a class="btn btn-lg btn-light">
-                    <i id="header-toggle" class="fas fa-bars "></i>
-                </a>
-                <a class="btn btn-lg btn-light" href="{{ route('admin.home') }}">
-                    <i class="fas fa-chevron-circle-left"></i>
-                    <span class="nav_name">Dashboard</span>
-                </a>
-                <a class="btn btn-lg btn-light" href="{{ route('admin.cashier-modes.index') }}">
-                    <i class="fas fa-redo-alt"></i>
-                    <span class="nav_name">Refresh</span>
-                </a>
                 @can('order_access')
                     <a class="btn btn-lg btn-light" href="{{ route('admin.orders.index') }}">
                         <i class="fas fa-receipt"></i>
                         <span class="nav_name">Orders</span>
                     </a>
                 @endcan
+                <a class="btn btn-lg btn-light" href="{{ route('admin.cashier-modes.index') }}">
+                    <i class="fas fa-redo-alt"></i>
+                    <span class="nav_name">Refresh</span>
+                </a>
                 <a class="btn btn-lg btn-light" onclick="go_full_screen()">
                     <i class="fas fa-expand"></i>
                     <span class="nav_name">Expand</span>
@@ -189,7 +182,7 @@
                                                                 @if ($key2 == 0)
                                                                     checked @endif
                                                         @else type="checkbox" @endif
-                                                        name="attributes[]" value="{{ $value }}"
+                                                        name="attributes[{{$attribute_option->attribute_id}}][]" value="{{ $value }}"
                                                         id="{{ $product->id . $value }}">
                                                         <label
                                                             for="{{ $product->id . $value }}">{{ $value }}</label>
@@ -231,7 +224,7 @@
             </div>
         </div>
     </div>
-    
+
     @include('sweetalert::alert')
 
     <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
@@ -280,11 +273,15 @@
                     $('#paid_up').val(null);
                     $('#rest_of_the_amount').html('00.00');
 
-                    var printing = $('#printing').val();
-                    if(printing == 1){
-                        window.open(link, "_blank");
+                    if(link == 0){
+                      showFrontendAlert('error', 'حدث خطأ', '');
                     }else{
-                        showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
+                      var printing = $('#printing').val();
+                      if(printing == 1){
+                          window.open(link, "_blank");
+                      }else{
+                          showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
+                      }
                     }
                 },
                 error: function(){
@@ -387,16 +384,16 @@
         }); // prevent submitting multiple times
 
 
-        function qr_code_modal(status){
+        function qr_code_modal(status,type){
             if(status){
                 $.ajax({
                     type: "POST",
                     url: '{{ route('admin.cashier-modes.qr_scanner') }}',
-                    data:{_token:'{{ csrf_token() }}'},
+                    data:{_token:'{{ csrf_token() }}',type:type},
                     success: function(data) {
                         $('#submit-button').css('visibility','hidden');
                         $('#qr_user_id').val(null);
-                        $('#paid_up').val(parseFloat($('#total_cost').text()));
+                        $('#paid_up').val(0);
                         rest_of_the_amount()
                         $('#QRModal').modal('show');
                         $('#QRModal .modal-body').html(null);
@@ -410,9 +407,17 @@
                 rest_of_the_amount()
             }
         }
-        
-        function submit_pay_form(){
+
+
+
+
+
+        function submit_pay_form(isStoreForm){
+          if(isStoreForm){
             $('#store_form').submit();
+          }else{
+            $('#update_form').submit();
+          }
         }
     </script>
     @yield('scripts')

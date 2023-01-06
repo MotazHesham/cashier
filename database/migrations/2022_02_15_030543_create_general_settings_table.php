@@ -14,6 +14,8 @@ class CreateGeneralSettingsTable extends Migration
             $table->string('phone_1')->nullable();
             $table->string('phone_2')->nullable();
             $table->string('address')->nullable();
+            $table->string('cashier_printer')->nullable();
+            $table->string('kitchen_printer')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

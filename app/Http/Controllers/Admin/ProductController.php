@@ -23,10 +23,10 @@ use DB;
 class ProductController extends Controller
 {
     use MediaUploadingTrait;
-    use CsvImportTrait; 
+    use CsvImportTrait;
 
-    public function attribute_combination(Request $request){ 
-        $combinations = array(); 
+    public function attribute_combination(Request $request){
+        $combinations = array();
 
         if($request->has('attribute_num')){
             foreach ($request->attribute_num as $key => $num) {
@@ -34,16 +34,16 @@ class ProductController extends Controller
                 $my_str = implode('', $request[$name]);
                 array_push($combinations, explode(',', $my_str));
             }
-        } 
+        }
 
-        if($request->has('product_id')){ 
+        if($request->has('product_id')){
             $product = Product::find($request->product_id);
             $product->load('attributeProduct');
         }else{
             $product = null;
         }
-        return view('admin.products.partials.attribute_combination', compact('combinations','product')); 
-    } 
+        return view('admin.products.partials.attribute_combination', compact('combinations','product'));
+    }
 
     public function index(Request $request)
     {
@@ -119,66 +119,66 @@ class ProductController extends Controller
     }
 
     public function store(StoreProductRequest $request)
-    { 
+    {
         try{
             DB::beginTransaction();
 
             $validated_request = $request->all();
-        
+
             $attributes_options = array();
-    
+
             if($request->has('attribute_num')){
                 foreach ($validated_request['attribute_num'] as $key => $num) {
                     $str = 'attributes_options_'.$num;
-    
+
                     $item['attribute_id'] = $num;
                     $item['values'] = explode(',', implode('|', $request[$str]));
-    
+
                     array_push($attributes_options, $item);
                 }
             }
-    
+
             if (!empty($request->attribute_num)){
                 $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
             }else{
                 $validated_request['attributes'] = json_encode(array());
             }
-    
-            $validated_request['attributes_options'] = json_encode($attributes_options); 
-    
+
+            $validated_request['attributes_options'] = json_encode($attributes_options);
+
             $product = Product::create($validated_request);
-            
+
             if($request->has('attribute_num')){
-                foreach ($validated_request['attribute_num'] as $key => $num) {  
-    
+                foreach ($validated_request['attribute_num'] as $key => $num) {
+
                     $str = explode(',', implode('|', $request['attributes_options_'.$num]));
-    
-                    foreach($str as $variant){ 
+
+                    foreach($str as $variant){
                         $attribute_product = AttributeProduct::create([
                             'attribute_id' => $num,
                             'product_id' => $product->id,
                             'variant' => $variant,
                             'price' => $validated_request['extra_price_'.$variant],
                         ]);
-                    } 
+                    }
                 }
             }
-    
+
             if ($request->input('photo', false)) {
                 $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
             }
-    
+
             if ($media = $request->input('ck-media', false)) {
                 Media::whereIn('id', $media)->update(['model_id' => $product->id]);
             }
-    
+
             DB::commit();
             Alert::success('تم بنجاح', 'تم إضافة المنتج بنجاح ');
-            return redirect()->route('admin.products.index'); 
+            return redirect()->route('admin.products.index');
         }catch(\Exception $ex){
             DB::rollBack();
-            Alert::error('حدث خطأ','برجاء أدخال الحقول بطريقة صحيحة'); 
-            return redirect()->route('admin.products.index'); 
+            Alert::error('حدث خطأ','برجاء أدخال الحقول بطريقة صحيحة');
+            return redirect()->route('admin.products.index');
         }
     }
 
@@ -191,62 +191,62 @@ class ProductController extends Controller
         $attributes = Attribute::pluck('attribute', 'id');
 
         $product->load('category', 'attributeProduct');
-        
+
         return view('admin.products.edit', compact('attributes', 'categories', 'product'));
     }
 
     public function update(UpdateProductRequest $request, Product $product)
-    { 
+    {
         try{
             DB::beginTransaction();
 
                 $validated_request = $request->all();
 
                 $attributes_options = array();
-        
+
                 if($request->has('attribute_num')){
                     foreach ($validated_request['attribute_num'] as $key => $num) {
                         $str = 'attributes_options_'.$num;
-        
+
                         $item['attribute_id'] = $num;
                         $item['values'] = explode(',', implode('|', $request[$str]));
-        
+
                         array_push($attributes_options, $item);
                     }
                 }
-        
+
                 if (!empty($request->attribute_num)){
                     $validated_request['attributes'] = json_encode($validated_request['attribute_num']);
                 }else{
                     $validated_request['attributes'] = json_encode(array());
                 }
-        
-                $validated_request['attributes_options'] = json_encode($attributes_options); 
-                
+
+                $validated_request['attributes_options'] = json_encode($attributes_options);
+
                 $product->update($validated_request);
-                
+
                 if($request->has('attribute_num')){
-                    
+
                     foreach($product->attributeProduct as $row){
                         $row->delete();
                     }
-        
-                    foreach ($validated_request['attribute_num'] as $key => $num) { 
-        
+
+                    foreach ($validated_request['attribute_num'] as $key => $num) {
+
                         $str = explode(',', implode('|', $request['attributes_options_'.$num]));
-        
-                        foreach($str as $variant){ 
+
+                        foreach($str as $variant){
                             $attribute_product = AttributeProduct::create([
                                 'attribute_id' => $num,
                                 'product_id' => $product->id,
                                 'variant' => $variant,
                                 'price' => $validated_request['extra_price_'.$variant],
                             ]);
-                        } 
+                        }
                     }
                 }
-        
-                
+
+
                 if ($request->input('photo', false)) {
                     if (!$product->photo || $request->input('photo') !== $product->photo->file_name) {
                         if ($product->photo) {
@@ -257,15 +257,15 @@ class ProductController extends Controller
                 } elseif ($product->photo) {
                     $product->photo->delete();
                 }
-    
+
             Alert::success('تم بنجاح', 'تم تعديل بيانات المنتج بنجاح ');
-            DB::commit(); 
-            return redirect()->route('admin.products.index'); 
+            DB::commit();
+            return redirect()->route('admin.products.index');
         }catch(\Exception $ex){
             DB::rollBack();
-            Alert::error('حدث خطأ','برجاء أدخال الحقول بطريقة صحيحة'); 
-            return redirect()->route('admin.products.index'); 
-        } 
+            Alert::error('حدث خطأ','برجاء أدخال الحقول بطريقة صحيحة');
+            return redirect()->route('admin.products.index');
+        }
     }
 
     public function show(Product $product)

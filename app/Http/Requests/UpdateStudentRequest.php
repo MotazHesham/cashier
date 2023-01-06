@@ -25,6 +25,14 @@ class UpdateStudentRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'grade' => [
+                'string',
+                'required',
+            ],
+            'class' => [
+                'string',
+                'required',
+            ],
             'email' => [
                 'required',
                 'unique:users,email,' . request()->user_id,
