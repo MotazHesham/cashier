@@ -10,22 +10,45 @@
     <link rel="stylesheet" href="{{ asset('cashier/vendor/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('cashier/css/style_login.css') }}">
 
+    <style>
+        @media (min-width: 768px){
+            #welocme{
+                padding: 60px !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 
 
-    <div class="container" id="container">
-        @if(session('message'))
-            <div class="alert alert-info" role="alert">
-                {{ session('message') }}
-            </div>
-        @endif
-        <div class="form-container sign-in-container">
-            <form method="POST" action="{{ route('login') }}">
+    @if(session('message'))
+        <div class="alert alert-info" role="alert">
+            {{ session('message') }}
+        </div>
+    @endif
+    <div class="row" style="background: white;
+                            box-shadow: 0 14px 28px rgb(0 0 0 / 25%), 0 10px 10px rgb(0 0 0 / 22%);
+                            border-radius: 10px;">
+        <div id="welocme" class="col-md-6" style="color: white;
+                                    text-align: center;
+                                    padding: 10px 35px;
+                                    background: linear-gradient(to right, #000046, #1CB5E0);
+                                    border-radius: 10px 0 0 10px ;
+                                    background-repeat: no-repeat;
+                                    background-size: cover;
+                                    background-position: 0 0;">
+            @php
+                $sett = \App\Models\GeneralSetting::first();
+            @endphp
+            <img src="{{$sett->logo ? $sett->logo->getUrl('thumb')  : ''}}" alt="" style="margin:10px">
+            <h1>Welcome, Back!</h1>
+        </div>
+        <div class="col-md-6">
+            <form method="POST" action="{{ route('login') }}" style="padding: 50px;">
                 @csrf
-                <h1>Sign in</h1> 
+                <h1>Sign in</h1>
                 <input id="email" name="email" type="email" class="{{ $errors->has('email') ? ' is-invalid' : '' }}" required autocomplete="email" autofocus placeholder="Email" value="{{ old('email', null) }}">
                 @if($errors->has('email'))
                     <div class="invalid-feedback">
@@ -42,7 +65,7 @@
                         <span>Remember </span>
                         <span>&nbsp; Me</span>
                     </label>
-                </div> 
+                </div>
 
                 <button type="submit">Sign In</button>
                 @if($errors->has('password'))
@@ -54,27 +77,17 @@
                     <a class="" href="{{ route('password.request') }}">
                         Forgot your password?
                     </a>
-                @endif 
+                @endif
             </form>
         </div>
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-right">
-                    <h1>Welcome, Back!</h1>
-                    <p>{{ \App\Models\GeneralSetting::first()->website_title ?? ''}}</p>
-
-                </div>
-            </div>
-        </div>
     </div>
-
 </body>
 
 <footer>
     <small>
-        <b>@ 2022</b> | All Rights Reserved. 
+        <b>@ 2022</b> | All Rights Reserved.
     </small>
     Powerd By <a href="https://ebtekarstore.com"><b>Ebtekar Store</b></a>
 </footer>
 
-</html> 
+</html>

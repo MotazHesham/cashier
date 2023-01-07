@@ -1,8 +1,11 @@
 <div id="sidebar" class="c-sidebar c-sidebar-fixed c-sidebar-lg-show">
+    @php
+        $sett = \App\Models\GeneralSetting::first();
+    @endphp
 
     <div class="c-sidebar-brand d-md-down-none">
-        <a class="c-sidebar-brand-full h4" href="#">
-            {{ trans('panel.site_title') }}
+        <a class="c-sidebar-brand-full h4" href="#" style="margin: 12px;">
+            <img src="{{$sett->logo ? $sett->logo->getUrl('thumb')  : ''}}" alt="">
         </a>
     </div>
 

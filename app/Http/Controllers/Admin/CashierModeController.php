@@ -234,7 +234,7 @@ class CashierModeController extends Controller
                   DB::rollBack();
                   return 0;
                 }
-                $user->withdraw($order->total_cost,['info' => $user->current_balance(),'order' => $order->code,'meta' => 'عملية سحب لشراء طلب']);
+                User::find($request->qr_user_id)->withdraw($order->total_cost,['info' => $user->current_balance(),'order' => $order->code,'meta' => 'عملية سحب لشراء طلب']);
                 $user->current_balance();
 
                 $order->user_id = $request->qr_user_id;

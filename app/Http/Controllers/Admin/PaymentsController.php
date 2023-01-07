@@ -13,11 +13,14 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Alert;
+use DB;
 
 class PaymentsController extends Controller
 {
     public function index(Request $request)
     {
+        $transactions = DB::table('transactions')->get();
+        $users_balance = $transactions->sum('amount');
         abort_if(Gate::denies('payment_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
@@ -69,7 +72,7 @@ class PaymentsController extends Controller
             return $table->make(true);
         }
 
-        return view('admin.payments.index');
+        return view('admin.payments.index',compact('users_balance','transactions'));
     }
 
     public function create()

@@ -9,9 +9,15 @@
         </div>
     </div>
 @endcan
+
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.payment.title_singular') }} {{ trans('global.list') }}
+        <a href="{{route('admin.transactions')}}">
+            <div class="c-callout c-callout-info b-t-1 b-r-1 b-b-1 text-center">
+                <small class="text-muted">أجمالي الأرصدة الحالية</small><br>
+                <strong class="h2">EGP {{ $users_balance ?? 0.00 }} </strong>
+            </div>
+        </a>
     </div>
 
     <div class="card-body">

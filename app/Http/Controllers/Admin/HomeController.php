@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
+use DB;
 
-class HomeController
+class HomeController extends Controller
 {
+    public function transactions(){
+        $transactions = DB::table('transactions')->orderBy('created_at','desc')->paginate(10);
+        return view('admin.transactions',compact('transactions'));
+    }
+
     public function index()
     {
 

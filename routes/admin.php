@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth','staff']], function () {
     Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/transactions', 'HomeController@transactions')->name('transactions');
+
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     Route::resource('permissions', 'PermissionsController');
