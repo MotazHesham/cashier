@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
@@ -22,6 +23,7 @@
             border: 1px solid;
         }
         table tr:nth-child(even){background-color: #c8c1c1;}
+        body { font-family: DejaVu Sans, sans-serif; }
     </style>
 </head>
 
@@ -36,7 +38,7 @@
             <h3>{{ $setting->website_title ?? ''}}</h3>
             <h4>  By: {{$order->created_by->name ?? 'admin' }}</h4>
             <h4>{{ $order->order_from == 'teacher' ?  $order->description : ''}}</h4>
-            <small> Order: <b>{{ $code[1] ?? '' }}</b> -> <span>{{ $order->payment_type ? \App\Models\Order::PAYMENT_TYPE_SELECT[$order->payment_type] : ''}}</span></small>
+            <small> Order: <b>{{ $code[1] ?? $order->code }}</b> -> <span>{{ $order->payment_type ?? '' }}</span></small>
         </div>
         <div style="display: flex;justify-content:center;border:1px dotted black;border-top:hidden">
             <div style="padding:0 12px">Date: <b style="font-size:12px">{{ $date[0] ?? ''}} {{ $date[1] ?? ''}}</b></div>
@@ -45,9 +47,9 @@
         <table style="margin-left: auto; margin-right: auto;margin-bottom:40px">
             <thead>
                 <tr style="background-color: #04AA6D;color:white">
+                    <td>Quantity</td>
                     <td>Product</td>
                     <td>Price</td>
-                    <td>Quantity</td>
                     <td>Total</td>
                 </tr>
             </thead>
@@ -76,6 +78,9 @@
                     @endphp
                     <tr style="padding:5px">
                         <td>
+                            {{$order_product->quantity}}
+                        </td>
+                        <td>
                             <div style="display: flex;flex-direction:column">
                                 <div>
                                     {{$order_product->product->name ?? ''}}
@@ -98,9 +103,6 @@
                                 <div>
                                 </div>
                             </div>
-                        </td>
-                        <td>
-                            {{$order_product->quantity}}
                         </td>
                         <td>
                             {{$order_product->total_cost}}

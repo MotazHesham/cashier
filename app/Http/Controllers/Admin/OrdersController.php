@@ -136,13 +136,6 @@ class OrdersController extends Controller
     {
         $order = Order::findOrFail($id);
         $setting = GeneralSetting::first();
-
-        if ($order->order_from == 'teacher') {
-            if(!$order->viewed){
-                $order->viewed = 1;
-                $order->save();
-            }
-        }
         $products = OrderProduct::where('order_id', $id)
             ->with('product')
             ->groupBy('product_id', 'attributes', 'price')
@@ -161,6 +154,13 @@ class OrdersController extends Controller
 
         $cashier_print_times = $cashier->print_times ?? 1;
         $kitchen_print_times = $kitchen->print_times ?? 1;
+
+        if ($order->order_from == 'teacher') {
+            if(!$order->viewed){
+                $order->viewed = 1;
+                $order->save();
+            }
+        }
         return view('admin.cashierModes.partials.print', compact('order', 'products','path','cashier_printer','kitchen_printer','cashier_print_times','kitchen_print_times'));
     }
 

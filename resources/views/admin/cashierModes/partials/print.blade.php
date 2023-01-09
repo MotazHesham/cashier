@@ -33,7 +33,7 @@
             <h3 class="text-center mb-3">{{ $setting->website_title ?? ''}}</h3>
             <h4 class="tex-center">{{$order->created_by->name ?? 'admin' }} : {{trans('cruds.order.fields.order_from')}} </h4>
             <h4 class="text-center">{{ $order->order_from == 'teacher' ?  $order->description : ''}}</h4>
-            <small> Order: <b>{{ $code[1] }}</b> -> <span>{{\App\Models\Order::PAYMENT_TYPE_SELECT[$order->payment_type]}}</span></small>
+            <small> Order: <b>{{ $code[1]  ?? $order->code }}</b> -> <span>{{$order->payment_type ?? ''}}</span></small>
         </div>
         <div style="display: flex;justify-content:center;border:1px dotted black;border-top:hidden">
             <div style="padding:0 12px">Date: <b style="font-size:12px">{{ $date[0] ?? ''}} {{ $date[1] ?? ''}}</b></div>
