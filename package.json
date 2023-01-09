@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "@zxing/library": "^0.19.1"
+        "@zxing/library": "^0.19.1",
+        "html2canvas": "^1.4.1"
     }
 }

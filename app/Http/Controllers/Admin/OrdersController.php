@@ -25,6 +25,17 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrdersController extends Controller
 {
+    public function order_image(Request $request){
+        foreach($request->images as $key => $image){
+            $image = explode(";",$image)[1];
+            $image = explode(",",$image)[1];
+            $image = str_replace(" ","+",$image);
+            $image = base64_decode($image);
+            $path = '/uploads/pdf_orders/'.$request->code.'.png';
+            file_put_contents('public'.$path,$image);
+        }
+        return asset($path);
+    }
     public function details(Request $request)
     {
         $order = Order::where('code', $request->code)->first();

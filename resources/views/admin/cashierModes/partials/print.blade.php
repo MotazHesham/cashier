@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    <div style="page-break-after: always;">
+    <div style="page-break-after: always;" id="printing">
         @php
             $date = explode(' ',$order->created_at,2);
             $code = explode('-',$order->code);
@@ -130,6 +130,7 @@
         </div>
     </div>
     <script src="{{ asset('js/JSPrintManager.js') }}"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script type="text/javascript">
         // $(document).ready(function() {
         //     window.print();
@@ -140,9 +141,12 @@
         //         }, 100);
         //     }, 100);
         // });
+
+
     </script>
     <script type="text/javascript">
-
+        const getBase64StringFromDataURL = (image) =>
+            image.replace('data:', '').replace(/^.+,/, '');
         JSPM.JSPrintManager.auto_reconnect = true;
         JSPM.JSPrintManager.start();
         JSPM.JSPrintManager.WS.onStatusChanged = function () {
@@ -150,26 +154,44 @@
 
                 var cpjg = new JSPM.ClientPrintJobGroup();
 
+                var images = {};
+                html2canvas(document.getElementById('printing')).then(function(canvas){
+                    images[0] = canvas.toDataURL("image/jpeg");
+                    // Convert to Base64 string
+                    $.ajax({
+                        type:"POST",
+                        url:'{{ route('admin.orders.order_image') }}',
+                        data:{
+                            images :images,
+                            code :'{{$order->code}}',
+                            _token: '{{ @csrf_token() }}'
+                            },
+                        success: function(link){
+                            console.log(link);
+                            @for ($i = 0; $i < $cashier_print_times; $i++)
+                                var cpj1 = new JSPM.ClientPrintJob();
+                                cpj1.clientPrinter = new JSPM.InstalledPrinter('{{$cashier_printer}}');
+                                var my_file = new JSPM.PrintFile(link, JSPM.FileSourceType.URL, 'MyFile.jpg', 1);
+                                cpj1.files.push(my_file);
+                                cpjg.jobs.push(cpj1);
+                            @endfor
 
-                @for ($i = 0; $i < $cashier_print_times; $i++)
-                    var cpj1 = new JSPM.ClientPrintJob();
-                    cpj1.clientPrinter = new JSPM.InstalledPrinter('{{$cashier_printer}}');
-                    var myfile = new JSPM.PrintFilePDF('{{asset($path)}}', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
-                    cpj1.files.push(myfile);
-                    cpjg.jobs.push(cpj1);
-                @endfor
 
-
-                @for ($i = 0; $i < $kitchen_print_times; $i++)
-                    var cpj2 = new JSPM.ClientPrintJob();
-                    cpj2.clientPrinter = new JSPM.InstalledPrinter('{{$kitchen_printer}}');
-                    var myfile = new JSPM.PrintFilePDF('{{asset($path)}}', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
-                    cpj2.files.push(myfile);
-                    cpjg.jobs.push(cpj2);
-                @endfor
-
-                cpjg.sendToClient().then(function(){
-                    window.close();
+                            @for ($i = 0; $i < $kitchen_print_times; $i++)
+                                var cpj2 = new JSPM.ClientPrintJob();
+                                cpj2.clientPrinter = new JSPM.InstalledPrinter('{{$kitchen_printer}}');
+                                var my_file = new JSPM.PrintFile(link, JSPM.FileSourceType.URL, '{{$order->code}}.png', 1);
+                                cpj2.files.push(my_file);
+                                cpjg.jobs.push(cpj2);
+                            @endfor
+                            cpjg.sendToClient();
+                            cpjg.sendToClient().then(function(){
+                                window.close();
+                            });
+                        },
+                        error: function(request, status, error){
+                        }
+                    });
                 });
             }
         };
