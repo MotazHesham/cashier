@@ -21,8 +21,8 @@
     </style>
 </head>
 
-<body>
-    <div style="page-break-after: always;" id="printing">
+<body >
+    <div style="page-break-after: always;" id="printing" >
         @php
             $date = explode(' ',$order->created_at,2);
             $code = explode('-',$order->code);
@@ -132,19 +132,19 @@
     <script src="{{ asset('js/JSPrintManager.js') }}"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script type="text/javascript">
-        // $(document).ready(function() {
-        //     window.print();
-        //     setTimeout(() => {
-        //         window.print();
-        //         setTimeout(() => {
-        //             window.close();
-        //         }, 100);
-        //     }, 100);
-        // });
+        $(document).ready(function() {
+            window.print();
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    window.close();
+                }, 100);
+            }, 100);
+        });
 
 
     </script>
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         const getBase64StringFromDataURL = (image) =>
             image.replace('data:', '').replace(/^.+,/, '');
         JSPM.JSPrintManager.auto_reconnect = true;
@@ -185,7 +185,7 @@
                                 cpjg.jobs.push(cpj2);
                             @endfor
                             cpjg.sendToClient().then(function(){
-                                window.close();
+                                //window.close();
                             });
                         },
                         error: function(request, status, error){
@@ -196,7 +196,7 @@
         };
 
 
-    </script>
+    </script> --}}
 
 </body>
 
