@@ -147,22 +147,33 @@
         JSPM.JSPrintManager.start();
         JSPM.JSPrintManager.WS.onStatusChanged = function () {
             if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
-                var myfile = new JSPM.PrintFilePDF('http://local.cashier/public/uploads/pdf_orders/{{$order->code}}.pdf', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
 
-                // var cpj1 = new JSPM.ClientPrintJob();
-                // cpj1.clientPrinter = new JSPM.InstalledPrinter('{{json_decode($setting->cashier_printer)->printer}}');
-                // cpj1.files.push(myfile);
+                var cpjg = new JSPM.ClientPrintJobGroup();
 
-                // var cpj2 = new JSPM.ClientPrintJob();
-                // cpj2.clientPrinter = new JSPM.InstalledPrinter('{{json_decode($setting->kitchen_printer)->printer}}');
-                // cpj2.files.push(myfile);
 
-                // var cpjg = new JSPM.ClientPrintJobGroup();
-                // cpjg.jobs.push(cpj1);
-                // cpjg.jobs.push(cpj2);
-                // cpjg.sendToClient();
+                @for ($i = 0; $i < $cashier_print_times; $i++)
+                    var cpj1 = new JSPM.ClientPrintJob();
+                    cpj1.clientPrinter = new JSPM.InstalledPrinter('{{$cashier_printer}}');
+                    var myfile = new JSPM.PrintFilePDF('{{asset($path)}}', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
+                    cpj1.files.push(myfile);
+                    cpjg.jobs.push(cpj1);
+                @endfor
+
+
+                @for ($i = 0; $i < $kitchen_print_times; $i++)
+                    var cpj2 = new JSPM.ClientPrintJob();
+                    cpj2.clientPrinter = new JSPM.InstalledPrinter('{{$kitchen_printer}}');
+                    var myfile = new JSPM.PrintFilePDF('{{asset($path)}}', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
+                    cpj2.files.push(myfile);
+                    cpjg.jobs.push(cpj2);
+                @endfor
+
+                cpjg.sendToClient().then(function(){
+                    window.close();
+                });
             }
         };
+
 
     </script>
 

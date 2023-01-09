@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyOrderRequest;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\GeneralSetting;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Product;
@@ -134,6 +135,7 @@ class OrdersController extends Controller
     public function print($id)
     {
         $order = Order::findOrFail($id);
+        $setting = GeneralSetting::first();
 
         if ($order->order_from == 'teacher') {
             $order->viewed = 1;
@@ -144,11 +146,20 @@ class OrdersController extends Controller
             ->groupBy('product_id', 'attributes', 'price')
             ->selectRaw('sum(total_cost) as total_cost, sum(quantity) as quantity, product_id, attributes, price')
             ->get();
-        //  return $products;
-        // $pdf = Pdf::loadView('admin.cashierModes.partials.pdf', compact('order', 'products'));
-        // $path ='/uploads/pdf_orders/'.$order->code . '.pdf';
-        // $pdf->save(public_path() . $path);
-        return view('admin.cashierModes.partials.print', compact('order', 'products'));
+
+        $pdf = Pdf::loadView('admin.cashierModes.partials.pdf', compact('order', 'products'));
+        $path ='/uploads/pdf_orders/'.$order->code . '.pdf';
+        $pdf->save(public_path() . $path);
+
+        $cashier = json_decode($setting->cashier_printer);
+        $kitchen = json_decode($setting->kitchen_printer);
+
+        $cashier_printer = $cashier->printer ?? '';
+        $kitchen_printer = $kitchen->printer ?? '';
+
+        $cashier_print_times = $cashier->print_times ?? 1;
+        $kitchen_print_times = $kitchen->print_times ?? 1;
+        return view('admin.cashierModes.partials.print', compact('order', 'products','path','cashier_printer','kitchen_printer','cashier_print_times','kitchen_print_times'));
     }
 
     public function index(Request $request)

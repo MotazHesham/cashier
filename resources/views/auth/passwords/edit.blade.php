@@ -1,4 +1,15 @@
-@extends('layouts.admin')
+@php
+    if(Auth::user()->user_type == 'staff'){
+      $extend = 'layouts.admin';
+    }elseif(Auth::user()->user_type == 'father'){
+      $extend = 'layouts.father';
+    }elseif(Auth::user()->user_type == 'teacher'){
+      $extend = 'layouts.teacher';
+    }
+@endphp
+
+
+@extends($extend)
 @section('content')
 
 <div class="row">
@@ -69,5 +80,5 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 @endsection

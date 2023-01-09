@@ -81,6 +81,8 @@ return [
             'phone_helper'             => ' ',
             'user_type'                => 'User Type',
             'user_type_helper'         => ' ',
+            'approved'                => 'Approved',
+            'approved_helper'         => ' ',
         ],
     ],
     'productManagement' => [
@@ -410,8 +412,8 @@ return [
         'title_singular' => 'Students Managment',
     ],
     'father' => [
-        'title'          => 'Fathers',
-        'title_singular' => 'Father',
+        'title'          => 'Parents',
+        'title_singular' => 'Parent',
         'students' => 'Sons',
         'fields'         => [
             'id'                => 'ID',
@@ -464,7 +466,7 @@ return [
             'updated_at_helper' => ' ',
             'deleted_at'        => 'Deleted at',
             'deleted_at_helper' => ' ',
-            'father'            => 'Father',
+            'father'            => 'Parent',
             'father_helper'     => ' ',
         ],
     ],

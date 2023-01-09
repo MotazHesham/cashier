@@ -18,7 +18,7 @@ use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWallets;
 
 
-class User extends Authenticatable implements HasMedia , Wallet
+class User extends Authenticatable implements HasMedia, Wallet
 {
     use SoftDeletes;
     use Notifiable;
@@ -36,6 +36,7 @@ class User extends Authenticatable implements HasMedia , Wallet
 
     protected $appends = [
         'identity',
+        'photo',
     ];
 
     protected $hidden = [
@@ -109,11 +110,12 @@ class User extends Authenticatable implements HasMedia , Wallet
 
     public function student()
     {
-      return $this->hasOne(Student::class);
+        return $this->hasOne(Student::class);
     }
 
-    public function order_products(){
-      return $this->hasMany(OrderProduct::class,'user_id');
+    public function order_products()
+    {
+        return $this->hasMany(OrderProduct::class, 'user_id');
     }
 
     public function getIdentityAttribute()
@@ -128,7 +130,20 @@ class User extends Authenticatable implements HasMedia , Wallet
         return $files;
     }
 
-    public function current_balance(){
+    public function getPhotoAttribute()
+    {
+        $file = $this->getMedia('photo')->last();
+        if ($file) {
+            $file->url       = $file->getUrl();
+            $file->thumbnail = $file->getUrl('thumb');
+            $file->preview   = $file->getUrl('preview');
+        }
+
+        return $file;
+    }
+
+    public function current_balance()
+    {
         $this->wallet->refreshBalance();
         return $this->balance;
     }

@@ -123,7 +123,7 @@
         <div style="padding: 0 10px">
             <span>Total: {{ $order->total_cost }} LE</span>
             <br>
-            @if($order->discount)
+            @if($order->discount > 0)
                 <span>Disccount: {{ $order->discount }} LE</span>
                 <br>
             @endif

@@ -28,6 +28,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::post('users/media', 'UsersController@storeMedia')->name('users.storeMedia');
+    Route::post('users/update_approved', 'UsersController@update_approved')->name('users.update_approved');
     Route::post('users/ckmedia', 'UsersController@storeCKEditorImages')->name('users.storeCKEditorImages');
     Route::resource('users', 'UsersController');
 
@@ -61,7 +62,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('teachers', 'TeachersController');
 
     // Students
+    Route::get('students/print/{id}', 'StudentsController@print')->name('students.print');
     Route::delete('students/destroy', 'StudentsController@massDestroy')->name('students.massDestroy');
+    Route::post('students/upload_students', 'StudentsController@upload_students')->name('students.upload_students');
     Route::post('students/parse-csv-import', 'StudentsController@parseCsvImport')->name('students.parseCsvImport');
     Route::post('students/process-csv-import', 'StudentsController@processCsvImport')->name('students.processCsvImport');
     Route::resource('students', 'StudentsController');

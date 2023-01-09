@@ -18,6 +18,13 @@ class UsersController extends Controller
 {
     use MediaUploadingTrait;
 
+    public function update_approved(Request $request){
+        $user = User::find($request->id);
+        $user->approved = $request->status;
+        $user->save();
+        return 1;
+    }
+
     public function index()
     {
         abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -42,6 +49,14 @@ class UsersController extends Controller
         $user->roles()->sync($request->input('roles', []));
         foreach ($request->input('identity', []) as $file) {
             $user->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('identity');
+        }
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $user->id]);
+        }
+
+        if ($request->input('photo', false)) {
+            $user->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
         }
 
         if ($media = $request->input('ck-media', false)) {
@@ -79,7 +94,16 @@ class UsersController extends Controller
                 $user->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('identity');
             }
         }
-
+        if ($request->input('photo', false)) {
+            if (!$user->photo || $request->input('photo') !== $user->photo->file_name) {
+                if ($user->photo) {
+                    $user->photo->delete();
+                }
+                $user->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+            }
+        } elseif ($user->photo) {
+            $user->photo->delete();
+        }
         return redirect()->route('admin.users.index');
     }
 

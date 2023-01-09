@@ -1,15 +1,37 @@
 @extends('layouts.admin')
 @section('content')
+    <div class="modal fade" id="csvImportStudents" tabindex="-1" role="dialog" aria-labelledby="csvImportStudentsLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="csvImportStudentsLabel">Upload Students</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('admin.students.upload_students')}}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="excel_file" class="form-control">
+                        <button class="btn btn-success" type="submit">Upload</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @can('student_create')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('admin.students.create') }}">
                     {{ trans('global.add') }} {{ trans('cruds.student.title_singular') }}
                 </a>
-                <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportStudents">
                     {{ trans('global.app_csvImport') }}
                 </button>
-                @include('csvImport.modal', ['model' => 'Student', 'route' => 'admin.students.parseCsvImport'])
             </div>
         </div>
     @endcan
@@ -59,9 +81,9 @@
                                     {{ $student->user->name ?? '' }}
                                     <br>
                                     <span class="badge badge-info">
-                                        {{ trans('cruds.student.fields.grade') }} : {{$student->grade}}
-                                      <br>
-                                        {{ trans('cruds.student.fields.class') }} : {{$student->class}}
+                                        {{ trans('cruds.student.fields.grade') }} : {{ $student->grade }}
+                                        <br>
+                                        {{ trans('cruds.student.fields.class') }} : {{ $student->class }}
                                     </span>
                                 </td>
                                 <td>
@@ -74,6 +96,11 @@
                                     {{ $student->father->user->name ?? '' }}
                                 </td>
                                 <td>
+
+                                    {{-- <a class="btn btn-xs btn-success"
+                                        href="{{ route('admin.students.print', $student->id) }}">
+                                        طباعة
+                                    </a> --}}
                                     @can('student_show')
                                         <a class="btn btn-xs btn-primary"
                                             href="{{ route('admin.students.show', $student->id) }}">

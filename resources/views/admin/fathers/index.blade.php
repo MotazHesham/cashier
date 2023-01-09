@@ -35,6 +35,9 @@
                                 {{ trans('cruds.user.fields.phone') }}
                             </th>
                             <th>
+                                {{ trans('cruds.user.fields.approved') }}
+                            </th>
+                            <th>
                                 &nbsp;
                             </th>
                         </tr>
@@ -56,6 +59,12 @@
                                 </td>
                                 <td>
                                     {{ $father->user->phone ?? '' }}
+                                </td>
+                                <td>
+                                    <label class="c-switch c-switch-pill c-switch-success">
+                                        <input onchange="update_approved(this)" value="{{$father->user_id}}" type="checkbox" class="c-switch-input" {{ ($father->user->approved ? 'checked' : null) }}>
+                                        <span class="c-switch-slider"></span>
+                                    </label>
                                 </td>
                                 <td>
                                     @can('father_show')
@@ -97,7 +106,7 @@
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-            
+
             $.extend(true, $.fn.dataTable.defaults, {
                 orderCellsTop: true,
                 order: [

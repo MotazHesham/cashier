@@ -189,6 +189,22 @@
     {{-- Sweet alert delete --}}
     <script>
 
+
+        function update_approved(el){
+            if(el.checked){
+                var status = 1;
+            }
+            else{
+                var status = 0;
+            }
+            $.post('{{ route('admin.users.update_approved') }}', {_token:'{{ csrf_token() }}', id:el.value, status:status}, function(data){
+                if(data == 1){
+                    showFrontendAlert('success',"Approved Successfully");
+                }else{
+                    showFrontendAlert('error',"Somethin Went Wrong");
+                }
+            });
+        }
         function showFrontendAlert(type, title, message){
             swal({
                 title: title,

@@ -5,7 +5,7 @@
 
     <div class="c-sidebar-brand d-md-down-none">
         <a class="c-sidebar-brand-full h4" href="#" style="margin: 12px;">
-            <img src="{{$sett->logo ? $sett->logo->getUrl('thumb')  : ''}}" alt="">
+            <img src="{{$sett->logo ? $sett->logo->getUrl()  : ''}}" alt="" width="70" height="70">
         </a>
     </div>
 

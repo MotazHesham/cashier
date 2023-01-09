@@ -43,14 +43,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="{{ $chart4->options['column_class'] }}">
+                        {{-- <div class="{{ $chart4->options['column_class'] }}">
                             <h3>{!! $chart4->options['chart_title'] !!}</h3>
                             {!! $chart4->renderHtml() !!}
                         </div>
                         <div class="{{ $chart5->options['column_class'] }}">
                             <h3>{!! $chart5->options['chart_title'] !!}</h3>
                             {!! $chart5->renderHtml() !!}
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
     </div>
 </div>
 @endsection
-@section('scripts')
+{{-- @section('scripts')
 @parent
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>{!! $chart4->renderJs() !!}{!! $chart5->renderJs() !!}
-@endsection
+@endsection --}}

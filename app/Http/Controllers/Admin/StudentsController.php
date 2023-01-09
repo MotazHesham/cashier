@@ -15,11 +15,39 @@ use Illuminate\Support\Facades\Gate;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Alert;
+use App\Imports\StudentsImport;
+use App\Models\GeneralSetting;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StudentsController extends Controller
 {
 
     use CsvImportTrait;
+
+    public function upload_students(Request $request){
+
+        $now_time = time();
+
+        $path = $request->excel_file->store('uploads/excelfiles/'.$now_time);
+
+        $sheets = (new StudentsImport)->toCollection($request->excel_file);
+
+        foreach($sheets[0] as $key => $row){
+            if($key != 0){
+            }
+        }
+
+        return $sheets;
+    }
+
+    public function print($id){
+        $setting = GeneralSetting::first();
+        $student = Student::findOrFail($id);
+        $user = $student->user;
+
+        $pdf = Pdf::loadView('admin.students.card_info',compact('user','student','setting'));
+        return $pdf->download($user->name . '.pdf');
+    }
 
     public function index()
     {
@@ -37,7 +65,7 @@ class StudentsController extends Controller
         $fathers = Father::with('user')->get()->pluck('user.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
 
-        return view('admin.students.create', compact('fathers' ));
+        return view('admin.students.create', compact('fathers'));
     }
 
     public function store(StoreStudentRequest $request)
@@ -52,6 +80,13 @@ class StudentsController extends Controller
 
         foreach ($request->input('identity', []) as $file) {
             $user->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('identity');
+        }
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $user->id]);
+        }
+        if ($request->input('photo', false)) {
+            $user->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
         }
 
         if ($media = $request->input('ck-media', false)) {
@@ -78,7 +113,7 @@ class StudentsController extends Controller
 
         $user = $student->user;
 
-        return view('admin.students.edit', compact('fathers', 'student' ,'user'));
+        return view('admin.students.edit', compact('fathers', 'student', 'user'));
     }
 
     public function update(UpdateStudentRequest $request, Student $student)
@@ -98,7 +133,16 @@ class StudentsController extends Controller
                 $user->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('identity');
             }
         }
-
+        if ($request->input('photo', false)) {
+            if (!$user->photo || $request->input('photo') !== $user->photo->file_name) {
+                if ($user->photo) {
+                    $user->photo->delete();
+                }
+                $user->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+            }
+        } elseif ($user->photo) {
+            $user->photo->delete();
+        }
         $student->update([
             'father_id' => $request->father_id,
             'grade' => $request->grade,
@@ -114,16 +158,17 @@ class StudentsController extends Controller
 
         $student->load('user', 'father');
         $user = $student->user;
-        $transactions = $user->transactions()->orderBy('created_at','desc')->paginate(5);
-        return view('admin.students.show', compact('student','user','transactions'));
+        $transactions = $user->transactions()->orderBy('created_at', 'desc')->paginate(5);
+        $setting = GeneralSetting::first();
+        return view('admin.students.show', compact('student', 'user', 'transactions','setting'));
     }
 
     public function destroy(Student $student)
     {
         abort_if(Gate::denies('student_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        if($student->user->orders || $student->user->order_products()->get()->isNotEmpty() || $student->user->current_balance() > 0){
-          Alert::error('لا يمكن المسح');
-          return back();
+        if ($student->user->orders || $student->user->order_products()->get()->isNotEmpty() || $student->user->current_balance() > 0) {
+            Alert::error('لا يمكن المسح');
+            return back();
         }
         $student->user()->delete();
         $student->delete();

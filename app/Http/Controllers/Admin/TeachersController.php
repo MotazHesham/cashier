@@ -51,6 +51,13 @@ class TeachersController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $user->id]);
         }
 
+        if ($request->input('photo', false)) {
+            $user->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+        }
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $user->id]);
+        }
         $teacher = Teacher::create([
             'user_id' => $user->id,
             'specialization' => $request->specialization,
@@ -87,7 +94,16 @@ class TeachersController extends Controller
                 $user->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('identity');
             }
         }
-
+        if ($request->input('photo', false)) {
+            if (!$user->photo || $request->input('photo') !== $user->photo->file_name) {
+                if ($user->photo) {
+                    $user->photo->delete();
+                }
+                $user->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+            }
+        } elseif ($user->photo) {
+            $user->photo->delete();
+        }
         $teacher->update([
           'specialization' => $request->specialization,
         ]);

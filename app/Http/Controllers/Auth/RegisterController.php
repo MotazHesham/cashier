@@ -68,10 +68,11 @@ class RegisterController extends Controller
             'phone'    => $data['phone'],
             'user_type'    => 'father',
             'password' => Hash::make($data['password']),
+            'approved' => 0,
         ]);
 
         Father::create([
-          'user_id' => $user->id
+            'user_id' => $user->id
         ]);
         return $user;
     }

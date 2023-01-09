@@ -125,40 +125,40 @@ class HomeController extends Controller
                 ->{$settings3['aggregate_function'] ?? 'count'}($settings3['aggregate_field'] ?? '*');
         }
 
-        $settings4 = [
-            'chart_title'           => 'Expenses',
-            'chart_type'            => 'bar',
-            'report_type'           => 'group_by_date',
-            'model'                 => 'App\Models\Expense',
-            'group_by_field'        => 'entry_date',
-            'group_by_period'       => 'day',
-            'aggregate_function'    => 'sum',
-            'aggregate_field'       => 'amount',
-            'filter_field'          => 'created_at',
-            'group_by_field_format' => 'd/m/Y',
-            'column_class'          => 'col-md-8',
-            'entries_number'        => '5',
-            'translation_key'       => 'expense',
-        ];
+        // $settings4 = [
+        //     'chart_title'           => 'Expenses',
+        //     'chart_type'            => 'bar',
+        //     'report_type'           => 'group_by_date',
+        //     'model'                 => 'App\Models\Expense',
+        //     'group_by_field'        => 'entry_date',
+        //     'group_by_period'       => 'day',
+        //     'aggregate_function'    => 'sum',
+        //     'aggregate_field'       => 'amount',
+        //     'filter_field'          => 'created_at',
+        //     'group_by_field_format' => 'd/m/Y',
+        //     'column_class'          => 'col-md-8',
+        //     'entries_number'        => '5',
+        //     'translation_key'       => 'expense',
+        // ];
 
-        $chart4 = new LaravelChart($settings4);
+        // $chart4 = new LaravelChart($settings4);
 
-        $settings5 = [
-            'chart_title'        => 'Orders By Voucher Codes',
-            'chart_type'         => 'pie',
-            'report_type'        => 'group_by_relationship',
-            'model'              => 'App\Models\Order',
-            'group_by_field'     => 'code',
-            'aggregate_function' => 'count',
-            'filter_field'       => 'created_at',
-            'column_class'       => 'col-md-4',
-            'entries_number'     => '5',
-            'relationship_name'  => 'voucher_code',
-            'translation_key'    => 'order',
-        ];
+        // $settings5 = [
+        //     'chart_title'        => 'Orders By Voucher Codes',
+        //     'chart_type'         => 'pie',
+        //     'report_type'        => 'group_by_relationship',
+        //     'model'              => 'App\Models\Order',
+        //     'group_by_field'     => 'code',
+        //     'aggregate_function' => 'count',
+        //     'filter_field'       => 'created_at',
+        //     'column_class'       => 'col-md-4',
+        //     'entries_number'     => '5',
+        //     'relationship_name'  => 'voucher_code',
+        //     'translation_key'    => 'order',
+        // ];
 
-        $chart5 = new LaravelChart($settings5);
+        // $chart5 = new LaravelChart($settings5);
 
-        return view('home', compact('chart4', 'chart5', 'settings1', 'settings2', 'settings3'));
+        return view('home', compact('settings1', 'settings2', 'settings3'));
     }
 }

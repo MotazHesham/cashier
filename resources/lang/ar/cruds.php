@@ -81,6 +81,8 @@ return [
             'phone_helper'             => ' ',
             'user_type'                => 'User Type',
             'user_type_helper'         => ' ',
+            'approved'                => 'قبول',
+            'approved_helper'         => ' ',
         ],
     ],
     'productManagement' => [
@@ -412,8 +414,8 @@ return [
         'title_singular' => 'أدارة الطلاب',
     ],
     'father' => [
-        'title'          => 'الأباء',
-        'title_singular' => 'أب',
+        'title'          => 'أولياء الأمور',
+        'title_singular' => 'ولي أمر',
         'students' => 'الأبناء',
         'fields'         => [
             'id'                => 'ID',
@@ -466,7 +468,7 @@ return [
             'updated_at_helper' => ' ',
             'deleted_at'        => 'تاريخ الحذف',
             'deleted_at_helper' => ' ',
-            'father'            => 'الأب',
+            'father'            => 'ولي أمر',
             'father_helper'     => ' ',
         ],
     ],

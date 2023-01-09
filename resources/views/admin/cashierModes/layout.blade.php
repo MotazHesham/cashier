@@ -59,8 +59,6 @@
         body {
             font-family: system-ui;
         }
-
-
     </style>
 </head>
 
@@ -83,8 +81,9 @@
                     <i class="fas fa-expand"></i>
                     <span class="nav_name">Expand</span>
                 </a>
-                <a class="btn btn-lg btn-light" >
-                    <input type="checkbox" id="printing" name="printing" value="1"  checked onclick="change_printing()">
+                <a class="btn btn-lg btn-light">
+                    <input type="checkbox" id="printing" name="printing" value="1" checked
+                        onclick="change_printing()">
                     <label for="printing">Printing</label><br>
                 </a>
                 <a class="btn btn-lg btn-light" style="border-radius: 35px;position:absolute;right:0">
@@ -130,297 +129,308 @@
         </div>
 
         @foreach ($categories as $category)
-        <div id="collapse{{ $category->id }}" class="collapse @if ($loop->first) show @endif"
-            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-            <div class="row text-center justify-content-md-center">
-                @forelse($category->products as $product)
-                    @php
-                        if ($product->photo) {
-                            $product_image = $product->photo->getUrl('preview');
-                        } else {
-                            $product_image = asset('noimage.jpg');
-                        }
-                    @endphp
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <form class="card add-product" method="post">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <div id="collapse{{ $category->id }}" class="collapse @if ($loop->first) show @endif"
+                aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="row text-center justify-content-md-center">
+                    @forelse($category->products as $product)
+                        @php
+                            if ($product->photo) {
+                                $product_image = $product->photo->getUrl('preview');
+                            } else {
+                                $product_image = asset('noimage.jpg');
+                            }
+                        @endphp
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <form class="card add-product" method="post">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                            <div style="box-shadow: 1px 9px 10px #e5e5e585; border-radius: 15px;">
-                                <div class="box">
-                                    <img class="card-img-top" src="{{ $product_image }}" alt="Card image cap">
-                                    <h3 class="card-title">
-                                        {{ $product->name }}
-                                        <span class="title">
-                                            <?php echo nl2br($product->description ?? ''); ?>
-                                        </span>
-                                        <b class="filled">{{ $product->price }}LE</b>
-                                    </h3>
+                                <div style="box-shadow: 1px 9px 10px #e5e5e585; border-radius: 15px;">
+                                    <div class="box">
+                                        <img class="card-img-top" src="{{ $product_image }}" alt="Card image cap">
+                                        <h3 class="card-title">
+                                            {{ $product->name }}
+                                            <span class="title">
+                                                <?php echo nl2br($product->description ?? ''); ?>
+                                            </span>
+                                            <b class="filled">{{ $product->price }}LE</b>
+                                        </h3>
+                                    </div>
+                                    <div class="counter qty">
+                                        <span class="minus bg-dark" data-id="{{ $product->id }}">-</span>
+                                        <input type="number" class="form-control count"
+                                            id="quantity-{{ $product->id }}" style="width: 55px" name="quantity"
+                                            value="1" min="1" step="1" required
+                                            onclick="open_easy_num('quantity-{{ $product->id }}')">
+                                        <span class="plus bg-dark" data-id="{{ $product->id }}">+</span>
+                                    </div>
                                 </div>
-                                <div class="counter qty">
-                                    <span class="minus bg-dark" data-id="{{ $product->id }}">-</span>
-                                    <input type="number" class="form-control count"
-                                        id="quantity-{{ $product->id }}" style="width: 55px" name="quantity"
-                                        value="1" min="1" step="1" required onclick="open_easy_num('quantity-{{ $product->id }}')">
-                                    <span class="plus bg-dark" data-id="{{ $product->id }}">+</span>
-                                </div>
-                            </div>
-                            <div class="partials-scrollable">
-                                <div class="row">
-                                    @foreach (json_decode($product->attributes_options) as $key => $attribute_option)
-                                        @php
-                                            $attribute = \App\Models\Attribute::find($attribute_option->attribute_id);
-                                        @endphp
-                                        <div class="col-md-6">
-                                            <div class="card-body attribute;">
-                                                <p class="card-text">{{ $attribute->attribute ?? '' }}
-                                                </p>
-                                                <span style="display: flex;flex-wrap: wrap;">
-                                                    @foreach ($attribute_option->values as $key2 => $value)
-                                                        <input
-                                                            @if ($attribute && $attribute->type == 'single') type="radio"
+                                <div class="partials-scrollable">
+                                    <div class="row">
+                                        @foreach (json_decode($product->attributes_options) as $key => $attribute_option)
+                                            @php
+                                                $attribute = \App\Models\Attribute::find($attribute_option->attribute_id);
+                                            @endphp
+                                            <div class="col-md-6">
+                                                <div class="card-body attribute;">
+                                                    <p class="card-text">{{ $attribute->attribute ?? '' }}
+                                                    </p>
+                                                    <span style="display: flex;flex-wrap: wrap;">
+                                                        @foreach ($attribute_option->values as $key2 => $value)
+                                                            <input
+                                                                @if ($attribute && $attribute->type == 'single') type="radio"
                                                                 @if ($key2 == 0)
                                                                     checked @endif
-                                                        @else type="checkbox" @endif
-                                                        name="attributes[{{$attribute_option->attribute_id}}][]" value="{{ $value }}"
-                                                        id="{{ $product->id . $value }}">
-                                                        <label
-                                                            for="{{ $product->id . $value }}">{{ $value }}</label>
-                                                    @endforeach
-                                                </span>
+                                                            @else type="checkbox" @endif
+                                                            name="attributes[{{ $attribute_option->attribute_id }}][]"
+                                                            value="{{ $value }}"
+                                                            id="{{ $product->id . $value }}">
+                                                            <label
+                                                                for="{{ $product->id . $value }}">{{ $value }}</label>
+                                                        @endforeach
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 </div>
-                            </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg"
-                                style="border-radius: 10px">أضف</button>
-                        </form>
-                    </div>
-                    @empty
-                        <div class="alert alert-info" style="margin: 10%"> No Products For This Category Right
-                            Now....
+                                <button type="submit" class="btn btn-primary btn-lg"
+                                    style="border-radius: 10px">أضف</button>
+                            </form>
                         </div>
-                    @endforelse
+                        @empty
+                            <div class="alert alert-info" style="margin: 10%"> No Products For This Category Right
+                                Now....
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
+            @endforeach
+        </div>
 
 
-    <!--Container Main end-->
-    <div class="modal fade" id="QRModal"  aria-labelledby="QRModalLabel"  >
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="QRModalLabel">Qr Scanner</h5>
-                </div>
-                <div class="modal-body">
+        <!--Container Main end-->
+        <div class="modal fade" id="QRModal" aria-labelledby="QRModalLabel">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="QRModalLabel">Qr Scanner</h5>
+                    </div>
+                    <div class="modal-body">
 
-                </div>
-                <div class="modal-footer">
+                    </div>
+                    <div class="modal-footer">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    @include('sweetalert::alert')
+        @include('sweetalert::alert')
 
-    <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('cashier/js/easy-numpad.js') }}"></script>
-    <script src="{{ asset('cashier/vendor/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('cashier/js/slide.js') }}"></script>
-    <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="{{ asset('dashboard_offline/css/sweetalert2.min.css') }}">
-    <script src="{{ asset('dashboard_offline/js/sweetalert2.all.min.js') }}"></script>
-    {{-- Sweet alert delete --}}
-    <script>
+        <script src="{{ asset('cashier/vendor/js/jquery.min.js') }}"></script>
+        <script src="{{ asset('cashier/js/easy-numpad.js') }}"></script>
+        <script src="{{ asset('cashier/vendor/js/owl.carousel.min.js') }}"></script>
+        <script src="{{ asset('cashier/vendor/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('cashier/js/slide.js') }}"></script>
+        <!-- SweetAlert2 -->
+        <link rel="stylesheet" href="{{ asset('dashboard_offline/css/sweetalert2.min.css') }}">
+        <script src="{{ asset('dashboard_offline/js/sweetalert2.all.min.js') }}"></script>
+        {{-- Sweet alert delete --}}
 
-        function showFrontendAlert(type, title, message){
-            swal({
-                title: title,
-                text: message,
-                type: type,
-                showConfirmButton: 'Okay',
-                timer: 3000
-            });
-        }
-    </script>
-    <script>
 
-        function change_printing(){
-            var printing = $('#printing').val();
-            if(printing == 1){
-                $('#printing').val(0);
-            }else{
-                $('#printing').val(1);
+        <script src="{{ asset('js/JSPrintManager.js') }}"></script>
+
+        <script>
+            function showFrontendAlert(type, title, message) {
+                swal({
+                    title: title,
+                    text: message,
+                    type: type,
+                    showConfirmButton: 'Okay',
+                    timer: 3000
+                });
             }
-        }
-
-        $('#store_form').on('submit',function(event){
-            event.preventDefault();
-            $.ajax({
-                type: $(this).attr("method"),
-                url: $(this).attr("action"),
-                data: $(this).serialize(),
-                success: function(link) {
-                    $('#QRModal').modal('hide');
-                    $('#QRModal .modal-body').html(null);
-                    $('#div-table-receipt').css('display', 'none');
-                    $('#table-receipt tbody').html(null);
-                    $('#paid_up').val(null);
-                    $('#rest_of_the_amount').html('00.00');
-
-                    if(link == 0){
-                      showFrontendAlert('error', 'حدث خطأ', '');
-                    }else{
-                      var printing = $('#printing').val();
-                      if(printing == 1){
-                          window.open(link, "_blank");
-                      }else{
-                          showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
-                      }
-                    }
-                },
-                error: function(){
-                    showFrontendAlert('error', 'حدث خطأ', '');
-                }
-            });
-        })
-
-        $('#update_form').on('submit',function(event){
-            event.preventDefault();
-            $.ajax({
-                type: $(this).attr("method"),
-                url: $(this).attr("action"),
-                data: $(this).serialize(),
-                success: function(link) {
-                    var printing = $('#printing').val();
-                    if(printing == 1){
-                        window.open(link, "_blank");
-                    }else{
-                        showFrontendAlert('success', 'تم تعديل الطلب بنجاح', '');
-                    }
-                },
-                error: function(){
-                    showFrontendAlert('error', 'حدث خطأ', '');
-                }
-            });
-        })
-
-        function category_collapse(selected_id) {
-            $.each($(".multi-collapse"), function() {
-                var id = $(this).data('id');
-                if (id != selected_id) {
-                    $(this).removeClass('show');
+        </script>
+        <script>
+            function change_printing() {
+                var printing = $('#printing').val();
+                if (printing == 1) {
+                    $('#printing').val(0);
                 } else {
-                    $(this).addClass('show');
+                    $('#printing').val(1);
                 }
-            });
-        }
-
-        function go_full_screen() {
-            var elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
             }
-        }
 
-        $('.add-product').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: '{{ route('admin.cashier-modes.add_product') }}',
-                data: $(this).serialize(),
-                success: function(data) {
-                    $('#div-table-receipt').css('display', 'block');
-                    $('#table-receipt tbody').append(data);
-                    calculate_total_cost();
-                }
-            });
-        })
-
-        function removeTr(id) {
-            $('#receipt-product-' + id).fadeOut(300, function() {
-                $('#receipt-product-' + id).remove();
-                calculate_total_cost();
-            });
-        }
-
-        function change_quantity(item, id, price) {
-            console.log('changed');
-            $('#receipt-product-cost-' + id).html(item.value * price);
-            calculate_total_cost();
-        }
-
-        function calculate_total_cost() {
-            var total = 0;
-            $.each($("#div-table-receipt tbody .receipt-product-cost"), function() {
-                total += parseFloat($(this).text());
-            });
-            $('#total_cost').text(total);
-            if ($('#paid_up').val() > 0) {
-                rest_of_the_amount();
-            }
-        }
-
-        function rest_of_the_amount() {
-            var rest_of_the_amount = $('#paid_up').val() - parseFloat($('#total_cost').text());
-            $('#rest_of_the_amount').html(rest_of_the_amount);
-        }
-        $("body").on("submit", "form", function() {
-            $(this).submit(function() {
-                return false;
-            });
-            return true;
-        }); // prevent submitting multiple times
-
-
-        function qr_code_modal(status,type){
-            if(status){
+            $('#store_form').on('submit', function(event) {
+                event.preventDefault();
                 $.ajax({
-                    type: "POST",
-                    url: '{{ route('admin.cashier-modes.qr_scanner') }}',
-                    data:{_token:'{{ csrf_token() }}',type:type},
+                    type: $(this).attr("method"),
+                    url: $(this).attr("action"),
+                    data: $(this).serialize(),
                     success: function(data) {
-                        $('#submit-button').css('visibility','hidden');
-                        $('#qr_user_id').val(null);
-                        $('#paid_up').val(0);
-                        rest_of_the_amount()
-                        $('#QRModal').modal('show');
+                        $('#QRModal').modal('hide');
                         $('#QRModal .modal-body').html(null);
-                        $('#QRModal .modal-body').html(data);
+                        $('#div-table-receipt').css('display', 'none');
+                        $('#table-receipt tbody').html(null);
+                        $('#paid_up').val(null);
+                        $('#rest_of_the_amount').html('00.00');
+                        var printing = $('#printing').val();
+
+                        if (data['status']) {
+                            if (printing == 1) {
+                                window.open(data['link'], "_blank");
+                            } else {
+                                showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
+                            }
+                        } else {
+                            showFrontendAlert('error', data['message'], '');
+                        }
+                    },
+                    error: function() {
+                        showFrontendAlert('error', 'حدث خطأ', '');
                     }
                 });
-            }else{
-                $('#submit-button').css('visibility','visible');
-                $('#paid_up').val(null);
-                $('#qr_user_id').val(null);
-                rest_of_the_amount()
+            })
+
+            $('#update_form').on('submit', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: $(this).attr("method"),
+                    url: $(this).attr("action"),
+                    data: $(this).serialize(),
+                    success: function(data) {
+                        var printing = $('#printing').val();
+                        if (data['status']) {
+                            if (printing == 1) {
+                                window.open(data['link'], "_blank");
+                            } else {
+                                showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
+                            }
+                        } else {
+                            showFrontendAlert('error', data['message'], '');
+                        }
+                    },
+                    error: function() {
+                        showFrontendAlert('error', 'حدث خطأ', '');
+                    }
+                });
+            })
+
+            function category_collapse(selected_id) {
+                $.each($(".multi-collapse"), function() {
+                    var id = $(this).data('id');
+                    if (id != selected_id) {
+                        $(this).removeClass('show');
+                    } else {
+                        $(this).addClass('show');
+                    }
+                });
             }
-        }
+
+            function go_full_screen() {
+                var elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                } else if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                }
+            }
+
+            $('.add-product').on('submit', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('admin.cashier-modes.add_product') }}',
+                    data: $(this).serialize(),
+                    success: function(data) {
+                        $('#div-table-receipt').css('display', 'block');
+                        $('#table-receipt tbody').append(data);
+                        calculate_total_cost();
+                    }
+                });
+            })
+
+            function removeTr(id) {
+                $('#receipt-product-' + id).fadeOut(300, function() {
+                    $('#receipt-product-' + id).remove();
+                    calculate_total_cost();
+                });
+            }
+
+            function change_quantity(item, id, price) {
+                console.log('changed');
+                $('#receipt-product-cost-' + id).html(item.value * price);
+                calculate_total_cost();
+            }
+
+            function calculate_total_cost() {
+                var total = 0;
+                $.each($("#div-table-receipt tbody .receipt-product-cost"), function() {
+                    total += parseFloat($(this).text());
+                });
+                $('#total_cost').text(total);
+                if ($('#paid_up').val() > 0) {
+                    rest_of_the_amount();
+                }
+            }
+
+            function rest_of_the_amount() {
+                var rest_of_the_amount = $('#paid_up').val() - parseFloat($('#total_cost').text());
+                $('#rest_of_the_amount').html(rest_of_the_amount);
+            }
+            $("body").on("submit", "form", function() {
+                $(this).submit(function() {
+                    return false;
+                });
+                return true;
+            }); // prevent submitting multiple times
+
+
+            function qr_code_modal(status, type) {
+                if (status) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ route('admin.cashier-modes.qr_scanner') }}',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            type: type
+                        },
+                        success: function(data) {
+                            $('#submit-button').css('visibility', 'hidden');
+                            $('#qr_user_id').val(null);
+                            $('#paid_up').val(0);
+                            rest_of_the_amount()
+                            $('#QRModal').modal('show');
+                            $('#QRModal .modal-body').html(null);
+                            $('#QRModal .modal-body').html(data);
+                        }
+                    });
+                } else {
+                    $('#submit-button').css('visibility', 'visible');
+                    $('#paid_up').val(null);
+                    $('#qr_user_id').val(null);
+                    rest_of_the_amount()
+                }
+            }
 
 
 
 
 
-        function submit_pay_form(isStoreForm){
-          if(isStoreForm){
-            $('#store_form').submit();
-          }else{
-            $('#update_form').submit();
-          }
-        }
-    </script>
-    @yield('scripts')
-</body>
+            function submit_pay_form(isStoreForm) {
+                if (isStoreForm) {
+                    $('#store_form').submit();
+                } else {
+                    $('#update_form').submit();
+                }
+            }
+        </script>
+        @yield('scripts')
+    </body>
 
-</html>
+    </html>

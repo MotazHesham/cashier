@@ -42,7 +42,7 @@
             @php
                 $sett = \App\Models\GeneralSetting::first();
             @endphp
-            <img src="{{$sett->logo ? $sett->logo->getUrl('thumb')  : ''}}" alt="" style="margin:10px">
+            <img src="{{$sett->logo ? $sett->logo->getUrl()  : ''}}" width="70" height="70" alt="" style="margin:10px">
             <h1>Welcome, Back!</h1>
         </div>
         <div class="col-md-6">

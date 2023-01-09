@@ -38,6 +38,9 @@
                                 {{ trans('cruds.teacher.fields.specialization') }}
                             </th>
                             <th>
+                                {{ trans('cruds.user.fields.approved') }}
+                            </th>
+                            <th>
                                 &nbsp;
                             </th>
                         </tr>
@@ -62,6 +65,12 @@
                                 </td>
                                 <td>
                                     {{ $teacher->specialization ?? '' }}
+                                </td>
+                                <td>
+                                    <label class="c-switch c-switch-pill c-switch-success">
+                                        <input onchange="update_approved(this)" value="{{$teacher->user_id}}" type="checkbox" class="c-switch-input" {{ ($teacher->user->approved ? 'checked' : null) }}>
+                                        <span class="c-switch-slider"></span>
+                                    </label>
                                 </td>
                                 <td>
                                     @can('teacher_show')

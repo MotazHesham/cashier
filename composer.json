@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "laraveldaily/laravel-charts": "^0.1.14",
+        "maatwebsite/excel": "^3.1",
         "nuovo/spreadsheet-reader": "^0.5.11",
         "realrashid/sweet-alert": "^5.0",
         "simplesoftwareio/simple-qrcode": "^4.2",

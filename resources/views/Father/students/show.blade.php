@@ -15,13 +15,13 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" class="rounded" width="155" >
+                                        {!! QrCode::size(120)->generate($user->id) !!}
                                     </div>
                                     <div class="col-md-8">
                                         <div class="text-center">
+                                            <img src="{{$user->photo ? $user->photo->getUrl('preview') : ''}}" class="rounded" width="100" >
                                             <h3>{{ $user->name }}</h3>
-                                            <h5>{{ $user->phone }}</h5>
-                                            {!! QrCode::size(100)->generate($user->id) !!}
+                                            <h5>{{ $student->grade ? \App\Models\Student::GRADE_SELECT[$student->grade] : '' }} - {{ $student->class ? \App\Models\Student::CLASS_SELECT[$student->class] : '' }}</h5>
                                         </div>
                                     </div>
                                 </div>
