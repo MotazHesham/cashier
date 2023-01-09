@@ -184,7 +184,6 @@
                                 cpj2.files.push(my_file);
                                 cpjg.jobs.push(cpj2);
                             @endfor
-                            cpjg.sendToClient();
                             cpjg.sendToClient().then(function(){
                                 window.close();
                             });
