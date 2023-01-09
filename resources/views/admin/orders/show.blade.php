@@ -34,6 +34,8 @@
 <div class="card">
     <div class="card-header">
         {{ trans('global.show') }} {{ trans('cruds.order.title') }}
+
+        <a class="btn btn-success" href="{{route('admin.orders.print2',$order->id)}}">Print Students</a>
     </div>
 
     <div class="card-body">

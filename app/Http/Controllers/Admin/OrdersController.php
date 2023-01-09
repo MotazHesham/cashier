@@ -138,8 +138,10 @@ class OrdersController extends Controller
         $setting = GeneralSetting::first();
 
         if ($order->order_from == 'teacher') {
-            $order->viewed = 1;
-            $order->save();
+            if(!$order->viewed){
+                $order->viewed = 1;
+                $order->save();
+            }
         }
         $products = OrderProduct::where('order_id', $id)
             ->with('product')

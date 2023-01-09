@@ -69,7 +69,7 @@
             <div class="nav-items">
                 @can('order_access')
                     <a class="btn btn-lg btn-light" href="{{ route('admin.orders.index') }}" style="position: relative">
-                        <span class="badge bg-warning" style="position: absolute;top:0;right:0;font-size:13px">{{ \App\Models\Order::where('viewed',0)->count()}}</span>
+                        <span class="badge bg-warning" style="position: absolute;top:0;right:0;font-size:13px">{{ \App\Models\Order::where('viewed',0)->count() ?? ''}}</span>
                         <i class="fas fa-receipt"></i>
                         <span class="nav_name">Orders</span>
                     </a>

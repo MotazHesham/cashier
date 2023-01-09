@@ -113,6 +113,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Orders
     Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
     Route::get('orders/print/{id}', 'OrdersController@print')->name('orders.print');
+    Route::get('orders/print2/{id}', 'OrdersController@print2')->name('orders.print2');
     Route::post('orders/details', 'OrdersController@details')->name('orders.details');
     Route::post('orders/pay_user', 'OrdersController@pay_user')->name('orders.pay_user');
     Route::post('orders/qr_scanner', 'OrdersController@qr_scanner')->name('orders.qr_scanner');
