@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        {{ $generalSetting->menu_qr ? QrCode::size(200)->generate($generalSetting->menu_qr->getUrl()) : ''}}
+                        {{ $generalSetting->menu_qr ? QrCode::size(200)->generate(url($generalSetting->menu_qr->getUrl())) : ''}}
                     </div>
                 </div>
                 <div class="row">
