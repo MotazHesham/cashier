@@ -59,6 +59,17 @@
                 <span class="help-block">{{ trans('cruds.student.fields.class_helper') }}</span>
             </div>
 
+            <div class="form-group">
+                <label class="required">{{ trans('cruds.student.fields.father_email') }}</label>
+                <input class="form-control {{ $errors->has('father_email') ? 'is-invalid' : '' }}" type="email" name="father_email"
+                    id="father_email" value="{{ old('father_email') }}" required>
+                @if ($errors->has('father_email'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('father_email') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.student.fields.father_email_helper') }}</span>
+            </div>
             @include('admin.users.partials.create')
 
             <div class="form-group">

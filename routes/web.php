@@ -15,6 +15,9 @@ Route::get('/home', function () {
 
 Auth::routes();
 
+Route::get('register/assistant',function(){
+    return view('auth.register')->with(['type' => 'teacher']);
+});
 
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {

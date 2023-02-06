@@ -55,12 +55,6 @@
                                 {{ trans('cruds.user.fields.name') }}
                             </th>
                             <th>
-                                {{ trans('cruds.user.fields.email') }}
-                            </th>
-                            <th>
-                                {{ trans('cruds.user.fields.phone') }}
-                            </th>
-                            <th>
                                 {{ trans('cruds.student.fields.father') }}
                             </th>
                             <th>
@@ -85,12 +79,6 @@
                                         <br>
                                         {{ trans('cruds.student.fields.class') }} : {{ $student->class }}
                                     </span>
-                                </td>
-                                <td>
-                                    {{ $student->user->email ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $student->user->phone ?? '' }}
                                 </td>
                                 <td>
                                     {{ $student->father->user->name ?? '' }}

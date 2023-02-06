@@ -32,12 +32,36 @@ class StudentsController extends Controller
 
         $sheets = (new StudentsImport)->toCollection($request->excel_file);
 
+        ini_set('max_execution_time', 180);
+
         foreach($sheets[0] as $key => $row){
             if($key != 0){
+                if($row[40] == 'enable'){
+                    $email = $row[9] .'-'. $row[0] . '@gmail.com';
+                    if(!User::where('email',$email)->first()){
+
+                        $user = User::create([
+                            'name' => $row[11],
+                            'email' => $email,
+                            'password' => bcrypt('password'),
+                            'user_type' => 'student',
+                        ]);
+
+
+                        $student = Student::create([
+                            'user_id' => $user->id,
+                            'father_email' => $row[16],
+                            'grade' => $row[5],
+                            'class' => $row[6],
+                        ]);
+                    }
+                }
             }
         }
 
-        return $sheets;
+
+        Alert::success('تم الرفع بنجاح');
+        return redirect()->route('admin.students.index');
     }
 
     public function print($id){
@@ -51,6 +75,7 @@ class StudentsController extends Controller
 
     public function index()
     {
+
         abort_if(Gate::denies('student_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $students = Student::with(['user', 'father'])->get();
@@ -95,6 +120,7 @@ class StudentsController extends Controller
         $student = Student::create([
             'user_id' => $user->id,
             'father_id' => $request->father_id,
+            'father_email' => $request->father_email,
             'grade' => $request->grade,
             'class' => $request->class,
         ]);
@@ -145,6 +171,7 @@ class StudentsController extends Controller
         }
         $student->update([
             'father_id' => $request->father_id,
+            'father_email' => $request->father_email,
             'grade' => $request->grade,
             'class' => $request->class,
         ]);

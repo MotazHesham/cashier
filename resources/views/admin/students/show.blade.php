@@ -62,6 +62,14 @@
                                         {{ $student->father->user->name ?? '' }}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>
+                                        {{ trans('cruds.student.fields.father_email') }}
+                                    </th>
+                                    <td>
+                                        {{ $student->father_email?? '' }}
+                                    </td>
+                                </tr>
 
                                 @include('admin.users.partials.show')
 

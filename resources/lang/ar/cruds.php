@@ -462,6 +462,8 @@ return [
             'grade_helper'       => ' ',
             'class'              => 'Class',
             'class_helper'       => ' ',
+            'father_email'              => 'أيميل ولي الأمر',
+            'father_email_helper'       => ' ',
             'created_at'        => 'تاريخ الأضافة',
             'created_at_helper' => ' ',
             'updated_at'        => 'تاريخ التحديث',

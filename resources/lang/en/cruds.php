@@ -460,6 +460,8 @@ return [
             'grade_helper'       => ' ',
             'class'              => 'Class',
             'class_helper'       => ' ',
+            'father_email'              => 'Parent Email',
+            'father_email_helper'       => ' ',
             'created_at'        => 'Created at',
             'created_at_helper' => ' ',
             'updated_at'        => 'Updated at',
