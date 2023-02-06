@@ -401,6 +401,8 @@ return [
             'address_helper'       => ' ',
             'logo'                 => 'Logo',
             'logo_helper'          => ' ',
+            'menu_qr'                 => 'Menu',
+            'menu_qr_helper'          => ' ',
             'cashier_printer'                    => 'Cashier Printer',
             'cashier_printer_helper'                    => '',
             'kitchen_printer'                    => 'Kitcher Printer',

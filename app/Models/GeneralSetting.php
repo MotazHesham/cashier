@@ -18,6 +18,7 @@ class GeneralSetting extends Model implements HasMedia
 
     protected $appends = [
         'logo',
+        'menu_qr',
     ];
 
     protected $dates = [
@@ -47,6 +48,18 @@ class GeneralSetting extends Model implements HasMedia
     public function getLogoAttribute()
     {
         $file = $this->getMedia('logo')->last();
+        if ($file) {
+            $file->url       = $file->getUrl();
+            $file->thumbnail = $file->getUrl('thumb');
+            $file->preview   = $file->getUrl('preview');
+        }
+
+        return $file;
+    }
+
+    public function getMenuQrAttribute()
+    {
+        $file = $this->getMedia('menu_qr')->last();
         if ($file) {
             $file->url       = $file->getUrl();
             $file->thumbnail = $file->getUrl('thumb');

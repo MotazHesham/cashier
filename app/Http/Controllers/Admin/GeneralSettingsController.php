@@ -62,6 +62,17 @@ class GeneralSettingsController extends Controller
         } elseif ($generalSetting->logo) {
             $generalSetting->logo->delete();
         }
+
+        if ($request->input('menu_qr', false)) {
+            if (!$generalSetting->menu_qr || $request->input('menu_qr') !== $generalSetting->menu_qr->file_name) {
+                if ($generalSetting->menu_qr) {
+                    $generalSetting->menu_qr->delete();
+                }
+                $generalSetting->addMedia(storage_path('tmp/uploads/' . basename($request->input('menu_qr'))))->toMediaCollection('menu_qr');
+            }
+        } elseif ($generalSetting->menu_qr) {
+            $generalSetting->menu_qr->delete();
+        }
         Alert::success('تم بنجاح', 'تم التعديل بنجاح ');
         return redirect()->route('admin.general-settings.index');
     }
