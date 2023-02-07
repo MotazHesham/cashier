@@ -79,7 +79,7 @@ class PaymentsController extends Controller
     {
         abort_if(Gate::denies('payment_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $users = User::pluck('email', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.payments.create', compact('users'));
     }

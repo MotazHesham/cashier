@@ -132,6 +132,7 @@
     <script src="{{ asset('js/JSPrintManager.js') }}"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script type="text/javascript">
+    @if($order->order_from == 'cashier')
         $(document).ready(function() {
             window.print();
             setTimeout(() => {
@@ -141,6 +142,15 @@
                 }, 100);
             }, 100);
         });
+
+    @else 
+        $(document).ready(function() {
+            window.print();
+            setTimeout(() => { 
+                    window.close();
+            }, 100);
+        });
+    @endif
 
 
     </script>

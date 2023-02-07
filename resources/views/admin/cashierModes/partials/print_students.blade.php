@@ -87,15 +87,12 @@
         </div>
   </div>
     <script type="text/javascript">
-        // $(document).ready(function() {
-        //     window.print();
-        //     setTimeout(() => {
-        //         window.print();
-        //         setTimeout(() => {
-        //             window.close();
-        //         }, 100);
-        //     }, 100);
-        // });
+        $(document).ready(function() {
+            window.print();
+            setTimeout(() => {
+                window.close();
+            }, 100);
+        });
     </script>
 </body>
 

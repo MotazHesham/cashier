@@ -15,8 +15,7 @@ class HomeController extends Controller
     }
 
     public function index()
-    {
-
+    { 
         $settings1 = [
             'chart_title'           => 'Categories',
             'chart_type'            => 'number_block',

@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@zxing/library": "^0.19.1",
-        "html2canvas": "^1.4.1"
+        "html2canvas": "^1.4.1",
+        "htmltoescpos": "^1.1.3"
     }
 }

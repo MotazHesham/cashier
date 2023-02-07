@@ -45,6 +45,11 @@
     <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
 @endif
 <script type="text/javascript">
+
+        $(document).ready(function() {
+                load_cam();
+        });
+    
     function submit_in_local() {
         $.ajax({
             type: "POST",
