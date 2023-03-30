@@ -50,6 +50,7 @@
 @endsection
 @section('scripts')
     @parent
+
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)

@@ -1,6 +1,6 @@
 
 @if($crudRoutePart == 'orders')
-    <a href="{{ route('admin.' . $crudRoutePart . '.print', $row->id) }}" target="_blank" class="btn btn-outline-dark btn-pill action-buttons-print"  title="{{ trans('global.datatables.print') }}"><i  class="fas fa-print actions-custom-i"></i></a>
+    <a href="#" onclick="window.myAPI.sendDataToMainProcess('{{ route('admin.' . $crudRoutePart . '.print', $row->id) }}')"  class="btn btn-outline-dark btn-pill action-buttons-print"  title="{{ trans('global.datatables.print') }}"><i  class="fas fa-print actions-custom-i"></i></a>
 @endif
 @can($viewGate)
     <a class="btn btn-outline-info btn-pill action-buttons-view" href="{{ route('admin.' . $crudRoutePart . '.show', $row->id) }}">
@@ -12,9 +12,9 @@
         <i  class="fa fa-edit actions-custom-i"></i>
     </a>
 @endcan
-@can($deleteGate) 
+@can($deleteGate)
     <?php $route = route('admin.' . $crudRoutePart . '.destroy', $row->id); ?>
     <a  href="#" onclick="deleteConfirmation('{{$route}}')" class="btn btn-outline-danger btn-pill action-buttons-delete">
         <i  class="fa fa-trash actions-custom-i"></i>
-    </a>  
+    </a>
 @endcan

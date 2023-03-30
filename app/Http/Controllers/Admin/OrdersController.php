@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyOrderRequest;
 use App\Http\Requests\StoreOrderRequest;
@@ -13,26 +14,31 @@ use App\Models\Product;
 use App\Models\VoucherCode;
 use App\Models\ProductCategory;
 use App\Models\OrderProduct;
-use Gate;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
-use Session;
+use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
-use Barryvdh\DomPDF\Facade\Pdf;
+use charlieuki\ReceiptPrinter\ReceiptPrinter as ReceiptPrinter;
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
+
 
 
 class OrdersController extends Controller
 {
-    public function order_image(Request $request){
-        foreach($request->images as $key => $image){
-            $image = explode(";",$image)[1];
-            $image = explode(",",$image)[1];
-            $image = str_replace(" ","+",$image);
+    public function order_image(Request $request)
+    {
+        foreach ($request->images as $key => $image) {
+            $image = explode(";", $image)[1];
+            $image = explode(",", $image)[1];
+            $image = str_replace(" ", "+", $image);
             $image = base64_decode($image);
-            $path = '/uploads/pdf_orders/'.$request->code.'.png';
-            file_put_contents('public'.$path,$image);
+            $path = '/uploads/pdf_orders/' . $request->code . '.png';
+            file_put_contents('public' . $path, $image);
         }
         return asset($path);
     }
@@ -145,34 +151,142 @@ class OrdersController extends Controller
 
     public function print($id)
     {
-        $order = Order::findOrFail($id);
-        $setting = GeneralSetting::first();
-        $products = OrderProduct::where('order_id', $id)
-            ->with('product')
-            ->groupBy('product_id', 'attributes', 'price')
-            ->selectRaw('sum(total_cost) as total_cost, sum(quantity) as quantity, product_id, attributes, price')
-            ->get();
+        if(true){
+            $order = Order::findOrFail($id);
+            $setting = GeneralSetting::first();
+            $products = OrderProduct::where('order_id', $id)
+                ->with('product')
+                ->groupBy('product_id', 'attributes', 'price')
+                ->selectRaw('sum(total_cost) as total_cost, sum(quantity) as quantity, product_id, attributes, price')
+                ->get();
 
-        $pdf = Pdf::loadView('admin.cashierModes.partials.pdf', compact('order', 'products'));
-        $path ='/uploads/pdf_orders/'.$order->code . '.pdf';
-        $pdf->save(public_path() . $path);
+            // $pdf = Pdf::loadView('admin.cashierModes.partials.pdf', compact('order', 'products'));
+            // $path ='/uploads/pdf_orders/'.$order->code . '.pdf';
+            // $pdf->save(public_path() . $path);
 
-        $cashier = json_decode($setting->cashier_printer);
-        $kitchen = json_decode($setting->kitchen_printer);
+            $cashier = json_decode($setting->cashier_printer);
+            $kitchen = json_decode($setting->kitchen_printer);
 
-        $cashier_printer = $cashier->printer ?? '';
-        $kitchen_printer = $kitchen->printer ?? '';
+            $cashier_printer = $cashier->printer ?? '';
+            $kitchen_printer = $kitchen->printer ?? '';
 
-        $cashier_print_times = $cashier->print_times ?? 1;
-        $kitchen_print_times = $kitchen->print_times ?? 1;
+            $cashier_print_times = $cashier->print_times ?? 1;
+            $kitchen_print_times = $kitchen->print_times ?? 1;
 
-        if ($order->order_from == 'teacher') {
-            if(!$order->viewed){
-                $order->viewed = 1;
-                $order->save();
+            if ($order->order_from == 'teacher') {
+                if(!$order->viewed){
+                    $order->viewed = 1;
+                    $order->save();
+                }
             }
+            return view('admin.cashierModes.partials.print', compact('order', 'products' ,'cashier_printer','kitchen_printer','cashier_print_times','kitchen_print_times'));
+
+        }else{
+            $generalsetting = GeneralSetting::first();
+            $order = Order::findOrFail($id);
+            $date = explode(' ',$order->created_at,2);
+            $code = explode('-',$order->code);
+
+            // $cashier = json_decode($setting->cashier_printer);
+            // $kitchen = json_decode($setting->kitchen_printer);
+            // $cashier_printer = $cashier->printer ?? '';
+            // $kitchen_printer = $kitchen->printer ?? '';
+            // $cashier_print_times = $cashier->print_times ?? 1;
+            // $kitchen_print_times = $kitchen->print_times ?? 1;
+
+            $products = OrderProduct::where('order_id', $id)
+                                    ->with('product')
+                                    ->groupBy('product_id', 'attributes', 'price')
+                                    ->selectRaw('sum(total_cost) as total_cost, sum(quantity) as quantity, product_id, attributes, price')
+                                    ->get();
+
+            // Set params
+            $store_name = $generalsetting->website_title;
+            $order_code = $code[1]  ?? $order->code;
+            $currency = 'LE ';
+            $cashier = $order->created_by->name ?? 'admin';
+            $image_path = $generalsetting->logo ? url($generalsetting->logo->getUrl()) : '';
+
+            // Set items
+
+            foreach($products as $order_product){
+                $items[] = [
+                    'name' => $order_product->product->name ?? '',
+                    'qty' => $order_product->quantity,
+                    'price' => $order_product->price,
+                ];
+            }
+
+            // Init printer
+            $printer = new ReceiptPrinter;
+            $printer->init(
+                'network',
+                '192.168.100.11'
+            );
+
+            // Set store info
+            $printer->setStore('',$store_name,'','','','');
+
+            // Set currency
+            $printer->setCurrency($currency);
+
+            // Add items
+            foreach ($items as $item) {
+                $printer->addItem(
+                    $item['name'],
+                    $item['qty'],
+                    $item['price']
+                );
+            }
+
+            // Calculate total
+            $printer->calculateSubTotal();
+            $printer->calculateGrandTotal();
+
+            // Set orderCode
+            $printer->setOrderCode($order_code);
+
+            // Set cashier
+            $printer->setCashier($cashier);
+
+            // Set date
+            $printer->setDate($date[0] . $date[1]);
+
+            // Set logo
+            $printer->setLogo($image_path);
+
+            // Print receipt
+            $printer->printReceipt();
+
+            if ($order->order_from == 'teacher') {
+                if(!$order->viewed){
+                    $order->viewed = 1;
+                    $order->save();
+                }
+            }
+
+            return 'success';
         }
-        return view('admin.cashierModes.partials.print', compact('order', 'products','path','cashier_printer','kitchen_printer','cashier_print_times','kitchen_print_times'));
+    }
+
+    public function print00($id){
+
+        /* Most printers are open on port 9100, so you just need to know the IP
+        * address of your receipt printer, and then fsockopen() it on that port.
+        */
+        try {
+            $connector = new NetworkPrintConnector("192.168.100.11", 9100);
+
+            /* Print a "Hello world" receipt" */
+            $printer = new Printer($connector);
+            $printer -> text("Hello World! this network print\n");
+            $printer -> cut();
+
+            /* Close printer */
+            $printer -> close();
+        } catch (\Exception $e) {
+            echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
+        }
     }
 
     public function index(Request $request)

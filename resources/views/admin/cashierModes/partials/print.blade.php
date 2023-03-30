@@ -130,83 +130,71 @@
         </div>
     </div>
     <script src="{{ asset('js/JSPrintManager.js') }}"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script type="text/javascript">
-    @if($order->order_from == 'cashier')
-        $(document).ready(function() {
-            window.print();
-            setTimeout(() => {
-                window.print();
-                setTimeout(() => {
-                    window.close();
-                }, 100);
-            }, 100);
-        });
 
-    @else 
-        $(document).ready(function() {
-            window.print();
-            setTimeout(() => { 
-                    window.close();
-            }, 100);
-        });
-    @endif
+    <script >
+    // @if($order->order_from == 'cashier')
+    //     $(document).ready(function() {
+    //         window.print();
+    //         setTimeout(() => {
+    //             window.print();
+    //             setTimeout(() => {
+    //                 window.close();
+    //             }, 100);
+    //         }, 100);
+    //     });
+
+    // @else
+    //     $(document).ready(function() {
+    //         window.print();
+    //         setTimeout(() => {
+    //                 window.close();
+    //         }, 100);
+    //     });
+    // @endif
+
 
 
     </script>
-    {{-- <script type="text/javascript">
-        const getBase64StringFromDataURL = (image) =>
-            image.replace('data:', '').replace(/^.+,/, '');
-        JSPM.JSPrintManager.auto_reconnect = true;
-        JSPM.JSPrintManager.start();
-        JSPM.JSPrintManager.WS.onStatusChanged = function () {
-            if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
+    <script type="text/javascript">
+        // const getBase64StringFromDataURL = (image) =>
+        //     image.replace('data:', '').replace(/^.+,/, '');
+        // JSPM.JSPrintManager.auto_reconnect = true;
+        // JSPM.JSPrintManager.start();
+        // JSPM.JSPrintManager.WS.onStatusChanged = function () {
+        //     if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
 
-                var cpjg = new JSPM.ClientPrintJobGroup();
+        //         var cpjg = new JSPM.ClientPrintJobGroup();
 
-                var images = {};
-                html2canvas(document.getElementById('printing')).then(function(canvas){
-                    images[0] = canvas.toDataURL("image/jpeg");
-                    // Convert to Base64 string
-                    $.ajax({
-                        type:"POST",
-                        url:'{{ route('admin.orders.order_image') }}',
-                        data:{
-                            images :images,
-                            code :'{{$order->code}}',
-                            _token: '{{ @csrf_token() }}'
-                            },
-                        success: function(link){
-                            console.log(link);
-                            @for ($i = 0; $i < $cashier_print_times; $i++)
-                                var cpj1 = new JSPM.ClientPrintJob();
-                                cpj1.clientPrinter = new JSPM.InstalledPrinter('{{$cashier_printer}}');
-                                var my_file = new JSPM.PrintFile(link, JSPM.FileSourceType.URL, 'MyFile.jpg', 1);
-                                cpj1.files.push(my_file);
-                                cpjg.jobs.push(cpj1);
-                            @endfor
-
-
-                            @for ($i = 0; $i < $kitchen_print_times; $i++)
-                                var cpj2 = new JSPM.ClientPrintJob();
-                                cpj2.clientPrinter = new JSPM.InstalledPrinter('{{$kitchen_printer}}');
-                                var my_file = new JSPM.PrintFile(link, JSPM.FileSourceType.URL, '{{$order->code}}.png', 1);
-                                cpj2.files.push(my_file);
-                                cpjg.jobs.push(cpj2);
-                            @endfor
-                            cpjg.sendToClient().then(function(){
-                                //window.close();
-                            });
-                        },
-                        error: function(request, status, error){
-                        }
-                    });
-                });
-            }
-        };
+        //         var images = {};
+        //         html2canvas(document.getElementById('printing')).then(function(canvas){
+        //             images[0] = canvas.toDataURL("image/jpeg");
+        //             // Convert to Base64 string
+        //             $.ajax({
+        //                 type:"POST",
+        //                 url:'{{ route('admin.orders.order_image') }}',
+        //                 data:{
+        //                     images :images,
+        //                     code :'{{$order->code}}',
+        //                     _token: '{{ @csrf_token() }}'
+        //                     },
+        //                 success: function(link){
+        //                     console.log(link);
+        //                     var cpj1 = new JSPM.ClientPrintJob();
+        //                     cpj1.clientPrinter = new JSPM.NetworkPrinter(9100, "192.168.100.11");
+        //                     var my_file = new JSPM.PrintFilePDF('http://local.cashier/public/uploads/pdf_orders/20230206-1.pdf', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
+        //                     cpj1.files.push(my_file);
+        //                     cpjg.jobs.push(cpj1);
+        //                     cpjg.sendToClient();
+        //                 },
+        //                 error: function(request, status, error){
+        //                 }
+        //             });
+        //         });
+        //     }
+        // };
 
 
-    </script> --}}
+    </script>
 
 </body>
 
