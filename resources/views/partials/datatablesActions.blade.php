@@ -1,6 +1,23 @@
 
 @if($crudRoutePart == 'orders')
-    <a href="#" onclick="window.myAPI.sendDataToMainProcess('{{ route('admin.' . $crudRoutePart . '.print', $row->id) }}')"  class="btn btn-outline-dark btn-pill action-buttons-print"  title="{{ trans('global.datatables.print') }}"><i  class="fas fa-print actions-custom-i"></i></a>
+    @php
+
+        $setting = \App\Models\GeneralSetting::first();
+
+        $cashier = json_decode($setting->cashier_printer);
+        $kitchen = json_decode($setting->kitchen_printer);
+
+        $cashier_printer = $cashier->printer ?? '';
+        $kitchen_printer = $kitchen->printer ?? '';
+
+        $link = route('admin.' . $crudRoutePart . '.print', $row->id);
+        $array_of_data = [
+            'cashier_printer' => $cashier_printer,
+            'kitchen_printer' => $kitchen_printer,
+            'link' => $link,
+        ];
+    @endphp
+    <a href="#" onclick="window.myAPI.sendDataToMainProcess(['{{$cashier_printer}}','{{$kitchen_printer}}','{{$link}}'])"  class="btn btn-outline-dark btn-pill action-buttons-print"  title="{{ trans('global.datatables.print') }}"><i  class="fas fa-print actions-custom-i"></i></a>
 @endif
 @can($viewGate)
     <a class="btn btn-outline-info btn-pill action-buttons-view" href="{{ route('admin.' . $crudRoutePart . '.show', $row->id) }}">
