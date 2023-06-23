@@ -9,15 +9,13 @@
 
         $cashier_printer = $cashier->printer ?? '';
         $kitchen_printer = $kitchen->printer ?? '';
+        $cashier_printer_copies = $cashier->print_times ?? 1;
+        $kitchen_printer_copies = $kitchen->print_times ?? 1;
 
-        $link = route('admin.' . $crudRoutePart . '.print', $row->id);
-        $array_of_data = [
-            'cashier_printer' => $cashier_printer,
-            'kitchen_printer' => $kitchen_printer,
-            'link' => $link,
-        ];
-    @endphp
-    <a href="#" onclick="window.myAPI.sendDataToMainProcess(['{{$cashier_printer}}','{{$kitchen_printer}}','{{$link}}'])"  class="btn btn-outline-dark btn-pill action-buttons-print"  title="{{ trans('global.datatables.print') }}"><i  class="fas fa-print actions-custom-i"></i></a>
+        $link = route('admin.' . $crudRoutePart . '.print', $row->id); 
+    @endphp    
+    <a href="#" onclick="window.myAPI.sendDataToMainProcess(['{{$cashier_printer}}','{{$kitchen_printer}}','{{$link}}','{{$cashier_printer_copies}}','{{$kitchen_printer_copies}}'])" class="btn btn-outline-dark btn-pill action-buttons-print"  title="{{ trans('global.datatables.print') }}"><i  class="fas fa-print actions-custom-i"></i></a>
+
 @endif
 @can($viewGate)
     <a class="btn btn-outline-info btn-pill action-buttons-view" href="{{ route('admin.' . $crudRoutePart . '.show', $row->id) }}">

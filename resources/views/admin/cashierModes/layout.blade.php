@@ -280,7 +280,9 @@
 
                         if (data['status']) {
                             if (printing == 1) {
-                                window.open(data['link'], "_blank");
+                                console.log(data);
+                                window.myAPI.sendDataToMainProcess([data['cashier_printer'],data['kitchen_printer'],data['link'],data['cashier_printer_copies'],data['kitchen_printer_copies']]);
+                                // window.open(data['link'], "_blank");
                             } else {
                                 showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
                             }
@@ -304,7 +306,7 @@
                         var printing = $('#printing').val();
                         if (data['status']) {
                             if (printing == 1) {
-                                window.open(data['link'], "_blank");
+                                window.myAPI.sendDataToMainProcess([data['cashier_printer'],data['kitchen_printer'],data['link'],data['cashier_printer_copies'],data['kitchen_printer_copies']]);
                             } else {
                                 showFrontendAlert('success', 'تم أضافة الطلب بنجاح', '');
                             }

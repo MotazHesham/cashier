@@ -254,10 +254,26 @@ class CashierModeController extends Controller
             $order->save();
 
             $order->load('products.product');
+
+            $setting = GeneralSetting::first();
+    
+            $cashier = json_decode($setting->cashier_printer);
+            $kitchen = json_decode($setting->kitchen_printer);
+    
+            $cashier_printer = $cashier->printer ?? '';
+            $kitchen_printer = $kitchen->printer ?? '';
+            $cashier_printer_copies = $cashier->print_times ?? 1;
+            $kitchen_printer_copies = $kitchen->print_times ?? 1;
+    
+            $link = route('admin.orders.print', $order->id);   
             DB::commit();
             return [
                 'status' => true,
-                'link' => route('admin.orders.print', $order->id),
+                'cashier_printer' => $cashier_printer,
+                'kitchen_printer' => $kitchen_printer,
+                'link' => $link,
+                '$cashier_printer_copies' => $cashier_printer_copies,
+                '$kitchen_printer_copies' => $kitchen_printer_copies,
             ];
         } catch (\Exception $ex) {
             DB::rollBack();

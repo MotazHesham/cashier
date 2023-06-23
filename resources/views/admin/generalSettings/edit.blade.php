@@ -166,7 +166,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('scripts') 
     <script type="text/javascript">
         JSPM.JSPrintManager.auto_reconnect = true;
         JSPM.JSPrintManager.start();

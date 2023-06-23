@@ -129,7 +129,7 @@
             <span>{{ $order->paid_up - $order->total_cost}} LE</span> :المتبقي
         </div>
     </div>
-    <script src="{{ asset('js/JSPrintManager.js') }}"></script>
+    <!--<script src="{{ asset('js/JSPrintManager.js') }}"></script>-->
 
     <script >
     // @if($order->order_from == 'cashier')
@@ -156,6 +156,83 @@
 
     </script>
     <script type="text/javascript">
+
+        // JSPM.JSPrintManager.auto_reconnect = true;
+        // JSPM.JSPrintManager.start();
+        // JSPM.JSPrintManager.WS.onStatusChanged = function () {
+        //     if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
+        //         var xhr = new XMLHttpRequest();
+        //         xhr.open('GET', 'http://local.cashier/admin/orders/print/26', true);
+
+        //         xhr.responseType = 'arraybuffer';
+
+        //         xhr.onload = function (e) {
+        //             if (this.status == 200) {
+
+        //                 //Create a ClientPrintJob
+        //                 var cpj = new JSPM.ClientPrintJob();
+
+
+        //                 cpj.clientPrinter = new JSPM.NetworkPrinter(9100, "192.168.100.15");
+
+        //                 //Set printer commands...
+        //                 cpj.binaryPrinterCommands = new Uint8Array(xhr.response);
+
+        //                 //Send print job to printer!
+        //                 cpj.sendToClient();
+
+        //             }
+        //         }
+
+        //         xhr.send();
+        //     }
+        // };
+
+        // JSPM.JSPrintManager.auto_reconnect = true;
+        // JSPM.JSPrintManager.start();
+        // JSPM.JSPrintManager.WS.onStatusChanged = function () {
+        //     if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
+        //         var cpj = new JSPM.ClientPrintJob();
+        //         cpj.clientPrinter = new JSPM.NetworkPrinter(9100, "192.168.100.15");
+        //         var my_file = new JSPM.PrintFile('http://local.cashier/public/uploads/capture.png', JSPM.FileSourceType.URL, 'MyFile.jpg', 1);
+        //         cpj.files.push(my_file);
+
+        //         cpj.onUpdated = function(data) {
+        //             console.info(data);
+        //         };
+
+        //         cpj.onFinished = function(data) {
+        //             console.info(data);
+        //         };
+
+        //         cpj.sendToClient();
+        //     }
+        // };
+
+
+
+        // JSPM.JSPrintManager.auto_reconnect = true;
+        // JSPM.JSPrintManager.start(); 
+        // JSPM.JSPrintManager.WS.onStatusChanged = function () {
+        //     if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
+        //         var cpj1 = new JSPM.ClientPrintJob();
+        //         cpj1.clientPrinter = new JSPM.InstalledPrinter('BIXOLON SRP-E300'); 
+        //         cpj1 .printerCommands  = "مثال للطباعة علي ثيرمال برنتر من برنت مانجر"; // Reset cpj 
+        //         var cpj2 = new JSPM.ClientPrintJob();
+        //         cpj2.clientPrinter = new JSPM.InstalledPrinter('Xprinter XP-230H');
+        //         cpj2 .printerCommands  = "مثال للطباعة علي ثيرمال برنتر من برنت مانجر"; // Reset cpj 
+        //         var cpjg = new JSPM.ClientPrintJobGroup();
+        //         cpjg.jobs.push(cpj1);
+        //         cpjg.jobs.push(cpj2);
+        //         cpjg.sendToClient();  
+
+        //     }
+        // };
+
+
+
+
+
         // const getBase64StringFromDataURL = (image) =>
         //     image.replace('data:', '').replace(/^.+,/, '');
         // JSPM.JSPrintManager.auto_reconnect = true;
@@ -180,7 +257,7 @@
         //                 success: function(link){
         //                     console.log(link);
         //                     var cpj1 = new JSPM.ClientPrintJob();
-        //                     cpj1.clientPrinter = new JSPM.NetworkPrinter(9100, "192.168.100.11");
+        //                     cpj1.clientPrinter = new JSPM.NetworkPrinter(9100, "192.168.100.15");
         //                     var my_file = new JSPM.PrintFilePDF('http://local.cashier/public/uploads/pdf_orders/20230206-1.pdf', JSPM.FileSourceType.URL, 'MyFile.pdf', 1);
         //                     cpj1.files.push(my_file);
         //                     cpjg.jobs.push(cpj1);

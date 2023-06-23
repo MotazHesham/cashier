@@ -25,8 +25,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use charlieuki\ReceiptPrinter\ReceiptPrinter as ReceiptPrinter;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
-
-
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 class OrdersController extends Controller
 {
@@ -151,7 +150,7 @@ class OrdersController extends Controller
 
     public function print($id)
     {
-        if(true){
+        if(false){
             $order = Order::findOrFail($id);
             $setting = GeneralSetting::first();
             $products = OrderProduct::where('order_id', $id)
@@ -181,18 +180,30 @@ class OrdersController extends Controller
             }
             return view('admin.cashierModes.partials.print', compact('order', 'products' ,'cashier_printer','kitchen_printer','cashier_print_times','kitchen_print_times'));
 
-        }else{
+        }elseif(false){
+            $url = 'F:\Work\Projects\Ebtikar web v.1\index.html'; // Replace with the URL of the HTML page you want to print
+
+            $html = file_get_contents($url); // Get the HTML contents of the page
+
+            $connector = new WindowsPrintConnector("Microsoft Print to PDF"); // Replace "Printer Name" with the name of your printer
+
+            $printer = new Printer($connector);
+            $printer->text($html); // Print the HTML contents of the page
+
+            $printer->cut();
+            $printer->close();
+        }elseif(false){
             $generalsetting = GeneralSetting::first();
             $order = Order::findOrFail($id);
             $date = explode(' ',$order->created_at,2);
             $code = explode('-',$order->code);
 
-            // $cashier = json_decode($setting->cashier_printer);
-            // $kitchen = json_decode($setting->kitchen_printer);
-            // $cashier_printer = $cashier->printer ?? '';
-            // $kitchen_printer = $kitchen->printer ?? '';
-            // $cashier_print_times = $cashier->print_times ?? 1;
-            // $kitchen_print_times = $kitchen->print_times ?? 1;
+            $cashier = json_decode($generalsetting->cashier_printer);
+            $kitchen = json_decode($generalsetting->kitchen_printer);
+            $cashier_printer = $cashier->printer ?? '';
+            $kitchen_printer = $kitchen->printer ?? '';
+            $cashier_print_times = $cashier->print_times ?? 1;
+            $kitchen_print_times = $kitchen->print_times ?? 1;
 
             $products = OrderProduct::where('order_id', $id)
                                     ->with('product')
@@ -220,10 +231,9 @@ class OrdersController extends Controller
             // Init printer
             $printer = new ReceiptPrinter;
             $printer->init(
-                'network',
-                '192.168.100.11'
+                'windows',
+                $cashier
             );
-
             // Set store info
             $printer->setStore('',$store_name,'','','','');
 
@@ -253,7 +263,7 @@ class OrdersController extends Controller
             $printer->setDate($date[0] . $date[1]);
 
             // Set logo
-            $printer->setLogo($image_path);
+            // $printer->setLogo($image_path);
 
             // Print receipt
             $printer->printReceipt();
@@ -266,6 +276,34 @@ class OrdersController extends Controller
             }
 
             return 'success';
+
+        }else{
+
+            $order = Order::findOrFail($id);
+            $setting = GeneralSetting::first();
+            $products = OrderProduct::where('order_id', $id)
+                ->with('product')
+                ->groupBy('product_id', 'attributes', 'price')
+                ->selectRaw('sum(total_cost) as total_cost, sum(quantity) as quantity, product_id, attributes, price')
+                ->get();
+
+            $cashier = json_decode($setting->cashier_printer);
+            $kitchen = json_decode($setting->kitchen_printer);
+
+            $cashier_printer = $cashier->printer ?? '';
+            $kitchen_printer = $kitchen->printer ?? '';
+
+            $cashier_print_times = $cashier->print_times ?? 1;
+            $kitchen_print_times = $kitchen->print_times ?? 1;
+
+            if ($order->order_from == 'teacher') {
+                if(!$order->viewed){
+                    $order->viewed = 1;
+                    $order->save();
+                }
+            }
+            return view('admin.cashierModes.partials.print', compact('order', 'products' ,'cashier_printer','kitchen_printer','cashier_print_times','kitchen_print_times'));
+
         }
     }
 
